@@ -27,7 +27,9 @@ import com.digibig.saaserp.person.utils.Enabled;
 public class CareerControllerTest extends PersonServiceApplicationTests{
   
   /**
+   * <p>
    * 添加职业经历
+   * </p>
    * @throws UnsupportedEncodingException
    * @throws Exception
    */
@@ -37,7 +39,7 @@ public class CareerControllerTest extends PersonServiceApplicationTests{
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
     map.put("startDate", "2016-07-04");
-    map.put("endDate", "2017-07-10");
+    map.put("end", "2017-07-10");
     map.put("companyFullName", "和仁科技股份有限公司");
     map.put("companyShortName", "和仁");
     
@@ -54,7 +56,9 @@ public class CareerControllerTest extends PersonServiceApplicationTests{
   }
   
   /**
+   * <p>
    * 修改职业经历
+   * </p>
    * @throws UnsupportedEncodingException
    * @throws Exception
    */
@@ -63,9 +67,9 @@ public class CareerControllerTest extends PersonServiceApplicationTests{
     
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
-    map.put("careerId", "1");
+    map.put("id", "1");
     map.put("startDate", "2016-07-04");
-    map.put("endDate", "2018-07-10");
+    map.put("end", "2018-07-10");
     map.put("companyFullName", "和仁科技股份有限公司");
     map.put("companyShortName", "和仁");
     
@@ -83,7 +87,9 @@ public class CareerControllerTest extends PersonServiceApplicationTests{
   
   
   /**
+   * <p>
    * 设置职业经历的有效性
+   * </p>
    * @throws UnsupportedEncodingException
    * @throws Exception
    */
@@ -108,7 +114,9 @@ public class CareerControllerTest extends PersonServiceApplicationTests{
   }
   
   /**
+   * <p>
    * 添加工作详情
+   * </p>
    * @throws UnsupportedEncodingException
    * @throws Exception
    */
@@ -121,7 +129,7 @@ public class CareerControllerTest extends PersonServiceApplicationTests{
     map.put("department", "产品部");
     map.put("position", "软件工程师");
     map.put("startDate", "2016-07-04");
-    map.put("endDate", "2017-07-10");
+    map.put("end", "2017-07-10");
     map.put("description", "根据需求实现相应的功能");
     
     String addr = JSON.toJSONString(map);
@@ -136,8 +144,9 @@ public class CareerControllerTest extends PersonServiceApplicationTests{
     .getContentAsString();
   }
   
-  /**
+  /**<p>
    * 修改工作详情
+   * </p>
    * @throws UnsupportedEncodingException
    * @throws Exception
    */
@@ -147,11 +156,11 @@ public class CareerControllerTest extends PersonServiceApplicationTests{
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
     map.put("careerId", "1");
-    map.put("careerItemId", "8");
+    map.put("id", "8");
     map.put("department", "研发部");
     map.put("position", "软件工程师");
     map.put("startDate", "2016-07-04");
-    map.put("endDate", "2017-07-10");
+    map.put("end", "2017-07-07");
     map.put("description", "根据需求实现相应的功能");
     
     String addr = JSON.toJSONString(map);
@@ -167,7 +176,9 @@ public class CareerControllerTest extends PersonServiceApplicationTests{
   }
   
   /**
+   * <p>
    * 设置工作详情的有效性
+   * </p>
    * @throws UnsupportedEncodingException
    * @throws Exception
    */
@@ -193,7 +204,9 @@ public class CareerControllerTest extends PersonServiceApplicationTests{
   }
   
   /**
+   * <p>
    * 查询自然人工作经历信息
+   * </p>
    * @throws UnsupportedEncodingException
    * @throws Exception
    */

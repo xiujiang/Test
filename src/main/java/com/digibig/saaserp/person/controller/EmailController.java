@@ -27,6 +27,21 @@ import com.digibig.saaserp.commons.util.RegexValidator;
 import com.digibig.saaserp.person.service.EmailService;
 import com.digibig.saaserp.person.utils.Enabled;
 
+
+/**
+ * <p>
+ * 邮箱相关API，本API提供以下接口：<br>
+ * 1、添加邮箱<br>
+ * 2、设置邮箱有效性 <br>
+ * 3、查询自然人邮箱信息 - 脱敏<br>
+ * 4、查询自然人邮箱信息 - 不脱敏<br>
+ * </p>
+ * 
+ * @author libin<libin@we.com>
+ * @datetime 2017年9月9日下午16:43
+ * @version 1.0
+ * @since 1.8
+ */
 @RestController
 @RequestMapping("/v1.0/person/email")
 public class EmailController {
@@ -36,15 +51,22 @@ public class EmailController {
   private EmailService emailService;
   
   /**
+   * <p>
    * 添加邮箱
-   * @return
+   * </p>
+   * @param paramMap
+   *<ul>
+   *    <li>personId 自然人id</li>
+   *    <li>email 邮箱</li>
+   *    <li>isDefault 是否默认（可选）</li>
+   * </ul>
+   * @return 邮箱id
    */
   @PostMapping("")
   public HttpResult<Integer> addEmail(@RequestBody Map<String, String> paramMap){
     String email = paramMap.get("email");
     
     Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("isDefault")), "isDefault不能为空");
     Assert.isTrue(!StringUtils.isEmpty(email.trim()), "email不能为空");
     Assert.isTrue(RegexValidator.isEmail(email.trim()), "email格式错误");
     
@@ -61,8 +83,16 @@ public class EmailController {
   }
 
   /**
+   * <p>
    * 设置邮箱状态
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人id</li>
+   *    <li>emailId 邮箱id</li>
+   *    <li>enabled 有效性</li>
+   * </ul>
+   * @return 操作结果
    */
   @PostMapping("/enabled")
   public HttpResult<Boolean> setEmailEnabled(@RequestBody Map<String, String> paramMap){
@@ -85,8 +115,15 @@ public class EmailController {
     
   }
   /**
+   * <p>
    * 查询自然人邮箱信息 - 脱敏
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人id</li>
+   *    <li>enabled 有效性（可选）</li>
+   * </ul>
+   * @return 邮箱信息
    */
   @PostMapping("/list/des")
   public HttpResult<List<String>> getDesensitizeInfo(@RequestBody Map<String, String> paramMap){
@@ -115,8 +152,16 @@ public class EmailController {
   }
   
   /**
+   * <p>
    * 查询自然人邮箱信息 - 不脱敏
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人id</li>
+   *    <li>enabled 有效性（可选）</li>
+   *    <li>auth 授权码</li>
+   * </ul>
+   * @return 邮箱信息
    */
   @PostMapping("/list")
   public HttpResult<List<String>> getMobileInfo(@RequestBody Map<String, String> paramMap){

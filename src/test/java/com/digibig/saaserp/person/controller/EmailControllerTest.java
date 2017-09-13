@@ -25,12 +25,20 @@ import com.digibig.saaserp.person.utils.Enabled;
 
 public class EmailControllerTest extends PersonServiceApplicationTests{
   
+  
+  /**
+   * <p>
+   * 添加邮箱测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void addEmail() throws UnsupportedEncodingException, Exception {
 
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
-    map.put("email", "adsfasd@126.com");
+    map.put("email", "adsdtrffasd@126.com");
     map.put("isDefault", "true");
     
     String addr = JSON.toJSONString(map);
@@ -45,6 +53,14 @@ public class EmailControllerTest extends PersonServiceApplicationTests{
     .getContentAsString();
   }
   
+  
+  /**
+   * <p>
+   * 设置邮箱有效性测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void setEmailEnabled() throws UnsupportedEncodingException, Exception {
     
@@ -65,6 +81,14 @@ public class EmailControllerTest extends PersonServiceApplicationTests{
     .getContentAsString();
   }
   
+  
+  /**
+   * <p>
+   * 获取邮箱信息 - 脱敏 测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void getDesensitizeInfo() throws UnsupportedEncodingException, Exception {
     
@@ -83,6 +107,14 @@ public class EmailControllerTest extends PersonServiceApplicationTests{
     .getContentAsString();
   }
   
+  
+  /**
+   * <p>
+   * 获取邮箱信息 - 不脱敏 测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void getMobileInfo() throws UnsupportedEncodingException, Exception {
     

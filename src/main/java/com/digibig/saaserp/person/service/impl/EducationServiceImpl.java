@@ -108,9 +108,9 @@ public class EducationServiceImpl implements EducationService {
       
     try {
       if(educationSummary.getId() == null) {
-        educationSummaryMapper.insertSelective(summary);
+        educationSummaryMapper.insertSelective(educationSummary);
       }else {
-        educationSummaryMapper.updateByPrimaryKeySelective(summary);
+        educationSummaryMapper.updateByPrimaryKeySelective(educationSummary);
       }
     }catch(RuntimeException e) {
       throw new DBException("数据库操作异常");

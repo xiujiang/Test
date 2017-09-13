@@ -37,6 +37,21 @@ import com.digibig.saaserp.person.utils.Enabled;
 import com.digibig.saaserp.person.utils.PhaseType;
 import com.digibig.saaserp.person.utils.VarificationStatus;
 
+
+/**
+ * <p>
+ * 教育相关API，本API提供以下接口：<br>
+ * 1、添加教育经历<br>
+ * 2、修改教育经历 <br>
+ * 3、设置教育经历的有效性<br>
+ * 4、修改教育经历摘要信息<br>
+ * </p>
+ * 
+ * @author libin<libin@we.com>
+ * @datetime 2017年9月9日下午16:43
+ * @version 1.0
+ * @since 1.8
+ */
 @RestController
 @RequestMapping("/v1.0/person/education")
 public class EducationController {
@@ -46,8 +61,23 @@ public class EducationController {
   private EducationService educationService;
   
   /**
+   * <p>
    * 添加教育经历
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人ID</li>
+   *    <li>schoolName 学校名称</li>
+   *    <li>startDate 开始日期</li>
+   *    <li>end 结束日期（可选）</li>
+   *    <li>faculty 二级学院</li>
+   *    <li>profession 所学专业名称</li>
+   *    <li>type 学习类型</li>
+   *    <li>phase 学习阶段</li>
+   *    <li>diplomaId 学位证书id（可选）</li>
+   *    <li>recordId 学历证书id（可选）</li>
+   * </ul>
+   * @return 教育经历id
    */
   @PostMapping("")
   public HttpResult<Integer> addEducation(@RequestBody Map<String, String> paramMap){
@@ -60,12 +90,12 @@ public class EducationController {
     Assert.isTrue(!StringUtils.isEmpty(paramMap.get("type")), "type不能为空");
     Assert.isTrue(!StringUtils.isEmpty(paramMap.get("phase")), "phase不能为空");
     
-    DegreeGetType type = Enum.valueOf(DegreeGetType.class, paramMap.get("type").trim());
-    PhaseType phase = Enum.valueOf(PhaseType.class, paramMap.get("phase").trim());
-
     Education education = new Education();
     BeanUtilsBean beanUtils = BeanUtilsBean.getInstance();
     ConvertUtils.register(new DateLocaleConverter(), Date.class); 
+    
+    DegreeGetType type = Enum.valueOf(DegreeGetType.class, paramMap.get("type").trim());
+    PhaseType phase = Enum.valueOf(PhaseType.class, paramMap.get("phase").trim());
     
     try {
       beanUtils.populate(education,paramMap);
@@ -99,14 +129,30 @@ public class EducationController {
   
   
   /**
+   * <p>
    * 修改教育经历
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>id 教育经历id</li>
+   *    <li>personId 自然人ID</li>
+   *    <li>schoolName 学校名称（可选）</li>
+   *    <li>startDate 开始日期（可选）</li>
+   *    <li>endDate 结束日期（可选）</li>
+   *    <li>faculty 二级学院（可选）</li>
+   *    <li>profession 所学专业名称（可选）</li>
+   *    <li>type 学习类型（可选）</li>
+   *    <li>phase 学习阶段（可选）</li>
+   *    <li>diplomaId 学位证书id（可选）</li>
+   *    <li>recordId 学历证书id（可选）</li>
+   * </ul>
+   * @return 操作结果
    */
   @PostMapping("/mod")
   public HttpResult<Boolean> setEducation(@RequestBody Map<String, String> paramMap){
     
     Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("educationId")), "educationId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("id")), "id不能为空");
     
     String typeStr = paramMap.get("type");
     String phaseStr = paramMap.get("phase");
@@ -158,8 +204,16 @@ public class EducationController {
   
   
   /**
+   * <p>
    * 设置教育经历的有效性
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人id</li>
+   *    <li>educationId 教育经历id</li>
+   *    <li>enabled 有效性</li>
+   * </ul>
+   * @return 操作结果
    */
   @PostMapping("/enabled")
   public HttpResult<Boolean> setEducationEnabled(@RequestBody Map<String, String> paramMap){
@@ -183,8 +237,28 @@ public class EducationController {
   
   
   /**
+   * <p>
    * 修改教育经历摘要信息
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>id 教育摘要id（可选）</li>
+   *    <li>personId 自然人ID</li>
+   *    <li>lastDegree 最高学位（可选）</li>
+   *    <li>bachelorDegreeIssuer 学士学位授予机构（可选）</li>
+   *    <li>bachelorDegreeProfession 学士学位专业（可选）</li>
+   *    <li>bachelorDegreeType 学士学位取得方式（可选）</li>
+   *    <li>bachelorDegreeYear 学士学位授予年份（可选）</li>
+   *    <li>bachelorDegreeRefId 学士学位关联记录号（可选）</li>
+   *    <li>bachelorDegreeVerification 学士学位认证状态（可选）</li>
+   *    <li>masterDegreeIssuer 硕士学位授予机构（可选）</li>
+   *    <li>masterDegreeProfession 硕士学位专业（可选）</li>
+   *    <li>masterDegreeType 硕士学位取得方式（可选）</li>
+   *    <li>masterDegreeYear 硕士学位授予年份（可选）</li>
+   *    <li>masterDegreeRefId 硕士学位关联记录号（可选）</li>
+   *    <li>masterDegreeVerification 硕士学位认证状态（可选）</li>
+   * </ul>
+   * @return 摘要id
    */
   @PostMapping("/summary")
   public HttpResult<Integer> setEducationSummary(@RequestBody Map<String, String> paramMap){
@@ -204,20 +278,20 @@ public class EducationController {
       return new HttpResult<Integer>(HttpStatus.PARAM_ERROR,"失败");
     }
 
-    if(!StringUtils.isEmpty(paramMap.get("bDegreeType"))) {
-      DegreeGetType bDegreeType = Enum.valueOf(DegreeGetType.class, paramMap.get("bDegreeType").trim());
+    if(!StringUtils.isEmpty(paramMap.get("bachelorDegreeType"))) {
+      DegreeGetType bDegreeType = Enum.valueOf(DegreeGetType.class, paramMap.get("bachelorDegreeType").trim());
       educationSummary.setBachelorDegreeType(bDegreeType.getValue());
     }
-    if(!StringUtils.isEmpty(paramMap.get("bDegreeVerification"))) {
-      VarificationStatus bDegreeVerification = Enum.valueOf(VarificationStatus.class,paramMap.get("bDegreeVerification").trim());
+    if(!StringUtils.isEmpty(paramMap.get("bachelorDegreeVerification"))) {
+      VarificationStatus bDegreeVerification = Enum.valueOf(VarificationStatus.class,paramMap.get("bachelorDegreeVerification").trim());
       educationSummary.setBachelorDegreeVerification(bDegreeVerification.getValue());
     }
-    if(!StringUtils.isEmpty(paramMap.get("mDegreeType"))) {
-      DegreeGetType mDegreeType = Enum.valueOf(DegreeGetType.class, paramMap.get("mDegreeType").trim());
+    if(!StringUtils.isEmpty(paramMap.get("masterDegreeType"))) {
+      DegreeGetType mDegreeType = Enum.valueOf(DegreeGetType.class, paramMap.get("masterDegreeType").trim());
       educationSummary.setMasterDegreeType(mDegreeType.getValue());
     }
-    if(!StringUtils.isEmpty(paramMap.get("mDegreeVerification"))) {
-      VarificationStatus mDegreeVerification = Enum.valueOf(VarificationStatus.class,paramMap.get("mDegreeVerification").trim());
+    if(!StringUtils.isEmpty(paramMap.get("masterDegreeVerification"))) {
+      VarificationStatus mDegreeVerification = Enum.valueOf(VarificationStatus.class,paramMap.get("masterDegreeVerification").trim());
       educationSummary.setMasterDegreeVerification(mDegreeVerification.getValue());
     }
 

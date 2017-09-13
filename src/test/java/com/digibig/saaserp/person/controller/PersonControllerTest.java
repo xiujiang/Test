@@ -24,6 +24,14 @@ import com.alibaba.fastjson.JSON;
 import com.digibig.saaserp.person.PersonServiceApplicationTests;
 
 public class PersonControllerTest extends PersonServiceApplicationTests{
+  
+  /**
+   * <p>
+   * 身份核实测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void identityVerificate() throws UnsupportedEncodingException, Exception {
     
@@ -43,6 +51,13 @@ public class PersonControllerTest extends PersonServiceApplicationTests{
     .getContentAsString();
   }
   
+  /**
+   * <p>
+   * 按身份证号查询测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void getByCardNumber() throws UnsupportedEncodingException, Exception {
     
@@ -61,34 +76,18 @@ public class PersonControllerTest extends PersonServiceApplicationTests{
     .getContentAsString();
   }
   
-  @Test
-  public void setMobile() throws UnsupportedEncodingException, Exception {
-    
-    Map<String, String> map = new HashMap<>();
-    map.put("personId", "1");
-    map.put("mobile", "1");
-    
-    String addr = JSON.toJSONString(map);
-    this.mockMvc
-    .perform(post("/v1.0/person/mobile/default")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(addr))
-    .andDo(print())
-    .andExpect(status().isOk())
-    .andReturn()
-    .getResponse()
-    .getContentAsString();
-  }
-  
+  /**
+   * <p>
+   * 清空首先手机号测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void delMobile() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
-    map.put("personId", "1");
-    map.put("startDate", "2016-07-04");
-    map.put("endDate", "2017-07-10");
-    map.put("companyFullName", "和仁科技股份有限公司");
-    map.put("companyShortName", "和仁");
+    map.put("personId", "6");
     
     String addr = JSON.toJSONString(map);
     this.mockMvc
@@ -102,19 +101,23 @@ public class PersonControllerTest extends PersonServiceApplicationTests{
     .getContentAsString();
   }
   
+  /**
+   * <p>
+   * 设置首选手机号测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
-  public void setEmail() throws UnsupportedEncodingException, Exception {
+  public void setMobile() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
-    map.put("personId", "1");
-    map.put("startDate", "2016-07-04");
-    map.put("endDate", "2017-07-10");
-    map.put("companyFullName", "和仁科技股份有限公司");
-    map.put("companyShortName", "和仁");
+    map.put("personId", "6");
+    map.put("mobile", "4");
     
     String addr = JSON.toJSONString(map);
     this.mockMvc
-    .perform(post("/v1.0/person/email/default")
+    .perform(post("/v1.0/person/mobile/default")
         .contentType(MediaType.APPLICATION_JSON)
         .content(addr))
     .andDo(print())
@@ -124,15 +127,19 @@ public class PersonControllerTest extends PersonServiceApplicationTests{
     .getContentAsString();
   }
   
+  
+  /**
+   * <p>
+   * 清空默认邮箱测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void delEmail() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
-    map.put("personId", "1");
-    map.put("startDate", "2016-07-04");
-    map.put("endDate", "2017-07-10");
-    map.put("companyFullName", "和仁科技股份有限公司");
-    map.put("companyShortName", "和仁");
+    map.put("personId", "6");
     
     String addr = JSON.toJSONString(map);
     this.mockMvc
@@ -146,19 +153,24 @@ public class PersonControllerTest extends PersonServiceApplicationTests{
     .getContentAsString();
   }
   
+  
+  /**
+   * <p>
+   * 设置默认邮箱测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
-  public void setDefaultAddress() throws UnsupportedEncodingException, Exception {
+  public void setEmail() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
-    map.put("personId", "1");
-    map.put("startDate", "2016-07-04");
-    map.put("endDate", "2017-07-10");
-    map.put("companyFullName", "和仁科技股份有限公司");
-    map.put("companyShortName", "和仁");
+    map.put("personId", "6");
+    map.put("emailId", "4");
     
     String addr = JSON.toJSONString(map);
     this.mockMvc
-    .perform(post("/v1.0/person/address/default")
+    .perform(post("/v1.0/person/email/default")
         .contentType(MediaType.APPLICATION_JSON)
         .content(addr))
     .andDo(print())
@@ -167,16 +179,19 @@ public class PersonControllerTest extends PersonServiceApplicationTests{
     .getResponse()
     .getContentAsString();
   }
-  
+
+  /**
+   * <p>
+   * 清空默认地址测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void remDefaultAddress() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
-    map.put("startDate", "2016-07-04");
-    map.put("endDate", "2017-07-10");
-    map.put("companyFullName", "和仁科技股份有限公司");
-    map.put("companyShortName", "和仁");
     
     String addr = JSON.toJSONString(map);
     this.mockMvc
@@ -190,19 +205,23 @@ public class PersonControllerTest extends PersonServiceApplicationTests{
     .getContentAsString();
   }
   
+  /**
+   * <p>
+   * 设置默认地址测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
-  public void getDesensitizeInfo() throws UnsupportedEncodingException, Exception {
+  public void setDefaultAddress() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
-    map.put("startDate", "2016-07-04");
-    map.put("endDate", "2017-07-10");
-    map.put("companyFullName", "和仁科技股份有限公司");
-    map.put("companyShortName", "和仁");
+    map.put("addressId", "9");
     
     String addr = JSON.toJSONString(map);
     this.mockMvc
-    .perform(get("/v1.0/person/{id}/des")
+    .perform(post("/v1.0/person/address/default")
         .contentType(MediaType.APPLICATION_JSON)
         .content(addr))
     .andDo(print())
@@ -211,16 +230,39 @@ public class PersonControllerTest extends PersonServiceApplicationTests{
     .getResponse()
     .getContentAsString();
   }
+
+  /**
+   * <p>
+   * 查询脱敏信息测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
+  @Test
+  public void getDesensitizeInfo() throws UnsupportedEncodingException, Exception {
+
+    this.mockMvc
+    .perform(get("/v1.0/person/{id}/des",1))
+    .andDo(print())
+    .andExpect(status().isOk())
+    .andReturn()
+    .getResponse()
+    .getContentAsString();
+  }
   
+  /**
+   * <p>
+   * 查询自然人信息测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void getPersonInfo() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
-    map.put("startDate", "2016-07-04");
-    map.put("endDate", "2017-07-10");
-    map.put("companyFullName", "和仁科技股份有限公司");
-    map.put("companyShortName", "和仁");
+    map.put("auth", "201");
     
     String addr = JSON.toJSONString(map);
     this.mockMvc

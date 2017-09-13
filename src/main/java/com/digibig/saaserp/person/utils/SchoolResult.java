@@ -8,16 +8,42 @@
  */
 package com.digibig.saaserp.person.utils;
 
+import org.apache.commons.lang.StringUtils;
+
 public enum SchoolResult {
-  GRADUATION(1),
-  COMPLETION(2);
+  GRADUATION(1,"毕业"),
+  COMPLETION(2,"肄业");
   
   private int value;
-  private SchoolResult(int value) {
+  private String name;
+  private SchoolResult(int value, String name) {
     this.value = value;
+    this.name = name;
+  }
+  
+  public static String getName(Integer index) {
+    for (SchoolResult privilege: SchoolResult.values()) {
+      if (privilege.getValue() == index) {
+        return privilege.getName();
+      }
+    }
+    return null;
+  }
+  
+  public static Integer getValue(String name) {
+    for (SchoolResult privilege: SchoolResult.values()) {
+      if (StringUtils.equals(name, privilege.getName())) {
+        return privilege.getValue();
+      }
+    }
+    return 0;
   }
   
   public int getValue() {
     return this.value;
+  }
+  
+  public String getName() {
+    return this.name;
   }
 }

@@ -13,36 +13,124 @@ import java.util.Map;
 import com.digibig.saaserp.commons.exception.DigibigException;
 
 public interface PersonService {
-  
+  /**
+   * 获取默认手机id
+   * @param personId 自然人id
+   * @return 手机id
+   */
   Integer getDefaultMobile(Integer personId);
   
+  /**
+   * 清空默认手机号
+   * @param personId 自然人id
+   * @return 操作结果
+   */
   Boolean delDefaultMobile(Integer personId);
   
+  /**
+   * 获取默认邮箱
+   * @param personId 自然人id
+   * @return 邮箱id
+   */
   Integer getDefaultEmail(Integer personId);
   
+  /**
+   * 获取默认地址
+   * @param personId 自然人id
+   * @return 地址id
+   */
   Integer getdefaultAddress(Integer personId);
   
+  /**
+   * 获取默认身份证id
+   * @param personId 自然人id
+   * @return 身份证id
+   */
   Integer getdefaultIDCard(Integer personId);
   
+  /**
+   * 清除默认邮箱
+   * @param personId 自然人id
+   * @return 操作结果
+   */
   Boolean delDefaultEmail(Integer personId);
   
+  /**
+   * 清除默认地址
+   * @param personId 自然人id
+   * @return 操作结果
+   */
   Boolean delDefaultAddress(Integer personId);
   
+  /**
+   * 身份认证
+   * @param IDCard 身份证号
+   * @param name 姓名
+   * @return 自然人id
+   */
   Integer identityVerificate(String IDCard, String name);
   
-  Map<String, String> getByCardNumber(String IDCard) throws DigibigException;
+  /**
+   * 获取自然人信息
+   * @param IDCard 身份证号
+   * @return 自然人脱敏信息
+   * @throws DigibigException
+   */
+  Map<String, Object> getByCardNumber(String IDCard) throws DigibigException;
   
-  Map<String, String> getDesensitizeInfo(Integer personId) throws DigibigException;
+  /**
+   * 获取自然人脱敏信息
+   * @param personId 自然人id
+   * @return 自然人脱敏信息
+   * @throws DigibigException
+   */
+  Map<String, Object> getDesensitizeInfo(Integer personId) throws DigibigException;
   
-  Map<String, String> getPersonInfo(Integer personId) throws DigibigException;
+  /**
+   * 获取自然人信息
+   * @param personId 自然人id
+   * @return 自然人信息
+   * @throws DigibigException
+   */
+  Map<String, Object> getPersonInfo(Integer personId) throws DigibigException;
   
+  /**
+   * 设置默认手机
+   * @param personId 自然人id
+   * @param mobileId 手机id
+   * @return 操作结果
+   */
   Boolean setDefaultMobile(Integer personId, Integer mobileId);
   
+  /**
+   * 设置默认手机
+   * @param personId 自然人id
+   * @param mobile 手机号或id
+   * @return 操作结果
+   */
   Boolean setDefaultMobile(Integer personId, String mobile);
   
+  /**
+   * 设置默认身份证
+   * @param personId 自然人id
+   * @param idCardId 身份证id
+   * @return 操作结果
+   */
   Boolean setDefaultIDCard(Integer personId, Integer idCardId);
   
+  /**
+   * 设置默认邮箱
+   * @param personId 自然人id
+   * @param mobileId 邮箱id
+   * @return 操作结果
+   */
   Boolean setDefaultEmail(Integer personId, Integer mobileId);
 
+  /**
+   * 设置默认地址
+   * @param personId 自然人id
+   * @param addressId 地址id
+   * @return 操作结果
+   */
   Boolean setDefaultAddress(Integer personId, Integer addressId);
 }

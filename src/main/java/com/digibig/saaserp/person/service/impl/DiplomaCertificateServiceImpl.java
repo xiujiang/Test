@@ -8,8 +8,10 @@
  */
 package com.digibig.saaserp.person.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,14 @@ import com.digibig.saaserp.person.domain.SchoolRecordExample;
 import com.digibig.saaserp.person.mapper.DiplomaCertificateMapper;
 import com.digibig.saaserp.person.mapper.SchoolRecordMapper;
 import com.digibig.saaserp.person.service.DiplomaCertificateService;
+import com.digibig.saaserp.person.utils.DegreeGetType;
 import com.digibig.saaserp.person.utils.Enabled;
+import com.digibig.saaserp.person.utils.PhaseType;
+import com.digibig.saaserp.person.utils.SchoolResult;
+import com.digibig.saaserp.person.utils.VarificationStatus;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 @Service
 public class DiplomaCertificateServiceImpl implements DiplomaCertificateService {
 
@@ -43,7 +52,6 @@ public class DiplomaCertificateServiceImpl implements DiplomaCertificateService 
     return diplomas.get(0);
   }
   
-
   
   @Override
   @Transactional
@@ -137,14 +145,32 @@ public class DiplomaCertificateServiceImpl implements DiplomaCertificateService 
   }
 
   @Override
-  public List<SchoolRecord> getSchoolRecord(Integer personId) {
+  public List<Map<String, Object>> getSchoolRecord(Integer personId) {
     
     SchoolRecordExample example = new SchoolRecordExample();
     example.createCriteria().andPersonIdEqualTo(personId).andEnabledEqualTo(Enabled.ENABLED.getValue());
     
+    List<Map<String, Object>> list = Lists.newArrayList();
     List<SchoolRecord> records = schoolRecordMapper.selectByExample(example);
-    
-    return records;
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    for(SchoolRecord record : records) {
+      Map<String, Object> map = Maps.newHashMap();
+      map.put("id", record.getId());
+      map.put("personId", record.getPersonId());
+      map.put("certificateNumber", record.getCertificateNumber());
+      map.put("issuer", record.getIssuer());
+      map.put("profession", record.getProfession());
+      map.put("result", SchoolResult.getName(record.getResult()));
+      map.put("type", DegreeGetType.getName(record.getType()));
+      map.put("phase", PhaseType.getName(record.getPhase()));
+      map.put("date", format.format(record.getDate()));
+      map.put("file", record.getFile());
+      map.put("verificationStatus", VarificationStatus.getName(record.getVerificationStatus()));
+      map.put("verificationFile", record.getVerificationFile());
+      
+      list.add(map);
+    }
+    return list;
   }
 
   @Transactional

@@ -25,12 +25,19 @@ import com.digibig.saaserp.person.utils.Enabled;
 
 public class MobileControllerTest extends PersonServiceApplicationTests{
   
+  /**
+   * <p>
+   * 添加手机号测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void addMobile() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
-    map.put("mobileNumber", "13755655525");
+    map.put("number", "13755655525");
     map.put("isDefault", "true");
     
     String addr = JSON.toJSONString(map);
@@ -45,6 +52,14 @@ public class MobileControllerTest extends PersonServiceApplicationTests{
     .getContentAsString();
   }
   
+  
+  /**
+   * <p>
+   * 设置手机号的有效性 测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void setMobileEnabled() throws UnsupportedEncodingException, Exception {
     
@@ -65,6 +80,14 @@ public class MobileControllerTest extends PersonServiceApplicationTests{
     .getContentAsString();
   }
   
+  
+  /**
+   * <p>
+   * 获取手机号信息 - 脱敏 测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void getDesensitizeInfo() throws UnsupportedEncodingException, Exception {
     
@@ -83,6 +106,14 @@ public class MobileControllerTest extends PersonServiceApplicationTests{
     .getContentAsString();
   }
   
+  
+  /**
+   * <p>
+   * 获取手机号信息 - 不脱敏 测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void getMobileInfo() throws UnsupportedEncodingException, Exception {
     

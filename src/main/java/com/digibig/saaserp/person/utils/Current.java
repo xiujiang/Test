@@ -8,6 +8,7 @@
  */
 package com.digibig.saaserp.person.utils;
 
+
 public enum Current {
   
    IS_CURRENT(1),

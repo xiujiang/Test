@@ -31,21 +31,29 @@ import com.digibig.saaserp.person.utils.VarificationStatus;
 
 public class DiplomaCertificateControllerTest extends PersonServiceApplicationTests{
   
+  
+  /**
+   * <p>
+   * 添加学位证测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void addDiplomaCertificate() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
-    map.put("certificateNo", "56254855454");
+    map.put("certificateNumber", "56254855454");
     map.put("diploma", "学士学位");
     map.put("issuer", "北京理工大学");
     map.put("profession", "交通工程");
     map.put("date", "2016-06-04");
     map.put("diplomaType", DiplomaType.BACHELOR.toString());
     map.put("type", DegreeGetType.NATIONAL_UNIFIED_ENTRANCE_EXAMINATION.toString());
-    map.put("variStatus", VarificationStatus.AUTHORIZATION.toString());
+    map.put("varificationStatus", VarificationStatus.AUTHORIZATION.toString());
     map.put("file", "11");
-    map.put("variFile", "13");
+    map.put("varificationFile", "13");
     
     String addr = JSON.toJSONString(map);
     this.mockMvc
@@ -59,22 +67,30 @@ public class DiplomaCertificateControllerTest extends PersonServiceApplicationTe
     .getContentAsString();
   }
   
+  
+  /**
+   * <p>
+   * 修改学位证测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void setDiplomaCertificate() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
-    map.put("certificateId", "1");
-    map.put("certificateNo", "56254855454");
+    map.put("id", "1");
+    map.put("certificateNumber", "56254855454");
     map.put("diploma", "学士学位");
     map.put("issuer", "北京理工大学");
     map.put("profession", "交通工程");
     map.put("date", "2016-06-04");
     map.put("diplomaType", DiplomaType.BACHELOR.toString());
     map.put("type", DegreeGetType.NATIONAL_UNIFIED_ENTRANCE_EXAMINATION.toString());
-    map.put("variStatus", VarificationStatus.AUTHORIZATION.toString());
+    map.put("varificationStatus", VarificationStatus.AUTHORIZATION.toString());
     map.put("file", "11");
-    map.put("variFile", "10");
+    map.put("varificationFile", "10");
     
     String addr = JSON.toJSONString(map);
     this.mockMvc
@@ -88,13 +104,21 @@ public class DiplomaCertificateControllerTest extends PersonServiceApplicationTe
     .getContentAsString();
   }
   
+  
+  /**
+   * <p>
+   * 设置学位证有效性测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void setCertificateEnabled() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
-    map.put("personId", "1");
-    map.put("certificateId", "1");
-    map.put("enabled", Enabled.NOT_ENABLED.toString());
+    map.put("personId", "6");
+    map.put("certificateId", "2");
+    map.put("enabled", Enabled.ENABLED.toString());
     
     String addr = JSON.toJSONString(map);
     this.mockMvc
@@ -108,12 +132,20 @@ public class DiplomaCertificateControllerTest extends PersonServiceApplicationTe
     .getContentAsString();
   }
   
+  
+  /**
+   * <p>
+   * 添加学历证测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void addSchoolRecord() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
-    map.put("certificateNo", "556552452");
+    map.put("certificateNumber", "556552452");
     map.put("issuer", "北京理工大学");
     map.put("profession", "计算机");
     map.put("result", SchoolResult.GRADUATION.toString());
@@ -121,8 +153,8 @@ public class DiplomaCertificateControllerTest extends PersonServiceApplicationTe
     map.put("phase", PhaseType.UNDERGRADUATE.toString());
     map.put("date", "2016-06-10");
     map.put("file", "55");
-    map.put("veriStatus", VarificationStatus.AUTHORIZATION.toString());
-    map.put("veriFile", "56");
+    map.put("verificationStatus", VarificationStatus.AUTHORIZATION.toString());
+    map.put("verificationFile", "56");
     
     String addr = JSON.toJSONString(map);
     this.mockMvc
@@ -136,13 +168,21 @@ public class DiplomaCertificateControllerTest extends PersonServiceApplicationTe
     .getContentAsString();
   }
   
+  
+  /**
+   * <p>
+   * 修改学历证测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void setSchoolRecord() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
-    map.put("recordId", "1");
-    map.put("certificateNo", "556552452");
+    map.put("id", "1");
+    map.put("certificateNumber", "556552452");
     map.put("issuer", "北京理工大学");
     map.put("profession", "计算机科学与技术");
     map.put("result", SchoolResult.GRADUATION.toString());
@@ -150,8 +190,8 @@ public class DiplomaCertificateControllerTest extends PersonServiceApplicationTe
     map.put("phase", PhaseType.UNDERGRADUATE.toString());
     map.put("date", "2016-06-10");
     map.put("file", "55");
-    map.put("veriStatus", VarificationStatus.AUTHORIZATION.toString());
-    map.put("veriFile", "56");
+    map.put("verificationStatus", VarificationStatus.AUTHORIZATION.toString());
+    map.put("verificationFile", "56");
     
     String addr = JSON.toJSONString(map);
     this.mockMvc
@@ -166,6 +206,13 @@ public class DiplomaCertificateControllerTest extends PersonServiceApplicationTe
   }
   
   
+  /**
+   * <p>
+   * 设置学历证有效性测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void setRecordEnabled() throws UnsupportedEncodingException, Exception {
     
@@ -187,6 +234,13 @@ public class DiplomaCertificateControllerTest extends PersonServiceApplicationTe
   }
   
   
+  /**
+   * <p>
+   * 添加学信网学历证书测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void addCheckReport() throws UnsupportedEncodingException, Exception {
     
@@ -208,6 +262,13 @@ public class DiplomaCertificateControllerTest extends PersonServiceApplicationTe
   }
   
   
+  /**
+   * <p>
+   * 获取学历证信息
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void getSchoolRecord() throws UnsupportedEncodingException, Exception {
     

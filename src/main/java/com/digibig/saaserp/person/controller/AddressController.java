@@ -48,23 +48,28 @@ import com.digibig.saaserp.person.utils.Enabled;
 @RestController
 @RequestMapping("/v1.0/person/address")
 public class AddressController {
+  
   private Logger logger = LoggerFactory.getLogger(getClass());
   
   @Autowired
   private AddressService addressService;
   
   /**
+   * <p>
    * 添加自然人地址
+   * </p>
    * @param paramMap 参数列表
-   *            personId 自然人id
-   *            lastNode 最后节点
-   *            detailAddress 详细地址
-   *            addressType 地址类型（可选）
-   *            addressAlias 地址别名（可选）
-   *            longitude 经度（可选）
-   *            latitude 维度（可选）
-   *            postCode 邮编（可选）
-   *            isDefault 是否默认
+   * <ul>
+   *    <li>personId 自然人id</li>
+   *    <li>lastNode 最后节点</li>
+   *    <li>detailAddress 详细地址</li>
+   *    <li>addressType 地址类型（可选）</li>
+   *    <li>addressAlias 地址别名（可选）</li>
+   *    <li>longitude 经度（可选）</li>
+   *    <li>latitude 维度（可选）</li>
+   *    <li>postCode 邮编（可选）</li>
+   *    <li>isDefault 是否默认（可选）</li>
+   * </ul>
    * @return 地址id
    */
   @PostMapping("")
@@ -73,7 +78,6 @@ public class AddressController {
     Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
     Assert.isTrue(!StringUtils.isEmpty(paramMap.get("lastNode")), "lastNode不能为空");
     Assert.isTrue(!StringUtils.isEmpty(paramMap.get("detailAddress")), "detailAddress不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("isDefault")), "isDefault不能为空");
     
     Boolean isDeafault = Boolean.valueOf(paramMap.get("isDefault"));
 
@@ -81,14 +85,10 @@ public class AddressController {
     BeanUtilsBean beanUtils = BeanUtilsBean.getInstance();
     try {
       beanUtils.populate(address,paramMap);
-      
     } catch (IllegalAccessException e) {
-      
       logger.error(e.getMessage());
       return new HttpResult<Integer>(HttpStatus.PARAM_ERROR,"失败");
-      
     } catch (InvocationTargetException e) {
-      
       logger.error(e.getMessage());
       return new HttpResult<Integer>(HttpStatus.PARAM_ERROR,"失败");
     }
@@ -109,11 +109,15 @@ public class AddressController {
   }
   
   /**
+   * <p>
    * 设置地址有效性
+   * </p>
    * @param paramMap 参数列表
-   *            personId  自然人id
-   *            addressId 地址id
-   *            enabled   有效性
+   * <ul>
+   *     <li>personId  自然人id</li>
+   *     <li>addressId 地址id</li>
+   *     <li>enabled   有效性</li>
+   * </ul>
    * @return 操作结果
    */
   @PostMapping("/enabled")
@@ -140,10 +144,14 @@ public class AddressController {
   }
   
   /**
+   * <p>
    * 查询自然人地址信息
+   * </p>
    * @param paramMap 参数列表
-   *            personId 自然人id
-   *            enabled 有效性（可选）
+   * <ul>
+   *     <li>personId 自然人id</li>
+   *     <li>enabled 有效性（可选）</li>
+   * </ul>
    * @return 地址列表
    */
   @PostMapping("/list")

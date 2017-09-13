@@ -60,6 +60,7 @@ public class IDCardServiceImpl implements IDCardService {
     if(aIDCard == null) {
       
       try {
+        idCard.setUniqueCode(uniqueCode);
         idCardMapper.insertSelective(idCard);
       }catch(RuntimeException e) {
         logger.error("数据库操作异常",e);
@@ -103,12 +104,14 @@ public class IDCardServiceImpl implements IDCardService {
     IDCard idCard = new IDCard();
     if(frontPic == null) {
       idCard.setFrontPicture(CommonParam.DEFAULT_INT);
+    }else {
+      idCard.setFrontPicture(frontPic);
     }
     if(backPic == null) {
       idCard.setBackPicture(CommonParam.DEFAULT_INT);
+    }else {
+      idCard.setBackPicture(backPic);
     }
-    idCard.setFrontPicture(frontPic);
-    idCard.setBackPicture(backPic);
     
     Integer rows = null;
     try {

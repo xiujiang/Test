@@ -28,12 +28,26 @@ import org.springframework.web.bind.annotation.RestController;
 import com.digibig.saaserp.commons.api.HttpResult;
 import com.digibig.saaserp.commons.constant.HttpStatus;
 import com.digibig.saaserp.commons.util.DateUtil;
+import com.digibig.saaserp.commons.util.IDValidator;
 import com.digibig.saaserp.person.common.CommonParam;
 import com.digibig.saaserp.person.domain.IDCard;
 import com.digibig.saaserp.person.service.IDCardService;
 import com.digibig.saaserp.person.utils.Gender;
 import com.digibig.saaserp.person.utils.IDCardType;
 
+
+/**
+ * <p>
+ * 身份证相关API，本API提供以下接口：<br>
+ * 1、绑定身份证<br>
+ * 2、设置身份证关联图片 <br>
+ * </p>
+ * 
+ * @author libin<libin@we.com>
+ * @datetime 2017年9月9日下午16:43
+ * @version 1.0
+ * @since 1.8
+ */
 @RestController
 @RequestMapping("/v1.0/person/idcard")
 public class IDCardController {
@@ -43,19 +57,38 @@ public class IDCardController {
   private IDCardService idCardService;
   
   /**
+   * <p>
    * 绑定身份证
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人id</li>
+   *    <li>name 姓名</li>
+   *    <li>number 身份证号</li>
+   *    <li>address 地址</li>
+   *    <li>issueDate 发证日期</li>
+   *    <li>expireDate 有效期</li>
+   *    <li>pGender 性别</li>
+   *    <li>type 身份证类型（可选）</li>
+   *    <li>agency 机构</li>
+   *    <li>uniqueCode 唯一码</li>
+   *    <li>frontPicture 正面照片（可选）</li>
+   *    <li>backPicture 背面照片（可选）</li>
+   *    <li>isDefault 是否默认（可选）</li>
+   * </ul>
+   * @return 身份证id
    */
   @PostMapping("")
   public HttpResult<Integer> addIdCard(@RequestBody Map<String, String> paramMap){
     
     Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personName")), "personName不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("idCardNumber")), "idCardNumber不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("name")), "name不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("number")), "number不能为空");
+    Assert.isTrue(IDValidator.valid(paramMap.get("number")), "number不合法");
     Assert.isTrue(!StringUtils.isEmpty(paramMap.get("issueDate")), "issueDate不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("expire")), "expireDate不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("expire")), "expire不能为空");
     Assert.isTrue(!StringUtils.isEmpty(paramMap.get("address")), "address不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("gender")), "gender不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("pGender")), "pGender不能为空");
     Assert.isTrue(!StringUtils.isEmpty(paramMap.get("agency")), "agency不能为空");
     
     IDCard idCard = new IDCard();
@@ -64,21 +97,17 @@ public class IDCardController {
     
     try {
       beanUtils.populate(idCard,paramMap);
-      
     } catch (IllegalAccessException e) {
-      
       logger.error(e.getMessage());
       return new HttpResult<Integer>(HttpStatus.PARAM_ERROR,"失败");
-      
     } catch (InvocationTargetException e) {
-      
       logger.error(e.getMessage());
       return new HttpResult<Integer>(HttpStatus.PARAM_ERROR,"失败");
     }
     
     String idCardTypeStr = paramMap.get("idCardType");
     String expire = paramMap.get("expire");
-    String genderStr = paramMap.get("gender");
+    String genderStr = paramMap.get("pGender");
     
     Boolean isDefault = Boolean.valueOf(paramMap.get("isDefault"));
 
@@ -113,8 +142,17 @@ public class IDCardController {
   }
   
   /**
+   * <p>
    * 设置身份证关联图片
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人id</li>
+   *    <li>idCardId 身份证id</li>
+   *    <li>frontPic 正面图片（可选）</li>
+   *    <li>backPic 背面图片（可选）</li>
+   * </ul>
+   * @return 操作结果
    */
   @PostMapping("/pic")
   public HttpResult<Boolean> setCardPicture(@RequestBody Map<String, String> paramMap){
@@ -129,11 +167,11 @@ public class IDCardController {
     Integer frontPic = null;
     Integer backPic = null;
 
-    if(StringUtils.isEmpty(frontPicStr)) {
+    if(!StringUtils.isEmpty(frontPicStr)) {
       frontPic = Integer.valueOf(frontPicStr);
     }
     
-    if(StringUtils.isEmpty(backPicStr)) {
+    if(!StringUtils.isEmpty(backPicStr)) {
       backPic = Integer.valueOf(backPicStr);
     }
     

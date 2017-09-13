@@ -26,7 +26,9 @@ import com.digibig.saaserp.person.utils.Enabled;
 
 public class AddressControllerTest extends PersonServiceApplicationTests {
   /**
+   * <p>
    * 添加地址测试
+   * </p>
    * @throws UnsupportedEncodingException
    * @throws Exception
    */
@@ -57,7 +59,9 @@ public class AddressControllerTest extends PersonServiceApplicationTests {
   }
   
   /**
+   * <p>
    * 设置地址有效性测试
+   * </p>
    * @throws UnsupportedEncodingException
    * @throws Exception
    */
@@ -82,7 +86,9 @@ public class AddressControllerTest extends PersonServiceApplicationTests {
   }
   
   /**
+   * <p>
    * 获取自然人地址信息
+   * </p>
    * @throws UnsupportedEncodingException
    * @throws Exception
    */

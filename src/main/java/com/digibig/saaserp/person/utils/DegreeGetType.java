@@ -24,7 +24,7 @@ public enum DegreeGetType {
   }
   
   public static String getName(Integer index) {
-    for (AddressType privilege: AddressType.values()) {
+    for (DegreeGetType privilege: DegreeGetType.values()) {
       if (privilege.getValue() == index) {
         return privilege.getName();
       }
@@ -33,14 +33,13 @@ public enum DegreeGetType {
   }
   
   public static Integer getIndex(String name) {
-    for (AddressType privilege: AddressType.values()) {
+    for (DegreeGetType privilege: DegreeGetType.values()) {
       if (StringUtils.equals(name, privilege.getName())) {
         return privilege.getValue();
       }
     }
     return 0;
   }
-
   
   public String getName() {
     return this.name;

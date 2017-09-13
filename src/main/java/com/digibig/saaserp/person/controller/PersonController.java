@@ -28,6 +28,27 @@ import com.digibig.saaserp.commons.exception.DigibigException;
 import com.digibig.saaserp.commons.util.IDValidator;
 import com.digibig.saaserp.person.service.PersonService;
 
+
+/**
+ * <p>
+ * 自然人相关API，本API提供以下接口：<br>
+ * 1、身份核实<br>
+ * 2、按身份证号查询 <br>
+ * 3、设置首选手机号<br>
+ * 4、清空首选手机号<br>
+ * 5、设置默认邮箱<br>
+ * 6、清空默认邮箱<br>
+ * 7、设置自然人首选地址<br>
+ * 8、清空自然人首选地址<br>
+ * 9、查询自然人信息 - 脱敏<br>
+ * 10、查询自然人信息 - 不脱敏<br>
+ * </p>
+ * 
+ * @author libin<libin@we.com>
+ * @datetime 2017年9月9日下午16:43
+ * @version 1.0
+ * @since 1.8
+ */
 @RestController
 @RequestMapping("/v1.0/person")
 public class PersonController {
@@ -35,10 +56,17 @@ public class PersonController {
   
   @Autowired
   private PersonService personService;
+  
   /**
+   * <p>
    * 身份核实
+   * </p>
    * @param paramMap
-   * @return
+   * <ul>
+   *    <li>IDCard 身份证号</li>
+   *    <li>name 姓名</li>
+   * </ul>
+   * @return 自然人id
    */
   @PostMapping("/veri")
   public HttpResult<Integer> identityVerificate(@RequestBody Map<String, String> paramMap){
@@ -58,30 +86,43 @@ public class PersonController {
   }
 
   /**
+   * <p>
    * 按身份证号查询
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>IDCard 身份证号</li>
+   * </ul>
+   * @return 自然人信息
    */
   @PostMapping("/cardno")
-  public HttpResult<Map<String,String>> getByCardNumber(@RequestBody Map<String, String> paramMap){
+  public HttpResult<Map<String,Object>> getByCardNumber(@RequestBody Map<String, String> paramMap){
     String IDCard = paramMap.get("IDCard");
     
     Assert.isTrue(!StringUtils.isEmpty(IDCard), "IDCard不能为空");
     Assert.isTrue(IDValidator.valid(IDCard), "IDCard不合法");
     
-    Map<String, String> person = null;
+    Map<String, Object> person = null;
     try {
       person = personService.getByCardNumber(IDCard);
     } catch (DigibigException e) {
       logger.error(e.getMessage());
-      return new HttpResult<Map<String,String>>(HttpStatus.PARAM_ERROR,e.getMessage());
+      return new HttpResult<Map<String,Object>>(HttpStatus.PARAM_ERROR,e.getMessage());
     }
     
-    return new HttpResult<Map<String,String>>(HttpStatus.OK,"成功",person);
+    return new HttpResult<Map<String,Object>>(HttpStatus.OK,"成功",person);
   }
   
   /**
+   * <p>
    * 设置首选手机号
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人id</li>
+   *    <li>mobile 手机信息</li>
+   * </ul>
+   * @return 操作结果
    */
   @PostMapping("/mobile/default")
   public HttpResult<Boolean> setMobile(@RequestBody Map<String, String> paramMap){
@@ -103,8 +144,14 @@ public class PersonController {
   }
   
   /**
+   * <p>
    * 清空首选手机号
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人id</li>
+   * </ul>
+   * @return 操作结果
    */
   @PostMapping("/mobile/default/rem")
   public HttpResult<Boolean> delMobile(@RequestBody Map<String, String> paramMap){
@@ -116,7 +163,6 @@ public class PersonController {
     
     Boolean result = personService.delDefaultMobile(personId);
 
-    
     if(result) {
       return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
     }else {
@@ -126,8 +172,15 @@ public class PersonController {
   }
   
   /**
+   * <p>
    * 设置默认邮箱
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人id</li>
+   *    <li>emailId 邮箱id</li>
+   * </ul>
+   * @return 操作结果
    */
   @PostMapping("/email/default")
   public HttpResult<Boolean> setEmail(@RequestBody Map<String, String> paramMap){
@@ -141,7 +194,6 @@ public class PersonController {
     Integer emailId = Integer.valueOf(emailIdStr);
     
     Boolean result = personService.setDefaultEmail(personId,emailId);
-
     
     if(result) {
       return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
@@ -150,8 +202,14 @@ public class PersonController {
   }
   
   /**
+   * <p>
    * 清空默认邮箱
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人id</li>
+   * </ul>
+   * @return 操作结果
    */
   @PostMapping("/email/default/rem")
   public HttpResult<Boolean> delEmail(@RequestBody Map<String, String> paramMap){
@@ -168,12 +226,18 @@ public class PersonController {
     }else {
       return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败");
     }
-    
   }
   
   /**
+   * <p>
    * 设置自然人首选地址
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人id</li>
+   *    <li>addressId 地址id</li>
+   * </ul>
+   * @return 操作结果
    */
   @PostMapping("/address/default")
   public HttpResult<Boolean> setDefaultAddress(@RequestBody Map<String, String> paramMap){
@@ -187,7 +251,6 @@ public class PersonController {
     Integer addressId = Integer.valueOf(addressIdStr);
     
     Boolean result = personService.setDefaultAddress(personId,addressId);
-
     
     if(result) {
       return new HttpResult<Boolean>(HttpStatus.OK,"成功");
@@ -196,8 +259,14 @@ public class PersonController {
   }
   
   /**
+   * <p>
    * 清空自然人首选地址
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人id</li>
+   * </ul>
+   * @return 操作结果
    */
   @PostMapping("/address/default/rem")
   public HttpResult<Boolean> remDefaultAddress(@RequestBody Map<String, String> paramMap){
@@ -216,27 +285,38 @@ public class PersonController {
   }
   
   /**
+   * <p>
    * 查询自然人信息 - 脱敏
-   * @return
+   * </p>
+   * @param id 自然人id
+   * @return 自然人信息
    */
   @GetMapping("/{id}/des")
-  public HttpResult<Map<String,String>> getDesensitizeInfo(@PathVariable("id") Integer personId){
+  public HttpResult<Map<String,Object>> getDesensitizeInfo(@PathVariable("id") Integer personId){
     
-    Map<String, String> result = null;
+    Map<String, Object> result = null;
     try {
       result = personService.getDesensitizeInfo(personId);
     } catch (DigibigException e) {
       logger.error(e.getMessage());
     }
 
-    return new HttpResult<Map<String,String>>(HttpStatus.OK,"成功",result);
+    return new HttpResult<Map<String,Object>>(HttpStatus.OK,"成功",result);
   }
+  
   /**
+   * <p>
    * 查询自然人信息 - 不脱敏
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人id</li>
+   *    <li>auth 授权码</li>
+   * </ul>
+   * @return 自然人信息
    */
   @PostMapping("/list")
-  public HttpResult<Map<String,String>> getPersonInfo(@RequestBody Map<String, String> paramMap){
+  public HttpResult<Map<String,Object>> getPersonInfo(@RequestBody Map<String, String> paramMap){
     
     String personIdStr = paramMap.get("personId");
     String auth = paramMap.get("auth");
@@ -246,18 +326,18 @@ public class PersonController {
 
     //TODO 授权处理
     if(auth == null) {
-      return new HttpResult<Map<String,String>>(HttpStatus.AUTH_FAIL,"授权失败");
+      return new HttpResult<Map<String,Object>>(HttpStatus.AUTH_FAIL,"授权失败");
     }
     
     Integer personId = Integer.valueOf(personIdStr);
     
-    Map<String, String> result = null;
+    Map<String, Object> result = null;
     try {
       result = personService.getPersonInfo(personId);
     } catch (DigibigException e) {
       logger.error(e.getMessage());
     }
     
-    return new HttpResult<Map<String,String>>(HttpStatus.OK,"成功",result);
+    return new HttpResult<Map<String,Object>>(HttpStatus.OK,"成功",result);
   }
 }

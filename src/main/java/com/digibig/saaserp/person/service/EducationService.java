@@ -14,12 +14,34 @@ import com.digibig.saaserp.person.utils.Enabled;
 
 public interface EducationService {
   
+  /**
+   * 添加教育经历
+   * @param education 教育经历
+   * @return 教育经历id
+   */
   Integer addEducation(Education education);
   
+  /**
+   * 修改教育经历
+   * @param education 教育经历
+   * @return 操作结果
+   */
   Boolean setEducation(Education education) ;
   
+  /**
+   * 设置教育经历有效性
+   * @param personId 自然人id
+   * @param educationId 教育经历id
+   * @param enabled 有效性
+   * @return 操作结果
+   */
   Boolean setEducationEnabled(Integer personId, Integer educationId, Enabled enabled) ;
   
+  /**
+   * 操作教育摘要
+   * @param educationSummary 教育摘要
+   * @return 教育摘要id
+   */
   Integer setEducationSummary(EducationSummary educationSummary) ;
 
 }

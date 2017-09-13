@@ -27,6 +27,21 @@ import com.digibig.saaserp.commons.util.RegexValidator;
 import com.digibig.saaserp.person.service.MobileService;
 import com.digibig.saaserp.person.utils.Enabled;
 
+
+/**
+ * <p>
+ * 手机相关API，本API提供以下接口：<br>
+ * 1、添加手机号<br>
+ * 2、设置手机号有效性 <br>
+ * 3、查询自然人手机号信息 - 脱敏<br>
+ * 4、查询自然人手机号信息 - 不脱敏<br>
+ * </p>
+ * 
+ * @author libin<libin@we.com>
+ * @datetime 2017年9月9日下午16:43
+ * @version 1.0
+ * @since 1.8
+ */
 @RestController
 @RequestMapping("/v1.0/person/mobiles")
 public class MobileController {
@@ -36,19 +51,26 @@ public class MobileController {
   private MobileService mobileService;
   
   /**
+   * <p>
    * 添加手机号
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人id</li>
+   *    <li>number 手机号</li>
+   *    <li>isDefault 是否默认（可选）</li>
+   * </ul>
+   * @return 手机id
    */
   @PostMapping("")
   public HttpResult<Integer> addMobile(@RequestBody Map<String, String> paramMap){
     
     Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("isDefault")), "isDefault不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("mobileNumber")), "mobileNumber不能为空");
-    Assert.isTrue(RegexValidator.isMobile(paramMap.get("mobileNumber").trim()), "mobileNumber格式错误");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("number")), "number不能为空");
+    Assert.isTrue(RegexValidator.isMobile(paramMap.get("number").trim()), "number格式错误");
     
     Integer personId = Integer.valueOf(paramMap.get("personId"));
-    String mobileNumber = paramMap.get("mobileNumber");
+    String mobileNumber = paramMap.get("number");
     Boolean isDefault = Boolean.valueOf(paramMap.get("isDefault"));
 
     Integer result = mobileService.addMobile(personId, mobileNumber, isDefault);
@@ -61,8 +83,16 @@ public class MobileController {
   
 
   /**
+   * <p>
    * 设置手机号状态
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人id</li>
+   *    <li>mobile 手机信息</li>
+   *    <li>enabled 有效性</li>
+   * </ul>
+   * @return 操作结果
    */
   @PostMapping("/enabled")
   public HttpResult<Boolean> setMobileEnabled(@RequestBody Map<String, String> paramMap){
@@ -85,8 +115,15 @@ public class MobileController {
   
   
   /**
+   * <p>
    * 查询自然人手机号信息 - 脱敏
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人id</li>
+   *    <li>enabled 有效性（可选）</li>
+   * </ul>
+   * @return 手机号信息
    */
   @PostMapping("/list/des")
   public HttpResult<List<String>> getDesensitizeInfo(@RequestBody Map<String, String> paramMap){
@@ -115,8 +152,16 @@ public class MobileController {
   
   
   /**
+   * <p>
    * 查询自然人手机号信息 - 不脱敏
-   * @return
+   * </p>
+   * @param paramMap
+   * <ul>
+   *    <li>personId 自然人id</li>
+   *    <li>auth 授权码</li>
+   *    <li>enabled 有效性（可选）</li>
+   * </ul>
+   * @return 手机号信息
    */
   @PostMapping("/list")
   public HttpResult<List<String>> getMobileInfo(@RequestBody Map<String, String> paramMap){

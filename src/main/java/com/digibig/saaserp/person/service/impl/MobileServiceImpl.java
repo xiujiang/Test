@@ -66,7 +66,7 @@ public class MobileServiceImpl implements MobileService {
     if(isDefault) {
       Boolean result = personService.setDefaultMobile(personId, mobileId);
       if(!result) {
-        logger.error("设置默认地址失败");
+        logger.error("设置默认手机号失败");
         return null;
       }
     }

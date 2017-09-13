@@ -40,7 +40,7 @@ import com.digibig.saaserp.person.utils.Enabled;
 
 /**
  * <p>
- * 地址相关API，本API提供以下接口：<br>
+ * 职业相关API，本API提供以下接口：<br>
  * 1、添加自然人职业经历<br>
  * 2、修改自然人职业经历 <br>
  * 3、修改自然人职业经历有效性<br>
@@ -64,13 +64,17 @@ public class CareerController {
   private CareerService careerService;
   
   /**
+   * <p>
    * 添加自然人职业经历
+   * </p>
    * @param paramMap 参数列表
-   *            personId 自然人id
-   *            startDate 工作经历开始时间
-   *            end 工作经历结束时间
-   *            companyFullName 公司全称
-   *            companyShortName 公司简称
+   * <ul>
+   *     <li>personId 自然人id</li>
+   *     <li>startDate 工作经历开始时间</li>
+   *     <li>end 工作经历结束时间，可以为“至今”（可选，为空时表示至今）</li>
+   *     <li>companyFullName 公司全称</li>
+   *     <li>companyShortName 公司简称</li>
+   *</ul>
    * @return 职业经历id
    */
   @PostMapping("")
@@ -128,21 +132,25 @@ public class CareerController {
   }
   
   /**
+   * <p>
    * 修改自然人职业经历
+   * </p>
    * @param paramMap 参数列表
-   *            personId 自然人id
-   *            careerId 工作经历id
-   *            startDate 工作经历开始时间
-   *            end 工作经历结束时间
-   *            companyFullName 公司全称
-   *            companyShortName 公司简称
+   * <ul>
+   *     <li>personId 自然人id</li>
+   *     <li>id 工作经历id</li>
+   *     <li>startDate 工作经历开始时间（可选）</li>
+   *     <li>end 工作经历结束时间（可选）</li>
+   *     <li>companyFullName 公司全称（可选）</li>
+   *     <li>companyShortName 公司简称（可选）</li>
+   * </ul>
    * @return 操作结果
    */
   @PostMapping("/mod")
   public HttpResult<Boolean> setCareer(@RequestBody Map<String, String> paramMap){
     
     Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("id")), "careerId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("id")), "id不能为空");
 
     //将参数列表转化为bean
     Career career = new Career();
@@ -151,14 +159,10 @@ public class CareerController {
     
     try {
       beanUtils.populate(career,paramMap);
-      
     } catch (IllegalAccessException e) {
-      
       logger.error(e.getMessage());
       return new HttpResult<Boolean>(HttpStatus.PARAM_ERROR,"失败");
-      
     } catch (InvocationTargetException e) {
-      
       logger.error(e.getMessage());
       return new HttpResult<Boolean>(HttpStatus.PARAM_ERROR,"失败");
     }
@@ -191,11 +195,15 @@ public class CareerController {
   }
   
   /**
+   * <p>
    * 修改自然人职业经历有效性
-   *            personId 自然人id
-   *            careerId 工作经历id
-   *            enabled 工作经历有效性
+   * </p>
    * @param paramMap 参数列表
+   * <ul>
+   *     <li>personId 自然人id</li>
+   *     <li>careerId 工作经历id</li>
+   *     <li>enabled 工作经历有效性</li>
+   * </ul>
    * @return 操作结果
    */
   @PostMapping("/enabled")
@@ -218,15 +226,19 @@ public class CareerController {
   }
   
   /**
+   * <p>
    * 添加工作详情
+   * </p>
    * @param paramMap 参数列表
-   *            personId 自然人id
-   *            careerId 工作经历id
-   *            department 部门
-   *            position 职位
-   *            startDate 开始时间
-   *            end 结束时间
-   *            description 描述
+   * <ul>
+   *     <li>personId 自然人id</li>
+   *     <li>careerId 工作经历id</li>
+   *     <li>department 部门</li>
+   *     <li>position 职位</li>
+   *     <li>startDate 开始时间</li>
+   *     <li>end 结束时间，可以为“至今”（可选，为空时表示至今）</li>
+   *     <li>description 描述</li>
+   * </ul>
    * @return 工作详情id
    */
   @PostMapping("/item")
@@ -282,22 +294,26 @@ public class CareerController {
     if(id != null) {
       return new HttpResult<Integer>(HttpStatus.OK,"成功",id);
     }else {
-      return new HttpResult<Integer>(HttpStatus.SERVER_ERROR,"无对应的工作经历");
+      return new HttpResult<Integer>(HttpStatus.SERVER_ERROR,"无有效的工作经历");
     }
     
   }
   
   /**
+   * <p>
    * 修改工作详情
+   * </p>
    * @param paramMap 参数列表
-   *            personId 自然人id
-   *            careerId 工作经历id
-   *            careerItemId 工作详情id
-   *            department 部门
-   *            position 职位
-   *            startDate 开始时间
-   *            end 结束时间
-   *            description 描述
+   * <ul>
+   *     <li>personId 自然人id</li>
+   *     <li>careerId 工作经历id</li>
+   *     <li>id 工作详情id</li>
+   *     <li>department 部门（可选）</li>
+   *     <li>position 职位（可选）</li>
+   *     <li>startDate 开始时间（可选）</li>
+   *     <li>end 结束时间，可以为“至今”（可选，为空时表示至今）</li>
+   *     <li>description 描述（可选）</li>
+   * </ul>
    * @return 操作结果
    */
   @PostMapping("/item/mod")
@@ -305,7 +321,7 @@ public class CareerController {
     
     Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
     Assert.isTrue(!StringUtils.isEmpty(paramMap.get("careerId")), "careerId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("careerItemId")), "careerItemId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("id")), "id不能为空");
  
     //将参数列表转化为bean
     CareerItem careerItem = new CareerItem();
@@ -314,14 +330,10 @@ public class CareerController {
     
     try {
       beanUtils.populate(careerItem,paramMap);
-      
     } catch (IllegalAccessException e) {
-      
       logger.error(e.getMessage());
       return new HttpResult<Boolean>(HttpStatus.PARAM_ERROR,e.getMessage());
-      
     } catch (InvocationTargetException e) {
-      
       logger.error(e.getMessage());
       return new HttpResult<Boolean>(HttpStatus.PARAM_ERROR,e.getMessage());
     }
@@ -343,11 +355,11 @@ public class CareerController {
       careerItem.setEndDate(endDate);
       careerItem.setIsCurrent(current.getValue());
     }
+    
     logger.info(careerItem.toString());
     
     Boolean result = careerService.setCareerItem(careerItem);
 
-    
     if(result) {
       return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
     }
@@ -355,12 +367,16 @@ public class CareerController {
   }
   
   /**
+   * <p>
    * 修改工作详情状态
+   * </p>
    * @param paramMap 参数列表
-   *            personId 自然人id
-   *            careerId 工作经历id
-   *            careerItemId 工作详情id
-   *            enabled 工作详情有效性
+   * <ul>
+   *     <li>personId 自然人id</li>
+   *     <li>careerId 工作经历id</li>
+   *     <li>careerItemId 工作详情id</li>
+   *     <li>enabled 工作详情有效性</li>
+   * </ul>
    * @return 操作结果
    */
   @PostMapping("/item/enabled")
@@ -385,7 +401,9 @@ public class CareerController {
   }
   
   /**
+   * <p>
    * 查询自然人职业信息
+   * </p>
    * @param personId 自然人id
    * @return 自然人职业经历信息
    */

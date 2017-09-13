@@ -28,13 +28,21 @@ import com.digibig.saaserp.person.utils.VarificationStatus;
 
 public class EducationControllerTest extends PersonServiceApplicationTests{
   
+  
+  /**
+   * <p>
+   * 添加教育经历测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void addEducation() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
     map.put("startDate", "2012-09-03");
-    map.put("endDate", "2016-06-10");
+    map.put("end", "2016-06-10");
     map.put("schoolName", "北京理工大学");
     map.put("faculty", "机械与车辆学院");
     map.put("profession", "交通工程");
@@ -56,21 +64,28 @@ public class EducationControllerTest extends PersonServiceApplicationTests{
   }
   
   
+  /**
+   * <p>
+   * 修改教育经历测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void setEducation() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
-    map.put("educationId", "1");
+    map.put("id", "6");
     map.put("startDate", "2012-09-04");
-    map.put("endDate", "2016-06-10");
+    map.put("end", "2016-06-10");
     map.put("schoolName", "北京理工大学");
     map.put("faculty", "机械与车辆学院");
     map.put("profession", "交通工程");
     map.put("type", DegreeGetType.NATIONAL_UNIFIED_ENTRANCE_EXAMINATION.toString());
     map.put("phase", PhaseType.UNDERGRADUATE.toString());
-    map.put("diplomaId", "1");
-    map.put("recordId", "1");
+    map.put("diplomaId", "122");
+    map.put("recordId", "133");
     
     String addr = JSON.toJSONString(map);
     this.mockMvc
@@ -85,6 +100,13 @@ public class EducationControllerTest extends PersonServiceApplicationTests{
   }
   
   
+  /**
+   * <p>
+   * 设置教育经历有效性测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void setEducationEnabled() throws UnsupportedEncodingException, Exception {
     
@@ -106,24 +128,31 @@ public class EducationControllerTest extends PersonServiceApplicationTests{
   }
   
   
+  /**
+   * <p>
+   * 设置教育摘要测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void setEducationSummary() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
-    map.put("lastDegree", "学士学位");
-    map.put("bDegreeIssuer", "北京理工大学");
-    map.put("bDegreeProfession", "计算机");
-    map.put("bDegreeType", DegreeGetType.NATIONAL_UNIFIED_ENTRANCE_EXAMINATION.toString());
-    map.put("bDegreeYear", "2016");
-    map.put("bDegreeRefId", "1");
-    map.put("bDegreeVerification", VarificationStatus.AUTHORIZATION.toString());
-    map.put("mDegreeIssuer", "北京理工大学");
-    map.put("mDegreeProfession", "计算机");
-    map.put("mDegreeType", DegreeGetType.NATIONAL_UNIFIED_ENTRANCE_EXAMINATION.toString());
-    map.put("mDegreeYear", "2018");
-    map.put("mDegreeRefId", "2");
-    map.put("mDegreeVerification", VarificationStatus.AUTHORIZATION.toString());
+    map.put("lastDegree", "学士");
+    map.put("bachelorDegreeIssuer", "北京理工大学");
+    map.put("bachelorDegreeProfession", "计算机");
+    map.put("bachelorDegreeType", DegreeGetType.NATIONAL_UNIFIED_ENTRANCE_EXAMINATION.toString());
+    map.put("bachelorDegreeYear", "2016");
+    map.put("bachelorDegreeRefId", "1");
+    map.put("bachelorDegreeVerification", VarificationStatus.AUTHORIZATION.toString());
+    map.put("masterDegreeIssuer", "北京理工大学");
+    map.put("masterDegreeProfession", "计算机");
+    map.put("masterDegreeType", DegreeGetType.NATIONAL_UNIFIED_ENTRANCE_EXAMINATION.toString());
+    map.put("masterDegreeYear", "2018");
+    map.put("masterDegreeRefId", "2");
+    map.put("masterDegreeVerification", VarificationStatus.AUTHORIZATION.toString());
     
     String addr = JSON.toJSONString(map);
     this.mockMvc

@@ -8,19 +8,45 @@
  */
 package com.digibig.saaserp.person.utils;
 
+import org.apache.commons.lang.StringUtils;
+
 public enum VarificationStatus {
   
-  AUTHORIZATION(1),
-  UNAUTHORIZATION(2);
+  AUTHORIZATION(1,"已认证"),
+  UNAUTHORIZATION(2,"未认证");
   
   private int value;
+  private String name;
   
-  private VarificationStatus(int value) {
+  private VarificationStatus(int value, String name) {
     this.value = value;
+    this.name= name;
+  }
+  
+  public static String getName(int index) {
+    for (VarificationStatus privilege: VarificationStatus.values()) {
+      if (privilege.getValue() == index) {
+        return privilege.getName();
+      }
+    }
+    return null;
+  }
+  
+  public static int getValue(String name) {
+    for (VarificationStatus privilege: VarificationStatus.values()) {
+      if (StringUtils.equals(name, privilege.getName())) {
+        return privilege.getValue();
+      }
+    }
+    return 0;
   }
   
   public int getValue() {
     return this.value;
+  }
+  
+  public String getName() {
+    return this.name;
   }
 
 }

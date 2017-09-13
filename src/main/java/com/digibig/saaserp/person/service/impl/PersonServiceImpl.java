@@ -167,17 +167,18 @@ public class PersonServiceImpl implements PersonService {
   }
 
   @Override
-  public Map<String, String> getByCardNumber(String IDCard) throws DigibigException {
-    Map<String, String> map = personMapper.getByCardNumber(IDCard);
+  public Map<String, Object> getByCardNumber(String IDCard) throws DigibigException {
+    
+    Map<String, Object> map = personMapper.getByCardNumber(IDCard);
     //脱敏处理
-    map.put("mobile", MaskedUtil.masked(map.get("mobile"), CommonParam.MOBILE_DES_PRE, CommonParam.MOBILE_DES_SUF));
-    map.put("idCard", MaskedUtil.masked(map.get("idCard"), CommonParam.IDCARD_DES_PRE, CommonParam.IDCARD_DES_SUF));
-    String email = map.get("email");
+    map.put("mobile", MaskedUtil.masked((String)map.get("mobile"), CommonParam.MOBILE_DES_PRE, CommonParam.MOBILE_DES_SUF));
+    map.put("idCard", MaskedUtil.masked((String)map.get("idCard"), CommonParam.IDCARD_DES_PRE, CommonParam.IDCARD_DES_SUF));
+    String email = (String)map.get("email");
     Integer suf = email.length() - email.lastIndexOf("@");
     map.put("email", MaskedUtil.masked(email, CommonParam.EMIAL_DES_PRE, suf));
     // 查询地址信息
-    String lastNode = map.get("addressId");
-    Integer node = Integer.valueOf(lastNode);
+    map.get("addressId");
+    Integer node = (Integer)map.get("addressId");
     if(node == CommonParam.DEFAULT_INT) {
       map.put("address", "");
     }else {
@@ -232,17 +233,17 @@ public class PersonServiceImpl implements PersonService {
   }
 
   @Override
-  public Map<String, String> getDesensitizeInfo(Integer personId) throws DigibigException {
+  public Map<String, Object> getDesensitizeInfo(Integer personId) throws DigibigException {
     
-    Map<String, String> map = personMapper.getPersonById(personId);
+    Map<String, Object> map = personMapper.getPersonById(personId);
     //脱敏处理
-    map.put("mobile", MaskedUtil.masked(map.get("mobile"), CommonParam.MOBILE_DES_PRE, CommonParam.MOBILE_DES_SUF));
-    map.put("idCard", MaskedUtil.masked(map.get("idCard"), CommonParam.IDCARD_DES_PRE, CommonParam.IDCARD_DES_SUF));
-    String email = map.get("email");
-    int suf = email.length() - email.lastIndexOf("@");
+    map.put("mobile", MaskedUtil.masked((String)map.get("mobile"), CommonParam.MOBILE_DES_PRE, CommonParam.MOBILE_DES_SUF));
+    map.put("idCard", MaskedUtil.masked((String)map.get("idCard"), CommonParam.IDCARD_DES_PRE, CommonParam.IDCARD_DES_SUF));
+    String email = (String)map.get("email");
+    Integer suf = email.length() - email.lastIndexOf("@");
     map.put("email", MaskedUtil.masked(email, CommonParam.EMIAL_DES_PRE, suf));
     // 查询地址信息detailAddress
-    Integer node = Integer.valueOf(map.get("addressId"));
+    Integer node = (Integer)map.get("addressId");
     if(node == CommonParam.DEFAULT_INT) {
       map.put("address", "");
     }else {
@@ -253,10 +254,10 @@ public class PersonServiceImpl implements PersonService {
   }
 
   @Override
-  public Map<String, String> getPersonInfo(Integer personId) throws DigibigException{
-    Map<String, String> map = personMapper.getPersonById(personId);
+  public Map<String, Object> getPersonInfo(Integer personId) throws DigibigException{
+    Map<String, Object> map = personMapper.getPersonById(personId);
     //查询地址信息
-    Integer node = Integer.valueOf(map.get("addressId"));
+    Integer node = (Integer)map.get("addressId");
     if(node == CommonParam.DEFAULT_INT) {
       map.put("address", "");
     }else {

@@ -12,8 +12,22 @@ import com.digibig.saaserp.person.domain.IDCard;
 
 public interface IDCardService {
   
-  Integer addIdCard(IDCard idCard,Boolean defaultObj) ;
+  /**
+   * 绑定身份证
+   * @param idCard 身份证
+   * @param isDefault 是否默认
+   * @return 身份证id
+   */
+  Integer addIdCard(IDCard idCard,Boolean isDefault) ;
   
+  /**
+   * 设置身份证图片
+   * @param personId 自然人id
+   * @param idCardId 身份证id
+   * @param frontPic 正面图片
+   * @param backPic 背面图片
+   * @return 操作结果
+   */
   Boolean setCardPicture(Integer personId,Integer idCardId,Integer frontPic,Integer backPic) ;
 
 }

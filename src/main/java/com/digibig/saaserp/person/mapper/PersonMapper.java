@@ -22,9 +22,9 @@ public interface PersonMapper {
 
     Person selectByPrimaryKey(Integer id);
     
-    Map<String , String> getByCardNumber(String IDCard);
+    Map<String , Object> getByCardNumber(String IDCard);
     
-    Map<String , String> getPersonById(Integer id);
+    Map<String , Object> getPersonById(Integer id);
     
     Integer getdefaultMobile(Integer id);
     

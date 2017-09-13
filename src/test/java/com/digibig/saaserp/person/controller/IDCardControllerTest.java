@@ -25,20 +25,28 @@ import com.digibig.saaserp.person.utils.Gender;
 
 public class IDCardControllerTest extends PersonServiceApplicationTests{
   
+  
+  /**
+   * <p>
+   * 绑定身份证 测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void addIdCard() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
-    map.put("personName", "李斌");
-    map.put("idCardNumber", "622827199112050611");
+    map.put("name", "李斌");
+    map.put("number", "622827199112050611");
     map.put("issueDate", "2011-07-04");
-    map.put("expireDate", "2026-07-04");
+    map.put("expire", "2026-07-04");
     map.put("address", "甘肃省");
-    map.put("gender", Gender.MAN.toString());
+    map.put("pGender", Gender.MAN.toString());
     map.put("agency", "平泉派出所");
-    map.put("frontPic", "122");
-    map.put("backPic", "150");
+    map.put("frontPicture", "122");
+    map.put("backPicture", "150");
     map.put("isDefault", "true");
     
     String addr = JSON.toJSONString(map);
@@ -54,6 +62,13 @@ public class IDCardControllerTest extends PersonServiceApplicationTests{
   }
   
   
+  /**
+   * <p>
+   * 设置身份证照片 测试
+   * </p>
+   * @throws UnsupportedEncodingException
+   * @throws Exception
+   */
   @Test
   public void setCardPicture() throws UnsupportedEncodingException, Exception {
     
