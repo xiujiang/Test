@@ -14,6 +14,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +48,12 @@ public class MobileServiceImpl implements MobileService {
    */
   @Transactional
   @Override
+  @Caching(evict = {
+      @CacheEvict(value = "mobile",
+          key = "'com.digibig.saaserp.person.domain.mobile_person_id_'+#personId"),
+      @CacheEvict(value = "mobile",
+          key = "'com.digibig.saaserp.person.domain.mobile_des_person_id_'+#personId")
+      })
   public Integer addMobile(Integer personId, String mobileNumber, Boolean isDefault) {
     //检查自然人名下此手机号是否存在
     Mobile mobile = getMobileNum(personId,mobileNumber);
@@ -79,26 +88,27 @@ public class MobileServiceImpl implements MobileService {
    */
   @Transactional
   @Override
+  @Caching(evict = {
+      @CacheEvict(value = "mobile",
+          key = "'com.digibig.saaserp.person.domain.mobile_person_id_'+#personId"),
+      @CacheEvict(value = "mobile",
+          key = "'com.digibig.saaserp.person.domain.mobile_des_person_id_'+#personId")
+      })
   public Boolean setMobileEnabled(Integer personId, String number, Enabled enabled) {
-    Integer result = null;
     
     if(RegexValidator.isMobile(number)) {
-      result = setEnabledByNum(personId,number,enabled);
+      return setEnabledByNum(personId,number,enabled);
     }else {
-      
       Integer id = Integer.valueOf(number);
-      result = setEnabledById(personId,id,enabled);
+      return setEnabledById(personId,id,enabled);
     }
-    if(result == 0) {
-      return false;
-    }
-    return true;
   }
 
   /**
    * 查询自然人手机号信息 - 脱敏
    */
   @Override
+  @Cacheable(value = "mobile", key = "'com.digibig.saaserp.person.domain.mobile_des_person_id_'+#personId")
   public List<String> getDesensitizeInfo(Integer personId, Enabled enabled) {
     //查询数据
     List<String> numbers = mobileMapper.getMobiles(personId, enabled.getValue());
@@ -116,6 +126,7 @@ public class MobileServiceImpl implements MobileService {
    * 查询自然人手机号信息 - 不脱敏
    */
   @Override
+  @Cacheable(value = "mobile", key = "'com.digibig.saaserp.person.domain.mobile_person_id_'+#personId")
   public List<String> getMobileInfo(Integer personId, Enabled enabled) {
     return mobileMapper.getMobiles(personId, enabled.getValue());
   }
@@ -152,6 +163,7 @@ public class MobileServiceImpl implements MobileService {
     try {
       mobileMapper.insertSelective(mobile);
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常",e);
     }
     
@@ -166,7 +178,7 @@ public class MobileServiceImpl implements MobileService {
    * @param enabled 有效性状态
    * @return 操作结果
    */
-  private Integer setEnabledById(Integer personId, Integer id, Enabled enabled) {
+  private Boolean setEnabledById(Integer personId, Integer id, Enabled enabled) {
     
     MobileExample example = new MobileExample();
     example.createCriteria().andIdEqualTo(id).andPersonIdEqualTo(personId);
@@ -174,14 +186,17 @@ public class MobileServiceImpl implements MobileService {
     Mobile mobile = new Mobile();
     mobile.setEnabled(enabled.getValue());
     
-    Integer result = null;
+    Integer rows = null;
     try {
-      result = mobileMapper.updateByExampleSelective(mobile, example);
+      rows = mobileMapper.updateByExampleSelective(mobile, example);
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常",e);
     }
-    
-    return result;
+    if(Enabled.NOT_ENABLED.getValue() == enabled.getValue()) {
+      personService.delDefaultMobile(personId, id);
+    }
+    return rows>0;
   }
   
   /**
@@ -191,24 +206,33 @@ public class MobileServiceImpl implements MobileService {
    * @param enabled 有效性状态
    * @return 操作结果
    */
-  private Integer setEnabledByNum(Integer personId, String number, Enabled enabled) {
+  private Boolean setEnabledByNum(Integer personId, String number, Enabled enabled) {
       MobileExample example = new MobileExample();
       example.createCriteria().andPersonIdEqualTo(personId).andNumberEqualTo(number);
       
       Mobile mobile = new Mobile();
       mobile.setEnabled(enabled.getValue());
       
-      Integer result = null; 
+      Integer rows = null; 
       try {
-        result = mobileMapper.updateByExampleSelective(mobile, example);
+        rows = mobileMapper.updateByExampleSelective(mobile, example);
       }catch(RuntimeException e) {
+        logger.error("数据库操作异常",e);
         throw new DBException("数据库操作异常",e);
       }
-      
-      return result;
+      if(Enabled.NOT_ENABLED.getValue() == enabled.getValue()) {
+        List<Mobile> mobiles = mobileMapper.selectByExample(example);
+        if(mobiles.size() != 0) {
+          personService.delDefaultMobile(personId, mobiles.get(0).getId());
+        }
+      }
+      return rows>0;
   }
 
 
+  /*
+   * 获取手机号
+   */
   @Override
   public Mobile getMobile(Integer personId, String mobile) {
     MobileExample example = new MobileExample();

@@ -12,7 +12,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +34,8 @@ import com.digibig.saaserp.person.utils.Enabled;
 @Service
 public class CareerServiceImpl implements CareerService {
   
+  private Logger logger = LoggerFactory.getLogger(getClass());
+  
   @Autowired
   private CareerMapper careerMapper;
   
@@ -40,6 +47,9 @@ public class CareerServiceImpl implements CareerService {
    */
   @Transactional
   @Override
+  @Caching(evict = {
+      @CacheEvict(value = "career",
+          key = "'com.digibig.saaserp.person.domain.career_person_id_'+#career.getPersonId()")})
   public Integer addCareer(Career career){
     
     //通过自然人id，开始日期，公司全名验重
@@ -50,6 +60,7 @@ public class CareerServiceImpl implements CareerService {
       try {
         careerMapper.insertSelective(career);
       }catch(RuntimeException e) {
+        logger.error("数据库操作异常",e);
         throw new DBException("数据库操作异常",e);
       }
       
@@ -71,6 +82,9 @@ public class CareerServiceImpl implements CareerService {
    */
   @Transactional
   @Override
+  @Caching(evict = {
+      @CacheEvict(value = "career",
+          key = "'com.digibig.saaserp.person.domain.career_person_id_'+#career.getPersonId()")})
   public Boolean setCareer(Career career) {
     CareerExample example = new CareerExample();
     example.createCriteria().andIdEqualTo(career.getId()).andPersonIdEqualTo(career.getPersonId());
@@ -79,6 +93,7 @@ public class CareerServiceImpl implements CareerService {
     try {
       rows = careerMapper.updateByExampleSelective(career, example);
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常",e);
     }
 
@@ -89,6 +104,7 @@ public class CareerServiceImpl implements CareerService {
    * 查询自然人工作经历信息
    */
   @Override
+  @Cacheable(value = "career", key = "'com.digibig.saaserp.person.domain.career_person_id_'+#personId")
   public List<Map<String ,Object>> getCareers(Integer personId) {
     return careerMapper.getCareersByPersonId(personId,Enabled.ENABLED.getValue());
   }
@@ -98,6 +114,9 @@ public class CareerServiceImpl implements CareerService {
    */
   @Transactional
   @Override
+  @Caching(evict = {
+      @CacheEvict(value = "career",
+          key = "'com.digibig.saaserp.person.domain.career_person_id_'+#personId")})
   public Boolean setCareerEnable(Integer personId, Integer careerId, Enabled enabled){
     
     CareerExample example = new CareerExample();
@@ -105,12 +124,12 @@ public class CareerServiceImpl implements CareerService {
     
     Career career = new Career();
     career.setEnabled(enabled.getValue());
-    career.setLastTime(new Date());
     
     Integer rows = null;
     try {
       rows = careerMapper.updateByExampleSelective(career, example);
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常",e);
     }
 
@@ -122,6 +141,9 @@ public class CareerServiceImpl implements CareerService {
    */
   @Transactional
   @Override
+  @Caching(evict = {
+      @CacheEvict(value = "career",
+          key = "'com.digibig.saaserp.person.domain.career_person_id_'+#careerItem.getPersonId()")})
   public Integer addCareerItem(CareerItem careerItem) {
 
     Career career = careerMapper.selectByPrimaryKey(careerItem.getCareerId());
@@ -130,6 +152,7 @@ public class CareerServiceImpl implements CareerService {
       try {
         careerItemMapper.insertSelective(careerItem);
       }catch(RuntimeException e) {
+        logger.error("数据库操作异常",e);
         throw new DBException("数据库操作异常",e);
       }
       
@@ -144,6 +167,9 @@ public class CareerServiceImpl implements CareerService {
    */
   @Transactional
   @Override
+  @Caching(evict = {
+      @CacheEvict(value = "career",
+          key = "'com.digibig.saaserp.person.domain.career_person_id_'+#careerItem.getPersonId()")})
   public Boolean setCareerItem(CareerItem careerItem){
     
     CareerItemExample example = new CareerItemExample();
@@ -154,6 +180,7 @@ public class CareerServiceImpl implements CareerService {
     try {
       rows = careerItemMapper.updateByExampleSelective(careerItem, example);
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常",e);
     }
 
@@ -165,6 +192,9 @@ public class CareerServiceImpl implements CareerService {
    */
   @Transactional
   @Override
+  @Caching(evict = {
+      @CacheEvict(value = "career",
+          key = "'com.digibig.saaserp.person.domain.career_person_id_'+#personId")})
   public Boolean setItemEnabled(Integer personId, Integer careerId, Integer careerItemId,
       Enabled enabled) {
     CareerItemExample example = new CareerItemExample();
@@ -178,13 +208,10 @@ public class CareerServiceImpl implements CareerService {
     try {
       rows = careerItemMapper.updateByExampleSelective(careerItem, example);
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常",e);
     }
-    
-    if(rows == 0) {
-      return false;
-    }
-    return true;
+    return rows>0;
   }
   
 

@@ -43,7 +43,7 @@ public class ApiLogAspect {
    * 切入点:所有controller的所有方法
    * </p>
    */
-  @Pointcut("execution(public * com.digibig.saaserp.calendar.controller..*.*(..))")
+  @Pointcut("execution(public * com.digibig.saaserp.metadata.controller..*.*(..))")
   public void webLog() {}
 
   /**

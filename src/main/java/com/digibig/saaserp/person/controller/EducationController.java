@@ -138,7 +138,7 @@ public class EducationController {
    *    <li>personId 自然人ID</li>
    *    <li>schoolName 学校名称（可选）</li>
    *    <li>startDate 开始日期（可选）</li>
-   *    <li>endDate 结束日期（可选）</li>
+   *    <li>end 结束日期（可选）</li>
    *    <li>faculty 二级学院（可选）</li>
    *    <li>profession 所学专业名称（可选）</li>
    *    <li>type 学习类型（可选）</li>
@@ -196,10 +196,10 @@ public class EducationController {
     Boolean result = educationService.setEducation(education);
 
     if(result) {
-      return new HttpResult<Boolean>(HttpStatus.OK,"成功");
+      return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
     }
     
-    return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败");
+    return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败",result);
   }
   
   
@@ -229,10 +229,10 @@ public class EducationController {
     Boolean result = educationService.setEducationEnabled(personId,educationId,enabled);
     
     if(result) {
-      return new HttpResult<Boolean>(HttpStatus.OK,"成功");
+      return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
     }
     
-    return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败");
+    return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败",result);
   }
   
   
@@ -242,7 +242,6 @@ public class EducationController {
    * </p>
    * @param paramMap
    * <ul>
-   *    <li>id 教育摘要id（可选）</li>
    *    <li>personId 自然人ID</li>
    *    <li>lastDegree 最高学位（可选）</li>
    *    <li>bachelorDegreeIssuer 学士学位授予机构（可选）</li>

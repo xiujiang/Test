@@ -67,11 +67,10 @@ public class IDCardController {
    *    <li>number 身份证号</li>
    *    <li>address 地址</li>
    *    <li>issueDate 发证日期</li>
-   *    <li>expireDate 有效期</li>
+   *    <li>expire 有效期</li>
    *    <li>pGender 性别</li>
    *    <li>type 身份证类型（可选）</li>
    *    <li>agency 机构</li>
-   *    <li>uniqueCode 唯一码</li>
    *    <li>frontPicture 正面照片（可选）</li>
    *    <li>backPicture 背面照片（可选）</li>
    *    <li>isDefault 是否默认（可选）</li>

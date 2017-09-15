@@ -17,6 +17,7 @@ import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.locale.converters.DateLocaleConverter;
 import org.apache.commons.lang.StringUtils;
+import org.assertj.core.internal.Dates;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,7 +114,7 @@ public class CareerController {
       career.setIsCurrent(current.getValue());
     }else {
       endDate = DateUtil.str2Date(paramMap.get("end"), DateUtil.DATE);
-      if(endDate.after(new Date())) {
+      if(new Date().before(endDate)) {
         return new HttpResult<Integer>(HttpStatus.PARAM_ERROR,"截止日期有误");
       }
       current = Current.NOT_CURRENT;

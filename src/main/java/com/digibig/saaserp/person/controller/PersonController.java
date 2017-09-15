@@ -193,7 +193,7 @@ public class PersonController {
     Integer personId = Integer.valueOf(personIdStr);
     Integer emailId = Integer.valueOf(emailIdStr);
     
-    Boolean result = personService.setDefaultEmail(personId,emailId);
+    Boolean result = personService.setDefaultEmail(personId,emailId,false);
     
     if(result) {
       return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
@@ -250,12 +250,12 @@ public class PersonController {
     Integer personId = Integer.valueOf(personIdStr);
     Integer addressId = Integer.valueOf(addressIdStr);
     
-    Boolean result = personService.setDefaultAddress(personId,addressId);
+    Boolean result = personService.setDefaultAddress(personId,addressId,false);
     
     if(result) {
-      return new HttpResult<Boolean>(HttpStatus.OK,"成功");
+      return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
     }
-    return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败");
+    return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败",result);
   }
   
   /**

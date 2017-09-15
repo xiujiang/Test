@@ -28,6 +28,14 @@ public interface PersonService {
   Boolean delDefaultMobile(Integer personId);
   
   /**
+   * 手机号id为mobileId时清空默认手机号
+   * @param personId 自然人id
+   * @param mobileId 手机号id
+   * @return 操作结果
+   */
+  Boolean delDefaultMobile(Integer personId, Integer mobileId);
+  
+  /**
    * 获取默认邮箱
    * @param personId 自然人id
    * @return 邮箱id
@@ -61,6 +69,22 @@ public interface PersonService {
    * @return 操作结果
    */
   Boolean delDefaultAddress(Integer personId);
+  
+  /**
+   * 默认邮箱id为emailId时清除默认邮箱
+   * @param personId 自然人id
+   * @param emailId 邮箱id
+   * @return 操作结果
+   */
+  Boolean delDefaultEmail(Integer personId, Integer emailId);
+  
+  /**
+   * 默认地址id为addressid时清除默认地址
+   * @param personId 自然人id
+   * @param addressId 地址id
+   * @return 操作结果
+   */
+  Boolean delDefaultAddress(Integer personId, Integer addressId);
   
   /**
    * 身份认证
@@ -124,13 +148,14 @@ public interface PersonService {
    * @param mobileId 邮箱id
    * @return 操作结果
    */
-  Boolean setDefaultEmail(Integer personId, Integer mobileId);
+  Boolean setDefaultEmail(Integer personId, Integer mobileId, Boolean realEmail);
 
   /**
    * 设置默认地址
    * @param personId 自然人id
    * @param addressId 地址id
+   * @param realAddress 地址是否确认有效
    * @return 操作结果
    */
-  Boolean setDefaultAddress(Integer personId, Integer addressId);
+  Boolean setDefaultAddress(Integer personId, Integer addressId, Boolean realAddress);
 }

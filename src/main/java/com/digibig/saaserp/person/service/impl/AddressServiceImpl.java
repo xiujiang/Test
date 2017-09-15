@@ -9,7 +9,6 @@
 package com.digibig.saaserp.person.service.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +16,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +52,9 @@ public class AddressServiceImpl implements AddressService {
    */
   @Transactional
   @Override
+  @Caching(evict = {
+      @CacheEvict(value = "address",
+          key = "'com.digibig.saaserp.person.domain.address_person_id_'+#address.getPersonId()")})
   public Integer addAddress(Address address, Boolean isDefault) {
     
     Address addr = checkAddress(address.getPersonId(),address.getLastNode(),address.getDetailAddress());
@@ -60,6 +65,7 @@ public class AddressServiceImpl implements AddressService {
       try {
         addressMapper.insertSelective(address);
       }catch(RuntimeException e) {
+        logger.error("数据库操作异常",e);
         throw new DBException("数据库操作异常",e);
       }
       
@@ -77,7 +83,7 @@ public class AddressServiceImpl implements AddressService {
     }
     
     if(isDefault) {
-      Boolean result = personService.setDefaultAddress(address.getPersonId(), addressId);
+      Boolean result = personService.setDefaultAddress(address.getPersonId(), addressId, true);
       
       if(!result) {
         logger.error("设置默认地址失败");
@@ -93,6 +99,9 @@ public class AddressServiceImpl implements AddressService {
    */
   @Transactional
   @Override
+  @Caching(evict = {
+      @CacheEvict(value = "address",
+          key = "'com.digibig.saaserp.person.domain.address_person_id_'+#personId")})
   public Boolean setEnabled(Integer personId, Integer addressId, Enabled enabled){
     
     AddressExample example = new AddressExample();
@@ -101,14 +110,19 @@ public class AddressServiceImpl implements AddressService {
     //设置有效性标识
     Address address = new Address();
     address.setEnabled(enabled.getValue());
-    address.setLastTime(new Date());
     Integer rows = null;
     
     try {
       rows = addressMapper.updateByExampleSelective(address, example);
+      
     }catch(RuntimeException e) {
       throw new DBException("数据库操作异常",e);
     }
+    
+    if(Enabled.NOT_ENABLED.getValue() == enabled.getValue()) {
+      personService.delDefaultAddress(personId, addressId);
+    }
+    
     return rows>0;
   }
 
@@ -116,6 +130,7 @@ public class AddressServiceImpl implements AddressService {
    * 获取自然人地址列表
    * @throws DigibigException 
    */
+  @Cacheable(value = "address", key = "'com.digibig.saaserp.person.domain.address_person_id_'+#personId")
   @Override
   public List<Map<String ,String>> getAddresses(Integer personId, Enabled enabled) throws DigibigException {
     
@@ -126,7 +141,6 @@ public class AddressServiceImpl implements AddressService {
     List<Address> addresses = addressMapper.selectByExample(example);
     
     List<Map<String ,String>> resultList = new ArrayList<>();
-//    Map<String ,String> resultMap = new HashMap<>();
     //查询节点的地址信息 -- 图库
     for(Address addr : addresses) {
       

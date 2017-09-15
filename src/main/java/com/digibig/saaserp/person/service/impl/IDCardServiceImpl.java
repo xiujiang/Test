@@ -35,6 +35,11 @@ public class IDCardServiceImpl implements IDCardService {
   @Autowired
   private PersonService personService;
 
+  /**
+   * 通过唯一码获取身份证
+   * @param uniqueCode 唯一码
+   * @return 身份证
+   */
   private IDCard getIDCard(String uniqueCode) {
     IDCardExample example = new IDCardExample();
     example.createCriteria().andUniqueCodeEqualTo(uniqueCode);
@@ -46,6 +51,9 @@ public class IDCardServiceImpl implements IDCardService {
     return idCards.get(0);
   }
   
+  /*
+   * 绑定身份证
+   */
   @Transactional
   @Override
   public Integer addIdCard(IDCard idCard, Boolean isDdefault) {
@@ -94,6 +102,10 @@ public class IDCardServiceImpl implements IDCardService {
     return result;
   }
 
+  
+  /*
+   * 设置身份证照片
+   */
   @Transactional
   @Override
   public Boolean setCardPicture(Integer personId, Integer idCardId, Integer frontPic,
@@ -117,6 +129,7 @@ public class IDCardServiceImpl implements IDCardService {
     try {
       rows = idCardMapper.updateByExampleSelective(idCard, example);
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常",e);
     }
     return rows>0;

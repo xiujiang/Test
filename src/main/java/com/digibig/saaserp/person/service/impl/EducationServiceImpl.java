@@ -11,6 +11,8 @@ package com.digibig.saaserp.person.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,12 +30,17 @@ import com.digibig.saaserp.person.utils.Enabled;
 @Service
 public class EducationServiceImpl implements EducationService {
   
+  private Logger logger = LoggerFactory.getLogger(getClass());
+  
   @Autowired
   private EducationMapper educationMapper;
   
   @Autowired
   private EducationSummaryMapper educationSummaryMapper;
 
+  /*
+   * 添加教育经历
+   */
   @Transactional
   @Override
   public Integer addEducation(Education education) {
@@ -41,11 +48,15 @@ public class EducationServiceImpl implements EducationService {
     try {
       educationMapper.insertSelective(education);
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常");
     }
     return education.getId();
   }
 
+  /*
+   * 修改教育经历
+   */
   @Transactional
   @Override
   public Boolean setEducation(Education education) {
@@ -57,11 +68,15 @@ public class EducationServiceImpl implements EducationService {
     try {
       rows = educationMapper.updateByExampleSelective(education, example);
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常");
     }
     return rows>0;
   }
 
+  /*
+   * 设置教育经历有效性
+   */
   @Transactional
   @Override
   public Boolean setEducationEnabled(Integer personId, Integer educationId, Enabled enabled){
@@ -72,20 +87,22 @@ public class EducationServiceImpl implements EducationService {
     education.setEnabled(enabled.getValue());
     education.setLastTime(new Date());
     
-    Integer result = null;
+    Integer rows = null;
     try {
-      result = educationMapper.updateByExampleSelective(education, example);
+      rows = educationMapper.updateByExampleSelective(education, example);
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常");
     }
-    
-    if(result == 0) {
-      return false;
-    }
-    return true;
+    return rows>0;
   }
 
 
+  /**
+   * 获取摘要信息
+   * @param personId 自然人id
+   * @return 摘要信息
+   */
   private EducationSummary getSummary(Integer personId) {
     EducationSummaryExample example = new EducationSummaryExample();
     example.createCriteria().andPersonIdEqualTo(personId);
@@ -99,6 +116,9 @@ public class EducationServiceImpl implements EducationService {
     return summarys.get(0);
   }
 
+  /*
+   * 修改教育摘要
+   */
   @Transactional
   @Override
   public Integer setEducationSummary(EducationSummary educationSummary) {
@@ -113,6 +133,7 @@ public class EducationServiceImpl implements EducationService {
         educationSummaryMapper.updateByPrimaryKeySelective(educationSummary);
       }
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常");
     }
     

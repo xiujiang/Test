@@ -16,8 +16,8 @@ public class PersonServiceApplicationTests {
   @Autowired
   protected MockMvc mockMvc;
   
-//	@Test
-//	public void contextLoads() {
-//	}
+	@Test
+	public void contextLoads() {
+	}
 
 }

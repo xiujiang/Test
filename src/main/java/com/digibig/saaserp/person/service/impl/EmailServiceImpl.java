@@ -14,6 +14,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,8 +41,17 @@ public class EmailServiceImpl implements EmailService {
   @Autowired
   private PersonService personService;
 
+  /*
+   * 添加邮箱
+   */
   @Transactional
   @Override
+  @Caching(evict = {
+      @CacheEvict(value = "email",
+          key = "'com.digibig.saaserp.person.domain.email_des_person_id_'+#personId"),
+      @CacheEvict(value = "email",
+          key = "'com.digibig.saaserp.person.domain.email_person_id_'+#personId")
+      })
   public Integer addEmail(Integer personId, String email, Boolean isDefault) {
     //检查自然人名下邮箱号是否存在
     Email aEmail = getEmail(personId,email);
@@ -58,8 +70,7 @@ public class EmailServiceImpl implements EmailService {
     }
     //如需设置首选，设置首选
     if(isDefault) {
-      Boolean re = personService.setDefaultEmail(personId, result);
-      
+      Boolean re = personService.setDefaultEmail(personId, result,true);
       if(!re) {
         logger.error("设置默认地址失败");
         return null;
@@ -68,9 +79,17 @@ public class EmailServiceImpl implements EmailService {
     return result;
   }
 
-  //设置邮箱状态
+  /*
+   * 设置邮箱有效性
+   */
   @Transactional
   @Override
+  @Caching(evict = {
+      @CacheEvict(value = "email",
+          key = "'com.digibig.saaserp.person.domain.email_des_person_id_'+#personId"),
+      @CacheEvict(value = "email",
+          key = "'com.digibig.saaserp.person.domain.email_person_id_'+#personId")
+      })
   public Boolean setEmailEnabled(Integer personId, Integer emailId, Enabled enabled) {
     
     EmailExample example = new EmailExample();
@@ -83,8 +102,14 @@ public class EmailServiceImpl implements EmailService {
     try {
       rows = emailMapper.updateByExampleSelective(email, example);
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常" , e);
     }
+    
+    if(Enabled.NOT_ENABLED.getValue() == enabled.getValue()) {
+      personService.delDefaultEmail(personId, emailId);
+    }
+    
     return rows>0;
   }
 
@@ -92,6 +117,7 @@ public class EmailServiceImpl implements EmailService {
    * 查询邮箱列表 - 脱敏
    */
   @Override
+  @Cacheable(value = "email", key = "'com.digibig.saaserp.person.domain.email_des_person_id_'+#personId")
   public List<String> getDesensitizeInfo(Integer personId, Enabled enabled) {
     //查询数据
     List<String> emails = emailMapper.getEmails(personId, enabled.getValue());
@@ -112,6 +138,7 @@ public class EmailServiceImpl implements EmailService {
    * 查询邮箱列表
    */
   @Override
+  @Cacheable(value = "email", key = "'com.digibig.saaserp.person.domain.email_person_id_'+#personId")
   public List<String> getEmailInfo(Integer personId, Enabled enabled) {
     return emailMapper.getEmails(personId, enabled.getValue());
   }
@@ -151,6 +178,7 @@ public class EmailServiceImpl implements EmailService {
     try {
       emailMapper.insertSelective(aEmail);
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常",e);
     }
     

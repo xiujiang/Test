@@ -13,7 +13,7 @@
 	<parent>
 		<groupId>com.digibig</groupId>
 		<artifactId>service-parent</artifactId>
-		<version>1.5-release</version>
+		<version>1.7-release</version>
 	</parent>
 	
 	<dependencies>
@@ -27,7 +27,6 @@
 			<artifactId>commons-util</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
-
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>

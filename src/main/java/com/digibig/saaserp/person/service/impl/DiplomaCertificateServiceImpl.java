@@ -13,7 +13,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +40,8 @@ import com.google.common.collect.Maps;
 
 @Service
 public class DiplomaCertificateServiceImpl implements DiplomaCertificateService {
+  
+  private Logger logger = LoggerFactory.getLogger(getClass());
 
   @Autowired
   private DiplomaCertificateMapper diplomaMapper;
@@ -42,6 +49,9 @@ public class DiplomaCertificateServiceImpl implements DiplomaCertificateService 
   @Autowired
   private SchoolRecordMapper schoolRecordMapper;
   
+  /*
+   * 根据自然人id和证书编号获取学位证书id
+   */
   private DiplomaCertificate getDiploma(Integer personId , String certificateNo) {
     DiplomaCertificateExample example = new DiplomaCertificateExample();
     example.createCriteria().andPersonIdEqualTo(personId).andCertificateNumberEqualTo(certificateNo);
@@ -52,7 +62,9 @@ public class DiplomaCertificateServiceImpl implements DiplomaCertificateService 
     return diplomas.get(0);
   }
   
-  
+  /*
+   * 添加学位证
+   */
   @Override
   @Transactional
   public Integer addDiplomaCertificate(DiplomaCertificate diploma) {
@@ -64,6 +76,7 @@ public class DiplomaCertificateServiceImpl implements DiplomaCertificateService 
       try {
         diplomaMapper.insertSelective(diploma);
       }catch(RuntimeException e) {
+        logger.error("数据库操作异常",e);
         throw new DBException("数据库操作异常", e);
       }
       return diploma.getId();
@@ -81,6 +94,9 @@ public class DiplomaCertificateServiceImpl implements DiplomaCertificateService 
     }
   }
 
+  /*
+   * 修改学位证
+   */
   @Transactional
   @Override
   public Boolean setDiplomaCertificate(DiplomaCertificate diploma) {
@@ -92,12 +108,16 @@ public class DiplomaCertificateServiceImpl implements DiplomaCertificateService 
     try {
       rows = diplomaMapper.updateByExampleSelective(diploma, example);
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常", e);
     }
 
     return rows>0;
   }
 
+  /*
+   * 设置学位证有效性
+   */
   @Transactional
   @Override
   public Boolean setEnabled(Integer personId, Integer certificateId, Enabled enabled) {
@@ -113,17 +133,21 @@ public class DiplomaCertificateServiceImpl implements DiplomaCertificateService 
     try {
       rows = diplomaMapper.updateByExampleSelective(diploma, example);
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常", e);
     }
     
-    if(rows == 0) {
-      return false;
-    }
-    return true;
+    return rows>0;
   }
 
+  /*
+   * 设置学历证有效性
+   */
   @Transactional
   @Override
+  @Caching(evict = {
+      @CacheEvict(value = "record",
+          key = "'com.digibig.saaserp.person.domain.record_person_id_'+#personId")})
   public Boolean setRecordEnabled(Integer personId, Integer recordId, Enabled enabled) {
 
     SchoolRecordExample example = new SchoolRecordExample();
@@ -136,15 +160,18 @@ public class DiplomaCertificateServiceImpl implements DiplomaCertificateService 
     try {
       rows = schoolRecordMapper.updateByExampleSelective(record, example);
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常", e);
     }
-    if(rows == 0) {
-      return false;
-    }
-    return true;
+
+    return rows>0;
   }
 
+  /*
+   * 获取学历信息
+   */
   @Override
+  @Cacheable(value = "record", key = "'com.digibig.saaserp.person.domain.record_person_id_'+#personId")
   public List<Map<String, Object>> getSchoolRecord(Integer personId) {
     
     SchoolRecordExample example = new SchoolRecordExample();
@@ -173,8 +200,14 @@ public class DiplomaCertificateServiceImpl implements DiplomaCertificateService 
     return list;
   }
 
+  /*
+   * 添加学历证
+   */
   @Transactional
   @Override
+  @Caching(evict = {
+      @CacheEvict(value = "record",
+          key = "'com.digibig.saaserp.person.domain.record_person_id_'+#SchoolRecord.getPersonId()")})
   public Integer addSchoolRecord(SchoolRecord SchoolRecord) {
 
     SchoolRecord record = getRecordByNo(SchoolRecord.getPersonId(),SchoolRecord.getCertificateNumber());
@@ -183,6 +216,7 @@ public class DiplomaCertificateServiceImpl implements DiplomaCertificateService 
       try {
         schoolRecordMapper.insertSelective(SchoolRecord);
       }catch(RuntimeException e) {
+        logger.error("数据库操作异常",e);
         throw new DBException("数据库操作异常", e);
       }
       
@@ -201,8 +235,14 @@ public class DiplomaCertificateServiceImpl implements DiplomaCertificateService 
     }
   }
 
+  /*
+   * 修改学历证
+   */
   @Transactional
   @Override
+  @Caching(evict = {
+      @CacheEvict(value = "record",
+          key = "'com.digibig.saaserp.person.domain.record_person_id_'+#record.getPersonId()")})
   public Boolean setSchoolRecord(SchoolRecord record) {
     
     SchoolRecordExample example = new SchoolRecordExample();
@@ -212,6 +252,7 @@ public class DiplomaCertificateServiceImpl implements DiplomaCertificateService 
     try {
       rows = schoolRecordMapper.updateByExampleSelective(record, example);
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常", e);
     }
 
@@ -231,8 +272,14 @@ public class DiplomaCertificateServiceImpl implements DiplomaCertificateService 
     }
   }
 
+  /*
+   * 添加学信网认证文件
+   */
   @Transactional
   @Override
+  @Caching(evict = {
+      @CacheEvict(value = "record",
+          key = "'com.digibig.saaserp.person.domain.record_person_id_'+#personId")})
   public Boolean addCheckReport(Integer personId, Integer recordId, Integer reportFile) {
     SchoolRecordExample example = new SchoolRecordExample();
     example.createCriteria().andIdEqualTo(recordId).andPersonIdEqualTo(personId);
@@ -240,17 +287,14 @@ public class DiplomaCertificateServiceImpl implements DiplomaCertificateService 
     SchoolRecord record = new SchoolRecord();
     record.setVerificationFile(reportFile);
     
-    Integer result = null;
+    Integer rows = null;
     try {
-      result = schoolRecordMapper.updateByExampleSelective(record, example);
+      rows = schoolRecordMapper.updateByExampleSelective(record, example);
     }catch(RuntimeException e) {
+      logger.error("数据库操作异常",e);
       throw new DBException("数据库操作异常", e);
     }
-
-    if(result == 0) {
-      return false;
-    }
-    return true;
+    return rows>0;
   }
   
 }

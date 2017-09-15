@@ -5,8 +5,8 @@
 <Configuration status="OFF">
     <!-- 日志文件目录和压缩文件目录配置 -->
     <Properties>
-        <Property name="fileName">/home/kylin/log/knight/spring_log</Property>
-        <Property name="fileGz">/home/kylin/log/knight/spring_log/7z</Property>
+        <Property name="fileName">log</Property>
+        <Property name="fileGz">logback</Property>
     </Properties>
 
     <Appenders>
@@ -19,8 +19,8 @@
         </Console>
 
         <!-- 打印出所有的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档 -->
-        <RollingRandomAccessFile name="infoFile" fileName="${fileName}/web-info.log" immediateFlush="false"
-                                 filePattern="${fileGz}/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.web-info.gz">
+        <RollingRandomAccessFile name="infoFile" fileName="${fileName}/person-service.log" immediateFlush="false"
+                                 filePattern="${fileGz}/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.person-service.gz">
             <PatternLayout pattern="%d{yyyy-MM-dd 'at' HH:mm:ss z} [%t] %-5level %logger{36} %L %M - %msg%xEx%n" />
             <Policies>
                 <TimeBasedTriggeringPolicy interval="6" modulate="true" />
@@ -37,7 +37,7 @@
 
         <!-- 存储所有error信息 -->
         <RollingRandomAccessFile name="errorFile" fileName="${fileName}/web-error.log" immediateFlush="false"
-                                 filePattern="${fileGz}/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.web-error.gz">
+                                 filePattern="${fileGz}/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.person-service-error.gz">
             <PatternLayout pattern="%d{yyyy-MM-dd 'at' HH:mm:ss z} [%t] %-5level %logger{36} %L %M - %msg%xEx%n" />
             <Policies>
                 <TimeBasedTriggeringPolicy interval="6" modulate="true" />

@@ -315,7 +315,7 @@ public class DiplomaCertificateController {
    *    <li>result 学习成果（可选）</li>
    *    <li>type 学习方式（可选）</li>
    *    <li>phase 学习阶段（可选）</li>
-   *    <li>date 授予日起（可选）</li>
+   *    <li>date 授予日期（可选）</li>
    *    <li>file 学历证书文件（可选）</li>
    *    <li>verificationStatus 认证状态（可选）</li>
    *    <li>verificationFile 认证文件（可选）</li>
