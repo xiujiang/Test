@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 - 数多科技
+  * Copyright 2017 - 数多科技
  * 
  * 北京数多信息科技有限公司
  * 本公司保留所有下述内容的权利。
@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.digibig.saaserp.commons.api.HttpResult;
 import com.digibig.saaserp.commons.constant.HttpStatus;
+import com.digibig.saaserp.commons.exception.DigibigException;
 import com.digibig.saaserp.commons.util.DateUtil;
 import com.digibig.saaserp.person.common.CommonParam;
 import com.digibig.saaserp.person.domain.Education;
@@ -35,7 +36,7 @@ import com.digibig.saaserp.person.service.EducationService;
 import com.digibig.saaserp.person.utils.DegreeGetType;
 import com.digibig.saaserp.person.utils.Enabled;
 import com.digibig.saaserp.person.utils.PhaseType;
-import com.digibig.saaserp.person.utils.VarificationStatus;
+import com.digibig.saaserp.person.utils.VerificationStatus;
 
 
 /**
@@ -55,10 +56,88 @@ import com.digibig.saaserp.person.utils.VarificationStatus;
 @RestController
 @RequestMapping("/v1.0/person/education")
 public class EducationController {
+  
   private Logger logger = LoggerFactory.getLogger(getClass());
+  
+  //id
+  private static final String ID = "id";
+  
+  //开始时间
+  private static final String START_DATE = "startDate";
+  
+  //结束时间
+  private static final String END_DATE = "end";
+  
+  //学校名
+  private static final String SCHOOL_NAME = "schoolName";
+  
+  //二级学院
+  private static final String FACULTY = "faculty";
+  
+  //专业
+  private static final String PROFESSION = "profession";
+  
+  //教育id
+  private static final String EDUCATIONID = "educationId";
+  
+  //学习类型
+  private static final String TYPE = "type";
+  
+  //学习阶段
+  private static final String PHASE = "phase";
+  
+  //学士学位获取类型
+  private static final String BACHELOR_DEGREE_TYPE = "bachelorDegreeType";
+  
+  //学士学位认证状态
+  private static final String BACHELOR_DEGREE_VERI = "bachelorDegreeVerification";
+  
+  //硕士学位获取类型
+  private static final String MASTER_DEGREE_TYPE = "masterDegreeType";
+  
+  //硕士学位认证状态
+  private static final String MASTER_DEGREE_VERI = "masterDegreeVerification";
   
   @Autowired
   private EducationService educationService;
+  
+  private Education mapToEducation(Map<String, String> paramMap) throws DigibigException {
+    
+    Education education = new Education();
+    BeanUtilsBean beanUtils = BeanUtilsBean.getInstance();
+    ConvertUtils.register(new DateLocaleConverter(), Date.class); 
+    
+    try {
+      beanUtils.populate(education,paramMap);
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      logger.error("教育经历对象转换异常",e);
+      throw new DigibigException("教育经历对象转换异常",e);
+    } 
+    
+    if(StringUtils.isEmpty(paramMap.get(END_DATE)) || CommonParam.NOW.equals(paramMap.get(END_DATE))) {
+      Date endDate = DateUtil.str2Date(CommonParam.NOW_DATE, DateUtil.DATE);
+      education.setEndDate(endDate);
+    }else {
+      Date endDate = DateUtil.str2Date(paramMap.get(END_DATE), DateUtil.DATE);
+      if(new Date().before(endDate)) {
+        throw new DigibigException("截止日期有误");
+      }
+      education.setEndDate(endDate);
+    }
+    
+    if(!StringUtils.isEmpty(paramMap.get(TYPE))) {
+      DegreeGetType type = Enum.valueOf(DegreeGetType.class, paramMap.get(TYPE).trim());
+      education.setType(type.getValue());
+    }
+    if(!StringUtils.isEmpty(paramMap.get(PHASE))) {
+      PhaseType phase = Enum.valueOf(PhaseType.class, paramMap.get(PHASE).trim());
+      education.setPhase(phase.getValue());
+    }
+    
+    logger.info("",education);
+    
+    return education;
+  }
   
   /**
    * <p>
@@ -82,49 +161,25 @@ public class EducationController {
   @PostMapping("")
   public HttpResult<Integer> addEducation(@RequestBody Map<String, String> paramMap){
     
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("startDate")), "startDate不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("schoolName")), "schoolName不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("faculty")), "faculty不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("profession")), "profession不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("type")), "type不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("phase")), "phase不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_PERSONID)), "添加教育经历personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(START_DATE)), "startDate不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(SCHOOL_NAME)), "schoolName不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(FACULTY)), "faculty不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(PROFESSION)), "profession不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(TYPE)), "type不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(PHASE)), "phase不能为空");
     
-    Education education = new Education();
-    BeanUtilsBean beanUtils = BeanUtilsBean.getInstance();
-    ConvertUtils.register(new DateLocaleConverter(), Date.class); 
-    
-    DegreeGetType type = Enum.valueOf(DegreeGetType.class, paramMap.get("type").trim());
-    PhaseType phase = Enum.valueOf(PhaseType.class, paramMap.get("phase").trim());
-    
+    Education education;
     try {
-      beanUtils.populate(education,paramMap);
-    } catch (IllegalAccessException e) {
-      logger.error(e.getMessage());
-      return new HttpResult<Integer>(HttpStatus.PARAM_ERROR,"失败");
-    } catch (InvocationTargetException e) {
-      logger.error(e.getMessage());
-      return new HttpResult<Integer>(HttpStatus.PARAM_ERROR,"失败");
+      education = mapToEducation(paramMap);
+    } catch (DigibigException e) {
+      logger.error("添加教育经历教育经历对象转换异常",e);
+      return new HttpResult<>(HttpStatus.PARAM_ERROR,e.getMessage());
     }
-    
-    if(StringUtils.isEmpty(paramMap.get("end")) || CommonParam.NOW.equals(paramMap.get("end"))) {
-      Date endDate = DateUtil.str2Date(CommonParam.NOW_DATE, DateUtil.DATE);
-      education.setEndDate(endDate);
-    }else {
-      Date endDate = DateUtil.str2Date(paramMap.get("end"), DateUtil.DATE);
-      if(endDate.after(new Date())) {
-        return new HttpResult<Integer>(HttpStatus.PARAM_ERROR,"截止日期有误");
-      }
-      education.setEndDate(endDate);
-    }
-    
-    education.setType(type.getValue());
-    education.setPhase(phase.getValue());
-    logger.info(education.toString());
     
     Integer id = educationService.addEducation(education);
 
-    return new HttpResult<Integer>(HttpStatus.OK,"成功",id);
+    return new HttpResult<>(HttpStatus.OK,"成功",id);
   }
   
   
@@ -151,55 +206,24 @@ public class EducationController {
   @PostMapping("/mod")
   public HttpResult<Boolean> setEducation(@RequestBody Map<String, String> paramMap){
     
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("id")), "id不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_PERSONID)), "修改教育经历personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(ID)), "id不能为空");
     
-    String typeStr = paramMap.get("type");
-    String phaseStr = paramMap.get("phase");
-    
-    Education education = new Education();
-    BeanUtilsBean beanUtils = BeanUtilsBean.getInstance();
-    ConvertUtils.register(new DateLocaleConverter(), Date.class); 
-    
+    Education education;
     try {
-      beanUtils.populate(education,paramMap);
-    } catch (IllegalAccessException e) {
-      logger.error(e.getMessage());
-      return new HttpResult<Boolean>(HttpStatus.PARAM_ERROR,"失败");
-    } catch (InvocationTargetException e) {
-      logger.error(e.getMessage());
-      return new HttpResult<Boolean>(HttpStatus.PARAM_ERROR,"失败");
+      education = mapToEducation(paramMap);
+    } catch (DigibigException e) {
+      logger.error("修改教育经历教育经历对象转换异常",e);
+      return new HttpResult<>(HttpStatus.PARAM_ERROR,e.getMessage());
     }
-    
-    if(StringUtils.isEmpty(paramMap.get("end")) || CommonParam.NOW.equals(paramMap.get("end"))) {
-      Date endDate = DateUtil.str2Date(CommonParam.NOW_DATE, DateUtil.DATE);
-      education.setEndDate(endDate);
-    }else {
-      Date endDate = DateUtil.str2Date(paramMap.get("end"), DateUtil.DATE);
-      if(endDate.after(new Date())) {
-        return new HttpResult<Boolean>(HttpStatus.PARAM_ERROR,"截止日期有误");
-      }
-      education.setEndDate(endDate);
-    }
-    
-    if(!StringUtils.isEmpty(typeStr)) {
-      DegreeGetType type = Enum.valueOf(DegreeGetType.class, typeStr.trim());
-      education.setType(type.getValue());
-    }
-    if(!StringUtils.isEmpty(phaseStr)) {
-      PhaseType phase = Enum.valueOf(PhaseType.class, phaseStr.trim());
-      education.setPhase(phase.getValue());
-    }
-    
-    logger.info(education.toString());
     
     Boolean result = educationService.setEducation(education);
 
     if(result) {
-      return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
+      return new HttpResult<>(HttpStatus.OK,"成功",result);
     }
     
-    return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败",result);
+    return new HttpResult<>(HttpStatus.SERVER_ERROR,"失败",result);
   }
   
   
@@ -218,21 +242,21 @@ public class EducationController {
   @PostMapping("/enabled")
   public HttpResult<Boolean> setEducationEnabled(@RequestBody Map<String, String> paramMap){
     
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("educationId")), "educationId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("enabled")), "enabled不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_PERSONID)), "设置教育经历的有效性personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(EDUCATIONID)), "educationId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_ENABLED)), "enabled不能为空");
     
-    Integer personId = Integer.valueOf(paramMap.get("personId"));
-    Integer educationId = Integer.valueOf(paramMap.get("educationId"));
-    Enabled enabled = Enum.valueOf(Enabled.class, paramMap.get("enabled").trim());
+    Integer personId = Integer.valueOf(paramMap.get(CommonParam.MAP_PARAM_PERSONID));
+    Integer educationId = Integer.valueOf(paramMap.get(EDUCATIONID));
+    Enabled enabled = Enum.valueOf(Enabled.class, paramMap.get(CommonParam.MAP_PARAM_ENABLED).trim());
 
     Boolean result = educationService.setEducationEnabled(personId,educationId,enabled);
     
     if(result) {
-      return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
+      return new HttpResult<>(HttpStatus.OK,"成功",result);
     }
     
-    return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败",result);
+    return new HttpResult<>(HttpStatus.SERVER_ERROR,"失败",result);
   }
   
   
@@ -262,42 +286,39 @@ public class EducationController {
   @PostMapping("/summary")
   public HttpResult<Integer> setEducationSummary(@RequestBody Map<String, String> paramMap){
     
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_PERSONID)), "personId不能为空");
     
     EducationSummary educationSummary = new EducationSummary();
     BeanUtilsBean beanUtils = BeanUtilsBean.getInstance();
     
     try {
       beanUtils.populate(educationSummary,paramMap);
-    } catch (IllegalAccessException e) {
-      logger.error(e.getMessage());
-      return new HttpResult<Integer>(HttpStatus.PARAM_ERROR,"失败");
-    } catch (InvocationTargetException e) {
-      logger.error(e.getMessage());
-      return new HttpResult<Integer>(HttpStatus.PARAM_ERROR,"失败");
-    }
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      logger.error("教育摘要对象转换异常",e);
+      return new HttpResult<>(HttpStatus.PARAM_ERROR,"失败");
+    } 
 
-    if(!StringUtils.isEmpty(paramMap.get("bachelorDegreeType"))) {
-      DegreeGetType bDegreeType = Enum.valueOf(DegreeGetType.class, paramMap.get("bachelorDegreeType").trim());
+    if(!StringUtils.isEmpty(paramMap.get(BACHELOR_DEGREE_TYPE))) {
+      DegreeGetType bDegreeType = Enum.valueOf(DegreeGetType.class, paramMap.get(BACHELOR_DEGREE_TYPE).trim());
       educationSummary.setBachelorDegreeType(bDegreeType.getValue());
     }
-    if(!StringUtils.isEmpty(paramMap.get("bachelorDegreeVerification"))) {
-      VarificationStatus bDegreeVerification = Enum.valueOf(VarificationStatus.class,paramMap.get("bachelorDegreeVerification").trim());
+    if(!StringUtils.isEmpty(paramMap.get(BACHELOR_DEGREE_VERI))) {
+      VerificationStatus bDegreeVerification = Enum.valueOf(VerificationStatus.class,paramMap.get(BACHELOR_DEGREE_VERI).trim());
       educationSummary.setBachelorDegreeVerification(bDegreeVerification.getValue());
     }
-    if(!StringUtils.isEmpty(paramMap.get("masterDegreeType"))) {
-      DegreeGetType mDegreeType = Enum.valueOf(DegreeGetType.class, paramMap.get("masterDegreeType").trim());
+    if(!StringUtils.isEmpty(paramMap.get(MASTER_DEGREE_TYPE))) {
+      DegreeGetType mDegreeType = Enum.valueOf(DegreeGetType.class, paramMap.get(MASTER_DEGREE_TYPE).trim());
       educationSummary.setMasterDegreeType(mDegreeType.getValue());
     }
-    if(!StringUtils.isEmpty(paramMap.get("masterDegreeVerification"))) {
-      VarificationStatus mDegreeVerification = Enum.valueOf(VarificationStatus.class,paramMap.get("masterDegreeVerification").trim());
+    if(!StringUtils.isEmpty(paramMap.get(MASTER_DEGREE_VERI))) {
+      VerificationStatus mDegreeVerification = Enum.valueOf(VerificationStatus.class,paramMap.get(MASTER_DEGREE_VERI).trim());
       educationSummary.setMasterDegreeVerification(mDegreeVerification.getValue());
     }
 
-    logger.info(educationSummary.toString());
+    logger.info("",educationSummary);
     
     Integer id = educationService.setEducationSummary(educationSummary);
 
-    return new HttpResult<Integer>(HttpStatus.OK,"成功",id);
+    return new HttpResult<>(HttpStatus.OK,"成功",id);
   }
 }

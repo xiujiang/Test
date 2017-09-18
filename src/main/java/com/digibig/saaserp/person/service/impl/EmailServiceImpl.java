@@ -19,6 +19,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.digibig.saaserp.commons.exception.DBException;
 import com.digibig.saaserp.commons.util.MaskedUtil;
@@ -102,8 +103,8 @@ public class EmailServiceImpl implements EmailService {
     try {
       rows = emailMapper.updateByExampleSelective(email, example);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常" , e);
+      logger.error("setEmailEnabled数据库操作异常",e);
+      throw new DBException("setEmailEnabled数据库操作异常" , e);
     }
     
     if(Enabled.NOT_ENABLED.getValue() == enabled.getValue()) {
@@ -126,7 +127,7 @@ public class EmailServiceImpl implements EmailService {
     int index = 0;
     for(String email : emails) {
       //对list重新设置或者可以返回新的list
-      suf = email.length() - email.lastIndexOf("@");
+      suf = email.length() - email.lastIndexOf('@');
       email = MaskedUtil.masked(email, CommonParam.EMIAL_DES_PRE, suf);
       emails.set(index, email);
       index++;
@@ -155,7 +156,7 @@ public class EmailServiceImpl implements EmailService {
     example.createCriteria().andPersonIdEqualTo(personId).andEmailEqualTo(email);
     List<Email> emails = emailMapper.selectByExample(example);
     
-    if(emails.size() == 0) {
+    if(CollectionUtils.isEmpty(emails)) {
       return null;
     }
     return emails.get(0);
@@ -178,8 +179,8 @@ public class EmailServiceImpl implements EmailService {
     try {
       emailMapper.insertSelective(aEmail);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("addEmail数据库操作异常",e);
+      throw new DBException("addEmail数据库操作异常",e);
     }
     
     return aEmail.getId();

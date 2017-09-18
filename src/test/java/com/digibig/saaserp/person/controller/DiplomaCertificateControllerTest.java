@@ -27,7 +27,7 @@ import com.digibig.saaserp.person.utils.DiplomaType;
 import com.digibig.saaserp.person.utils.Enabled;
 import com.digibig.saaserp.person.utils.PhaseType;
 import com.digibig.saaserp.person.utils.SchoolResult;
-import com.digibig.saaserp.person.utils.VarificationStatus;
+import com.digibig.saaserp.person.utils.VerificationStatus;
 
 public class DiplomaCertificateControllerTest extends PersonServiceApplicationTests{
   
@@ -51,9 +51,9 @@ public class DiplomaCertificateControllerTest extends PersonServiceApplicationTe
     map.put("date", "2016-06-04");
     map.put("diplomaType", DiplomaType.BACHELOR.toString());
     map.put("type", DegreeGetType.NATIONAL_UNIFIED_ENTRANCE_EXAMINATION.toString());
-    map.put("varificationStatus", VarificationStatus.AUTHORIZATION.toString());
+    map.put("verificationStatus", VerificationStatus.AUTHORIZATION.toString());
     map.put("file", "11");
-    map.put("varificationFile", "13");
+    map.put("verificationFile", "13");
     
     String addr = JSON.toJSONString(map);
     this.mockMvc
@@ -88,9 +88,9 @@ public class DiplomaCertificateControllerTest extends PersonServiceApplicationTe
     map.put("date", "2016-06-04");
     map.put("diplomaType", DiplomaType.BACHELOR.toString());
     map.put("type", DegreeGetType.NATIONAL_UNIFIED_ENTRANCE_EXAMINATION.toString());
-    map.put("varificationStatus", VarificationStatus.AUTHORIZATION.toString());
+    map.put("verificationStatus", VerificationStatus.AUTHORIZATION.toString());
     map.put("file", "11");
-    map.put("varificationFile", "10");
+    map.put("verificationFile", "10");
     
     String addr = JSON.toJSONString(map);
     this.mockMvc
@@ -153,7 +153,7 @@ public class DiplomaCertificateControllerTest extends PersonServiceApplicationTe
     map.put("phase", PhaseType.UNDERGRADUATE.toString());
     map.put("date", "2016-06-10");
     map.put("file", "55");
-    map.put("verificationStatus", VarificationStatus.AUTHORIZATION.toString());
+    map.put("verificationStatus", VerificationStatus.AUTHORIZATION.toString());
     map.put("verificationFile", "56");
     
     String addr = JSON.toJSONString(map);
@@ -190,7 +190,7 @@ public class DiplomaCertificateControllerTest extends PersonServiceApplicationTe
     map.put("phase", PhaseType.UNDERGRADUATE.toString());
     map.put("date", "2016-06-10");
     map.put("file", "55");
-    map.put("verificationStatus", VarificationStatus.AUTHORIZATION.toString());
+    map.put("verificationStatus", VerificationStatus.AUTHORIZATION.toString());
     map.put("verificationFile", "56");
     
     String addr = JSON.toJSONString(map);

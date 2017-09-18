@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.digibig.saaserp.commons.exception.DBException;
 import com.digibig.saaserp.person.domain.Education;
@@ -48,8 +49,8 @@ public class EducationServiceImpl implements EducationService {
     try {
       educationMapper.insertSelective(education);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常");
+      logger.error("addEducation数据库操作异常",e);
+      throw new DBException("addEducation数据库操作异常");
     }
     return education.getId();
   }
@@ -68,8 +69,8 @@ public class EducationServiceImpl implements EducationService {
     try {
       rows = educationMapper.updateByExampleSelective(education, example);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常");
+      logger.error("setEducation数据库操作异常",e);
+      throw new DBException("setEducation数据库操作异常");
     }
     return rows>0;
   }
@@ -91,8 +92,8 @@ public class EducationServiceImpl implements EducationService {
     try {
       rows = educationMapper.updateByExampleSelective(education, example);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常");
+      logger.error("setEducationEnabled数据库操作异常",e);
+      throw new DBException("setEducationEnabled数据库操作异常");
     }
     return rows>0;
   }
@@ -109,7 +110,7 @@ public class EducationServiceImpl implements EducationService {
     
     List<EducationSummary> summarys = educationSummaryMapper.selectByExample(example);
     
-    if(summarys.size() == 0) {
+    if(CollectionUtils.isEmpty(summarys)) {
       return new EducationSummary();
     }
 
@@ -133,8 +134,8 @@ public class EducationServiceImpl implements EducationService {
         educationSummaryMapper.updateByPrimaryKeySelective(educationSummary);
       }
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常");
+      logger.error("setEducationSummary数据库操作异常",e);
+      throw new DBException("setEducationSummary数据库操作异常");
     }
     
     return educationSummary.getId();

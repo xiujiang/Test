@@ -10,7 +10,7 @@ package com.digibig.saaserp.person.utils;
 
 import org.apache.commons.lang.StringUtils;
 
-public enum VarificationStatus {
+public enum VerificationStatus {
   
   AUTHORIZATION(1,"已认证"),
   UNAUTHORIZATION(2,"未认证");
@@ -18,13 +18,13 @@ public enum VarificationStatus {
   private int value;
   private String name;
   
-  private VarificationStatus(int value, String name) {
+  private VerificationStatus(int value, String name) {
     this.value = value;
     this.name= name;
   }
   
   public static String getName(int index) {
-    for (VarificationStatus privilege: VarificationStatus.values()) {
+    for (VerificationStatus privilege: VerificationStatus.values()) {
       if (privilege.getValue() == index) {
         return privilege.getName();
       }
@@ -33,7 +33,7 @@ public enum VarificationStatus {
   }
   
   public static int getValue(String name) {
-    for (VarificationStatus privilege: VarificationStatus.values()) {
+    for (VerificationStatus privilege: VerificationStatus.values()) {
       if (StringUtils.equals(name, privilege.getName())) {
         return privilege.getValue();
       }

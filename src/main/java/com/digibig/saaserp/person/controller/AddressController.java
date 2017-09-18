@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.digibig.saaserp.commons.api.HttpResult;
 import com.digibig.saaserp.commons.constant.HttpStatus;
 import com.digibig.saaserp.commons.exception.DigibigException;
+import com.digibig.saaserp.person.common.CommonParam;
 import com.digibig.saaserp.person.domain.Address;
 import com.digibig.saaserp.person.service.AddressService;
 import com.digibig.saaserp.person.utils.AddressType;
@@ -54,6 +55,13 @@ public class AddressController {
   @Autowired
   private AddressService addressService;
   
+  //最后地址节点
+  private static final String LAST_NODE = "lastNode";
+  //详细地址
+  private static final String DETAIL_ADDRESS = "detailAddress";
+  //地址类型
+  private static final String ADDRESS_TYPE = "addressType";
+  
   /**
    * <p>
    * 添加自然人地址
@@ -75,37 +83,34 @@ public class AddressController {
   @PostMapping("")
   public HttpResult<Integer> addAddress(@RequestBody Map<String, String> paramMap){
     
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("lastNode")), "lastNode不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("detailAddress")), "detailAddress不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_PERSONID)), "添加自然人地址personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(LAST_NODE)), "lastNode不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(DETAIL_ADDRESS)), "添加自然人地址detailAddress不能为空");
     
-    Boolean isDeafault = Boolean.valueOf(paramMap.get("isDefault"));
+    Boolean isDeafault = Boolean.valueOf(paramMap.get(CommonParam.MAP_PARAM_ISDEFAULT));
 
     Address address = new Address();
     BeanUtilsBean beanUtils = BeanUtilsBean.getInstance();
     try {
       beanUtils.populate(address,paramMap);
-    } catch (IllegalAccessException e) {
-      logger.error(e.getMessage());
-      return new HttpResult<Integer>(HttpStatus.PARAM_ERROR,"失败");
-    } catch (InvocationTargetException e) {
-      logger.error(e.getMessage());
-      return new HttpResult<Integer>(HttpStatus.PARAM_ERROR,"失败");
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      logger.error("地址对象转换异常",e);
+      return new HttpResult<>(HttpStatus.PARAM_ERROR,"失败");
     }
     
-    if(!StringUtils.isEmpty(paramMap.get("addressType"))) {
-      Integer addressType = Enum.valueOf(AddressType.class, paramMap.get("addressType").trim()).getValue();
+    if(!StringUtils.isEmpty(paramMap.get(ADDRESS_TYPE))) {
+      Integer addressType = Enum.valueOf(AddressType.class, paramMap.get(ADDRESS_TYPE).trim()).getValue();
       address.setAddressType(addressType);
     }
 
-    logger.info(address.toString());
+    logger.info("地址",address);
 
     Integer id = addressService.addAddress(address, isDeafault);
 
     if(id == null) {
-      return new HttpResult<Integer>(HttpStatus.SERVER_ERROR,"失败,该地址已存在");
+      return new HttpResult<>(HttpStatus.SERVER_ERROR,"失败,该地址已存在");
     }
-    return new HttpResult<Integer>(HttpStatus.OK,"成功",id);
+    return new HttpResult<>(HttpStatus.OK,"成功",id);
   }
   
   /**
@@ -123,13 +128,13 @@ public class AddressController {
   @PostMapping("/enabled")
   public HttpResult<Boolean> setEnabled(@RequestBody Map<String, String> paramMap){
     
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("addressId")), "addressId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("enabled")), "enabled不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_PERSONID)), "设置地址有效性personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_ADDRESSID)), "设置地址有效性addressId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_ENABLED)), "设置地址有效性enabled不能为空");
     
-    Integer personId = Integer.valueOf(paramMap.get("personId"));
-    Integer addressId = Integer.valueOf(paramMap.get("addressId"));
-    Enabled enabled = Enum.valueOf(Enabled.class, paramMap.get("enabled").trim());
+    Integer personId = Integer.valueOf(paramMap.get(CommonParam.MAP_PARAM_PERSONID));
+    Integer addressId = Integer.valueOf(paramMap.get(CommonParam.MAP_PARAM_ADDRESSID));
+    Enabled enabled = Enum.valueOf(Enabled.class, paramMap.get(CommonParam.MAP_PARAM_ENABLED).trim());
 
     Boolean result = null;
    
@@ -137,9 +142,9 @@ public class AddressController {
      
     //逻辑判断
     if(result) {
-      return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
+      return new HttpResult<>(HttpStatus.OK,"成功",result);
     }else {
-      return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败",result);
+      return new HttpResult<>(HttpStatus.SERVER_ERROR,"失败",result);
     }
   }
   
@@ -157,24 +162,24 @@ public class AddressController {
   @PostMapping("/list")
   public HttpResult<List<Map<String ,String>>> getAddress(@RequestBody Map<String, String> paramMap){
     
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_PERSONID)), "查询自然人地址信息personId不能为空");
     
-    Integer personId = Integer.valueOf(paramMap.get("personId"));
+    Integer personId = Integer.valueOf(paramMap.get(CommonParam.MAP_PARAM_PERSONID));
     
     Enabled enabled = Enabled.ENABLED;
     
-    if(!StringUtils.isEmpty(paramMap.get("enabled"))) {
-      enabled = Enum.valueOf(Enabled.class, paramMap.get("enabled").trim());
+    if(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_ENABLED))) {
+      enabled = Enum.valueOf(Enabled.class, paramMap.get(CommonParam.MAP_PARAM_ENABLED).trim());
     }
     
     List<Map<String, String>> addresses = null;
     try {
       addresses = addressService.getAddresses(personId, enabled);
     } catch (DigibigException e) {
-      logger.error(e.getMessage());
-      return new HttpResult<List<Map<String ,String>>>(HttpStatus.SERVER_ERROR,"地址信息查询失败");
+      logger.error("",e);
+      return new HttpResult<>(HttpStatus.SERVER_ERROR,"地址信息查询失败");
     }
     
-    return new HttpResult<List<Map<String ,String>>>(HttpStatus.OK,"成功",addresses);
+    return new HttpResult<>(HttpStatus.OK,"成功",addresses);
   }
 }

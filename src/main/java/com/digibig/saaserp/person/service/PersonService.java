@@ -92,7 +92,7 @@ public interface PersonService {
    * @param name 姓名
    * @return 自然人id
    */
-  Integer identityVerificate(String IDCard, String name);
+  Integer identityVerificate(String idCard, String name);
   
   /**
    * 获取自然人信息
@@ -100,7 +100,7 @@ public interface PersonService {
    * @return 自然人脱敏信息
    * @throws DigibigException
    */
-  Map<String, Object> getByCardNumber(String IDCard) throws DigibigException;
+  Map<String, Object> getByCardNumber(String idCard) throws DigibigException;
   
   /**
    * 获取自然人脱敏信息

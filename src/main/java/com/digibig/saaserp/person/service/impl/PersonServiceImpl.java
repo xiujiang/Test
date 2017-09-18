@@ -18,6 +18,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.digibig.saaserp.commons.exception.DBException;
 import com.digibig.saaserp.commons.exception.DigibigException;
@@ -89,7 +90,7 @@ public class PersonServiceImpl implements PersonService {
       @CacheEvict(value = "person",
           key = "'com.digibig.saaserp.person.domain.person_person_id_'+#personId"),
       @CacheEvict(value = "person",
-          key = "'com.digibig.saaserp.person.domain.person_person_des_id_'+#personId"),
+          key = "'com.digibig.saaserp.person.domain.person_des_person_id_'+#personId"),
       @CacheEvict(value = "person",
           key = "'com.digibig.saaserp.person.domain.person_email_person_id_'+#personId"),
       })
@@ -100,7 +101,7 @@ public class PersonServiceImpl implements PersonService {
       EmailExample example = new EmailExample();
       example.createCriteria().andIdEqualTo(emailId).andEnabledEqualTo(Enabled.ENABLED.getValue());
       List<Email> emails = emailMapper.selectByExample(example);
-      if(emails.size() == 0) {
+      if(CollectionUtils.isEmpty(emails)) {
         return false;
       }
     }
@@ -114,8 +115,8 @@ public class PersonServiceImpl implements PersonService {
     try {
       rows = personMapper.updateByPrimaryKeySelective(person);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("setDefaultEmail数据库操作异常",e);
+      throw new DBException("setDefaultEmail数据库操作异常",e);
     }
     
     return rows>0;
@@ -126,14 +127,14 @@ public class PersonServiceImpl implements PersonService {
    */
   @Transactional
   @Override
-  public Integer identityVerificate(String IDCard, String name) {
+  public Integer identityVerificate(String idCard, String name) {
     //根据身份证号和姓名查询自然人
     PersonExample example = new PersonExample();
-    example.createCriteria().andIdNumberEqualTo(IDCard).andNameEqualTo(name);
+    example.createCriteria().andIdNumberEqualTo(idCard).andNameEqualTo(name);
     
     List<Person> idCards = personMapper.selectByExample(example);
     //有则返回id，否则调用第三方接口
-    if(idCards.size() != 0) {
+    if(!CollectionUtils.isEmpty(idCards)) {
       return idCards.get(0).getId();
     }
     
@@ -145,13 +146,13 @@ public class PersonServiceImpl implements PersonService {
       Person person = new Person();
       person.setIdType(IDCardType.SECOND.getValue());
       person.setName(name);
-      person.setIdNumber(IDCard);
+      person.setIdNumber(idCard);
       
       try {
         personMapper.insertSelective(person);
       }catch(RuntimeException e) {
-        logger.error("数据库操作异常",e);
-        throw new DBException("数据库操作异常",e);
+        logger.error("identityVerificate数据库操作异常",e);
+        throw new DBException("identityVerificate数据库操作异常",e);
       }
       
       return person.getId();
@@ -169,7 +170,7 @@ public class PersonServiceImpl implements PersonService {
       @CacheEvict(value = "person",
           key = "'com.digibig.saaserp.person.domain.person_person_id_'+#personId"),
       @CacheEvict(value = "person",
-          key = "'com.digibig.saaserp.person.domain.person_person_des_id_'+#personId"),
+          key = "'com.digibig.saaserp.person.domain.person_des_person_id_'+#personId"),
       @CacheEvict(value = "person",
           key = "'com.digibig.saaserp.person.domain.person_email_person_id_'+#personId"),
       })
@@ -182,36 +183,12 @@ public class PersonServiceImpl implements PersonService {
     try {
       rows = personMapper.updateByPrimaryKeySelective(person);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("delDefaultEmail By personId 数据库操作异常",e);
+      throw new DBException("delDefaultEmail By personId 数据库操作异常",e);
     }
     return rows>0;
   }
 
-  /*
-   * 通过身份证号查询自然人信息
-   */
-  @Override
-  public Map<String, Object> getByCardNumber(String idCard) throws DigibigException {
-    
-    Map<String, Object> map = personMapper.getByCardNumber(idCard);
-    //脱敏处理
-    map.put("mobile", MaskedUtil.masked((String)map.get("mobile"), CommonParam.MOBILE_DES_PRE, CommonParam.MOBILE_DES_SUF));
-    map.put("idCard", MaskedUtil.masked((String)map.get("idCard"), CommonParam.IDCARD_DES_PRE, CommonParam.IDCARD_DES_SUF));
-    String email = (String)map.get("email");
-    Integer suf = email.length() - email.lastIndexOf("@");
-    map.put("email", MaskedUtil.masked(email, CommonParam.EMIAL_DES_PRE, suf));
-    // 查询地址信息
-    map.get("addressId");
-    Integer node = (Integer)map.get("addressId");
-    if(node == CommonParam.DEFAULT_INT) {
-      map.put("address", "");
-    }else {
-      map.put("address", addressService.getAddressById(node));
-    }
-    map.remove("addressId");
-    return map;
-  }
 
   /*
    * 清除默认手机
@@ -222,7 +199,7 @@ public class PersonServiceImpl implements PersonService {
       @CacheEvict(value = "person",
           key = "'com.digibig.saaserp.person.domain.person_person_id_'+#personId"),
       @CacheEvict(value = "person",
-          key = "'com.digibig.saaserp.person.domain.person_person_des_id_'+#personId"),
+          key = "'com.digibig.saaserp.person.domain.person_des_person_id_'+#personId"),
       @CacheEvict(value = "person", 
           key = "'com.digibig.saaserp.person.domain.person_mobile_person_id_'+#personId")
       })
@@ -235,8 +212,8 @@ public class PersonServiceImpl implements PersonService {
     try {
       rows = personMapper.updateByPrimaryKeySelective(person);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("delDefaultMobile By personId 数据库操作异常",e);
+      throw new DBException("delDefaultMobile By personId 数据库操作异常",e);
     }
 
     return rows>0;
@@ -251,7 +228,7 @@ public class PersonServiceImpl implements PersonService {
       @CacheEvict(value = "person",
           key = "'com.digibig.saaserp.person.domain.person_person_id_'+#personId"),
       @CacheEvict(value = "person",
-          key = "'com.digibig.saaserp.person.domain.person_person_des_id_'+#personId"),
+          key = "'com.digibig.saaserp.person.domain.person_des_person_id_'+#personId"),
       @CacheEvict(value = "person",
           key = "'com.digibig.saaserp.person.domain.person_address_person_id_'+#personId"),
       })
@@ -264,11 +241,44 @@ public class PersonServiceImpl implements PersonService {
     try {
       rows = personMapper.updateByPrimaryKeySelective(person);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("delDefaultAddress By personId 数据库操作异常",e);
+      throw new DBException("delDefaultAddress By personId 数据库操作异常",e);
     }
 
     return rows>0;
+  }
+  
+  private Map<String, Object> getDesensitizeInfo(Map<String, Object> map) throws DigibigException {
+    //脱敏处理
+    map.put(CommonParam.MAP_PARAM_MOBILE, 
+        MaskedUtil.masked((String)map.get(CommonParam.MAP_PARAM_MOBILE), CommonParam.MOBILE_DES_PRE, CommonParam.MOBILE_DES_SUF));
+    map.put(CommonParam.MAP_PARAM_IDCARD, 
+        MaskedUtil.masked((String)map.get(CommonParam.MAP_PARAM_IDCARD), CommonParam.IDCARD_DES_PRE, CommonParam.IDCARD_DES_SUF));
+    String email = (String)map.get(CommonParam.MAP_PARAM_EMAIL);
+    Integer suf = email.length() - email.lastIndexOf('@');
+    map.put(CommonParam.MAP_PARAM_EMAIL, MaskedUtil.masked(email, CommonParam.EMIAL_DES_PRE, suf));
+    // 查询地址信息
+    map.get(CommonParam.MAP_PARAM_ADDRESSID);
+    Integer node = (Integer)map.get(CommonParam.MAP_PARAM_ADDRESSID);
+    if(node == CommonParam.DEFAULT_INT) {
+      map.put(CommonParam.MAP_PARAM_ADDRESS, "");
+    }else {
+      map.put(CommonParam.MAP_PARAM_ADDRESS, addressService.getAddressById(node));
+    }
+    map.remove(CommonParam.MAP_PARAM_ADDRESSID);
+    return map;
+  }
+  
+
+  /*
+   * 通过身份证号查询自然人信息
+   */
+  @Override
+  public Map<String, Object> getByCardNumber(String idCard) throws DigibigException {
+    
+    Map<String, Object> map = personMapper.getByCardNumber(idCard);
+
+    return this.getDesensitizeInfo(map);
   }
 
   /*
@@ -279,21 +289,8 @@ public class PersonServiceImpl implements PersonService {
   public Map<String, Object> getDesensitizeInfo(Integer personId) throws DigibigException {
     
     Map<String, Object> map = personMapper.getPersonById(personId);
-    //脱敏处理
-    map.put("mobile", MaskedUtil.masked((String)map.get("mobile"), CommonParam.MOBILE_DES_PRE, CommonParam.MOBILE_DES_SUF));
-    map.put("idCard", MaskedUtil.masked((String)map.get("idCard"), CommonParam.IDCARD_DES_PRE, CommonParam.IDCARD_DES_SUF));
-    String email = (String)map.get("email");
-    Integer suf = email.length() - email.lastIndexOf("@");
-    map.put("email", MaskedUtil.masked(email, CommonParam.EMIAL_DES_PRE, suf));
-    // 查询地址信息detailAddress
-    Integer node = (Integer)map.get("addressId");
-    if(node == CommonParam.DEFAULT_INT) {
-      map.put("address", "");
-    }else {
-      map.put("address", addressService.getAddressById(node));
-    }
-    map.remove("addressId");
-    return map;
+
+    return this.getDesensitizeInfo(map);
   }
 
   /*
@@ -304,13 +301,13 @@ public class PersonServiceImpl implements PersonService {
   public Map<String, Object> getPersonInfo(Integer personId) throws DigibigException{
     Map<String, Object> map = personMapper.getPersonById(personId);
     //查询地址信息
-    Integer node = (Integer)map.get("addressId");
+    Integer node = (Integer)map.get(CommonParam.MAP_PARAM_ADDRESSID);
     if(node == CommonParam.DEFAULT_INT) {
-      map.put("address", "");
+      map.put(CommonParam.MAP_PARAM_ADDRESS, "");
     }else {
-      map.put("address", addressService.getAddressById(node));
+      map.put(CommonParam.MAP_PARAM_ADDRESS, addressService.getAddressById(node));
     }
-    map.remove("addressId");
+    map.remove(CommonParam.MAP_PARAM_ADDRESSID);
     return map;
   }
   
@@ -324,7 +321,7 @@ public class PersonServiceImpl implements PersonService {
       @CacheEvict(value = "person",
           key = "'com.digibig.saaserp.person.domain.person_person_id_'+#personId"),
       @CacheEvict(value = "person",
-          key = "'com.digibig.saaserp.person.domain.person_person_des_id_'+#personId"),
+          key = "'com.digibig.saaserp.person.domain.person_des_person_id_'+#personId"),
       @CacheEvict(value = "person", 
           key = "'com.digibig.saaserp.person.domain.person_mobile_person_id_'+#personId")})
   public Boolean setDefaultMobile(Integer personId, Integer mobileId) {
@@ -336,8 +333,8 @@ public class PersonServiceImpl implements PersonService {
     try {
       rows = personMapper.updateByPrimaryKeySelective(person);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("setDefaultMobile By personId and mobileId数据库操作异常",e);
+      throw new DBException("setDefaultMobile By personId and mobileId数据库操作异常",e);
     }
     
     return rows>0;
@@ -378,7 +375,7 @@ public class PersonServiceImpl implements PersonService {
       @CacheEvict(value = "person",
           key = "'com.digibig.saaserp.person.domain.person_person_id_'+#personId"),
       @CacheEvict(value = "person",
-          key = "'com.digibig.saaserp.person.domain.person_person_des_id_'+#personId"),
+          key = "'com.digibig.saaserp.person.domain.person_des_person_id_'+#personId"),
       @CacheEvict(value = "person",
           key = "'com.digibig.saaserp.person.domain.person_address_person_id_'+#personId"),
       })
@@ -389,7 +386,7 @@ public class PersonServiceImpl implements PersonService {
       AddressExample example = new AddressExample();
       example.createCriteria().andIdEqualTo(addressId).andEnabledEqualTo(Enabled.ENABLED.getValue());
       List<Address> addrs = addressMapper.selectByExample(example);
-      if(addrs.size() == 0) {
+      if(CollectionUtils.isEmpty(addrs)) {
         return false;
       }
     }
@@ -403,8 +400,8 @@ public class PersonServiceImpl implements PersonService {
     try {
       rows = personMapper.updateByPrimaryKeySelective(person);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("setDefaultAddress数据库操作异常",e);
+      throw new DBException("setDefaultAddress数据库操作异常",e);
     }
     return rows>0;
   }
@@ -436,7 +433,7 @@ public class PersonServiceImpl implements PersonService {
       @CacheEvict(value = "person",
           key = "'com.digibig.saaserp.person.domain.person_person_id_'+#personId"),
       @CacheEvict(value = "person",
-          key = "'com.digibig.saaserp.person.domain.person_person_des_id_'+#personId"),
+          key = "'com.digibig.saaserp.person.domain.person_des_person_id_'+#personId"),
       @CacheEvict(value = "person",
           key = "'com.digibig.saaserp.person.domain.person_idcard_person_id_'+#personId")
       })
@@ -449,8 +446,8 @@ public class PersonServiceImpl implements PersonService {
     try {
       rows = personMapper.updateByPrimaryKeySelective(person);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("setDefaultIDCard数据库操作异常",e);
+      throw new DBException("setDefaultIDCard数据库操作异常",e);
     }
 
     return rows>0;
@@ -464,7 +461,7 @@ public class PersonServiceImpl implements PersonService {
       @CacheEvict(value = "person",
           key = "'com.digibig.saaserp.person.domain.person_person_id_'+#personId"),
       @CacheEvict(value = "person",
-          key = "'com.digibig.saaserp.person.domain.person_person_des_id_'+#personId"),
+          key = "'com.digibig.saaserp.person.domain.person_des_person_id_'+#personId"),
       @CacheEvict(value = "person", 
           key = "'com.digibig.saaserp.person.domain.person_mobile_person_id_'+#personId")
       })
@@ -474,14 +471,14 @@ public class PersonServiceImpl implements PersonService {
     example.createCriteria().andIdEqualTo(personId).andDefaultMobileEqualTo(mobileId);
     
     Person person = new Person();
-    person.setDefaultAddress(CommonParam.DEFAULT_INT);
+    person.setDefaultMobile(CommonParam.DEFAULT_INT);
     
     Integer rows = null;
     try {
       rows = personMapper.updateByExampleSelective(person, example);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("delDefaultMobile By personId and mobileId数据库操作异常",e);
+      throw new DBException("delDefaultMobile By personId and mobileId数据库操作异常",e);
     }
 
     return rows>0;
@@ -495,7 +492,7 @@ public class PersonServiceImpl implements PersonService {
       @CacheEvict(value = "person",
           key = "'com.digibig.saaserp.person.domain.person_person_id_'+#personId"),
       @CacheEvict(value = "person",
-          key = "'com.digibig.saaserp.person.domain.person_person_des_id_'+#personId"),
+          key = "'com.digibig.saaserp.person.domain.person_des_person_id_'+#personId"),
       @CacheEvict(value = "person",
           key = "'com.digibig.saaserp.person.domain.person_email_person_id_'+#personId"),
       })
@@ -505,14 +502,14 @@ public class PersonServiceImpl implements PersonService {
     example.createCriteria().andIdEqualTo(personId).andDefaultEmailEqualTo(emailId);
     
     Person person = new Person();
-    person.setDefaultAddress(CommonParam.DEFAULT_INT);
+    person.setDefaultEmail(CommonParam.DEFAULT_INT);
     
     Integer rows = null;
     try {
       rows = personMapper.updateByExampleSelective(person, example);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("delDefaultEmail By personId and emailId数据库操作异常",e);
+      throw new DBException("delDefaultEmail By personId and emailId数据库操作异常",e);
     }
 
     return rows>0;
@@ -526,7 +523,7 @@ public class PersonServiceImpl implements PersonService {
       @CacheEvict(value = "person",
           key = "'com.digibig.saaserp.person.domain.person_person_id_'+#personId"),
       @CacheEvict(value = "person",
-          key = "'com.digibig.saaserp.person.domain.person_person_des_id_'+#personId"),
+          key = "'com.digibig.saaserp.person.domain.person_des_person_id_'+#personId"),
       @CacheEvict(value = "person",
           key = "'com.digibig.saaserp.person.domain.person_address_person_id_'+#personId"),
       })
@@ -542,8 +539,8 @@ public class PersonServiceImpl implements PersonService {
     try {
       rows = personMapper.updateByExampleSelective(person, example);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("delDefaultAddress By personId and addressId数据库操作异常",e);
+      throw new DBException("delDefaultAddress By personId and addressId数据库操作异常",e);
     }
 
     return rows>0;

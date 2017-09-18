@@ -21,6 +21,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.digibig.saaserp.commons.exception.DBException;
 import com.digibig.saaserp.commons.exception.DigibigException;
@@ -65,8 +66,8 @@ public class AddressServiceImpl implements AddressService {
       try {
         addressMapper.insertSelective(address);
       }catch(RuntimeException e) {
-        logger.error("数据库操作异常",e);
-        throw new DBException("数据库操作异常",e);
+        logger.error("addAddress数据库操作异常",e);
+        throw new DBException("addAddress数据库操作异常",e);
       }
       
       addressId = address.getId();
@@ -116,7 +117,7 @@ public class AddressServiceImpl implements AddressService {
       rows = addressMapper.updateByExampleSelective(address, example);
       
     }catch(RuntimeException e) {
-      throw new DBException("数据库操作异常",e);
+      throw new DBException("setAddressEnabled数据库操作异常",e);
     }
     
     if(Enabled.NOT_ENABLED.getValue() == enabled.getValue()) {
@@ -195,7 +196,7 @@ public class AddressServiceImpl implements AddressService {
     example.createCriteria().andPersonIdEqualTo(personId).andLastNodeEqualTo(lastNode).andDetailAddressEqualTo(detailAddress);
     
     List<Address> addresses = addressMapper.selectByExample(example);
-    if(addresses.size() == 0) {
+    if(CollectionUtils.isEmpty(addresses)) {
       return null;
     }
     return addresses.get(0);

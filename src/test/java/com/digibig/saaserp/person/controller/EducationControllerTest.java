@@ -24,7 +24,7 @@ import com.digibig.saaserp.person.PersonServiceApplicationTests;
 import com.digibig.saaserp.person.utils.DegreeGetType;
 import com.digibig.saaserp.person.utils.Enabled;
 import com.digibig.saaserp.person.utils.PhaseType;
-import com.digibig.saaserp.person.utils.VarificationStatus;
+import com.digibig.saaserp.person.utils.VerificationStatus;
 
 public class EducationControllerTest extends PersonServiceApplicationTests{
   
@@ -146,13 +146,13 @@ public class EducationControllerTest extends PersonServiceApplicationTests{
     map.put("bachelorDegreeType", DegreeGetType.NATIONAL_UNIFIED_ENTRANCE_EXAMINATION.toString());
     map.put("bachelorDegreeYear", "2016");
     map.put("bachelorDegreeRefId", "1");
-    map.put("bachelorDegreeVerification", VarificationStatus.AUTHORIZATION.toString());
+    map.put("bachelorDegreeVerification", VerificationStatus.AUTHORIZATION.toString());
     map.put("masterDegreeIssuer", "北京理工大学");
     map.put("masterDegreeProfession", "计算机");
     map.put("masterDegreeType", DegreeGetType.NATIONAL_UNIFIED_ENTRANCE_EXAMINATION.toString());
     map.put("masterDegreeYear", "2018");
     map.put("masterDegreeRefId", "2");
-    map.put("masterDegreeVerification", VarificationStatus.AUTHORIZATION.toString());
+    map.put("masterDegreeVerification", VerificationStatus.AUTHORIZATION.toString());
     
     String addr = JSON.toJSONString(map);
     this.mockMvc

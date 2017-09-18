@@ -19,6 +19,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.digibig.saaserp.commons.exception.DBException;
 import com.digibig.saaserp.commons.util.MaskedUtil;
@@ -141,7 +142,7 @@ public class MobileServiceImpl implements MobileService {
     MobileExample example = new MobileExample();
     example.createCriteria().andPersonIdEqualTo(personId).andNumberEqualTo(mobileNumber);
     List<Mobile> mobiles = mobileMapper.selectByExample(example);
-    if(mobiles.size() == 0) {
+    if(CollectionUtils.isEmpty(mobiles)) {
       return null;
     }
     return mobiles.get(0);
@@ -163,8 +164,8 @@ public class MobileServiceImpl implements MobileService {
     try {
       mobileMapper.insertSelective(mobile);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("addDefaultMobile数据库操作异常",e);
+      throw new DBException("addDefaultMobile数据库操作异常",e);
     }
     
     return mobile.getId();
@@ -190,8 +191,8 @@ public class MobileServiceImpl implements MobileService {
     try {
       rows = mobileMapper.updateByExampleSelective(mobile, example);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("set default mobile setEnabledById数据库操作异常",e);
+      throw new DBException("set default mobile setEnabledById数据库操作异常",e);
     }
     if(Enabled.NOT_ENABLED.getValue() == enabled.getValue()) {
       personService.delDefaultMobile(personId, id);
@@ -217,12 +218,12 @@ public class MobileServiceImpl implements MobileService {
       try {
         rows = mobileMapper.updateByExampleSelective(mobile, example);
       }catch(RuntimeException e) {
-        logger.error("数据库操作异常",e);
-        throw new DBException("数据库操作异常",e);
+        logger.error("set default mobile setEnabledByNum数据库操作异常",e);
+        throw new DBException("set default mobile setEnabledByNum数据库操作异常",e);
       }
       if(Enabled.NOT_ENABLED.getValue() == enabled.getValue()) {
         List<Mobile> mobiles = mobileMapper.selectByExample(example);
-        if(mobiles.size() != 0) {
+        if(!CollectionUtils.isEmpty(mobiles)) {
           personService.delDefaultMobile(personId, mobiles.get(0).getId());
         }
       }
@@ -240,7 +241,7 @@ public class MobileServiceImpl implements MobileService {
     .andNumberEqualTo(mobile).andEnabledEqualTo(Enabled.ENABLED.getValue());
     
     List<Mobile> mobiles = mobileMapper.selectByExample(example);
-    if(mobiles.size() == 0) {
+    if(CollectionUtils.isEmpty(mobiles)) {
       return null;
     }else {
       return mobiles.get(0);

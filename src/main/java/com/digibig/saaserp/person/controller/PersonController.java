@@ -26,6 +26,7 @@ import com.digibig.saaserp.commons.api.HttpResult;
 import com.digibig.saaserp.commons.constant.HttpStatus;
 import com.digibig.saaserp.commons.exception.DigibigException;
 import com.digibig.saaserp.commons.util.IDValidator;
+import com.digibig.saaserp.person.common.CommonParam;
 import com.digibig.saaserp.person.service.PersonService;
 
 
@@ -63,26 +64,26 @@ public class PersonController {
    * </p>
    * @param paramMap
    * <ul>
-   *    <li>IDCard 身份证号</li>
+   *    <li>idCard 身份证号</li>
    *    <li>name 姓名</li>
    * </ul>
    * @return 自然人id
    */
   @PostMapping("/veri")
   public HttpResult<Integer> identityVerificate(@RequestBody Map<String, String> paramMap){
-    String IDCard = paramMap.get("IDCard");
-    String name = paramMap.get("name");
+    String idCard = paramMap.get(CommonParam.MAP_PARAM_IDCARD);
+    String name = paramMap.get(CommonParam.MAP_PARAM_NAME);
     
-    Assert.isTrue(!StringUtils.isEmpty(IDCard), "IDCard不能为空");
-    Assert.isTrue(IDValidator.valid(IDCard), "IDCard不合法");
-    Assert.isTrue(!StringUtils.isEmpty(name), "name不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(idCard), "身份核实idCard不能为空");
+    Assert.isTrue(IDValidator.valid(idCard), "身份核实idCard不合法");
+    Assert.isTrue(!StringUtils.isEmpty(name), "身份核实name不能为空");
     
-    Integer id = personService.identityVerificate(IDCard,name);
+    Integer id = personService.identityVerificate(idCard,name);
 
     if(id == null) {
-      return new HttpResult<Integer>(HttpStatus.PARAM_ERROR,"身份核实失败");
+      return new HttpResult<>(HttpStatus.PARAM_ERROR,"身份核实失败");
     }
-    return new HttpResult<Integer>(HttpStatus.OK,"成功",id);
+    return new HttpResult<>(HttpStatus.OK,"成功",id);
   }
 
   /**
@@ -91,26 +92,26 @@ public class PersonController {
    * </p>
    * @param paramMap
    * <ul>
-   *    <li>IDCard 身份证号</li>
+   *    <li>idCard 身份证号</li>
    * </ul>
    * @return 自然人信息
    */
   @PostMapping("/cardno")
   public HttpResult<Map<String,Object>> getByCardNumber(@RequestBody Map<String, String> paramMap){
-    String IDCard = paramMap.get("IDCard");
+    String idCard = paramMap.get(CommonParam.MAP_PARAM_IDCARD);
     
-    Assert.isTrue(!StringUtils.isEmpty(IDCard), "IDCard不能为空");
-    Assert.isTrue(IDValidator.valid(IDCard), "IDCard不合法");
+    Assert.isTrue(!StringUtils.isEmpty(idCard), "按身份证号查询idCard不能为空");
+    Assert.isTrue(IDValidator.valid(idCard), "按身份证号查询idCard不合法");
     
     Map<String, Object> person = null;
     try {
-      person = personService.getByCardNumber(IDCard);
+      person = personService.getByCardNumber(idCard);
     } catch (DigibigException e) {
-      logger.error(e.getMessage());
-      return new HttpResult<Map<String,Object>>(HttpStatus.PARAM_ERROR,e.getMessage());
+      logger.error("按身份证号查询自然人信息",e);
+      return new HttpResult<>(HttpStatus.PARAM_ERROR,e.getMessage());
     }
     
-    return new HttpResult<Map<String,Object>>(HttpStatus.OK,"成功",person);
+    return new HttpResult<>(HttpStatus.OK,"成功",person);
   }
   
   /**
@@ -126,20 +127,20 @@ public class PersonController {
    */
   @PostMapping("/mobile/default")
   public HttpResult<Boolean> setMobile(@RequestBody Map<String, String> paramMap){
-    String personIdStr = paramMap.get("personId");
-    String mobile = paramMap.get("mobile");
+    String personIdStr = paramMap.get(CommonParam.MAP_PARAM_PERSONID);
+    String mobile = paramMap.get(CommonParam.MAP_PARAM_MOBILE);
     
-    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(mobile), "mobile不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "设置首选手机号personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(mobile), "设置首选手机号mobile不能为空");
 
     Integer personId = Integer.valueOf(personIdStr);
     
     Boolean result = personService.setDefaultMobile(personId,mobile);
 
     if(result) {
-      return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
+      return new HttpResult<>(HttpStatus.OK,"成功",result);
     }else {
-      return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败");
+      return new HttpResult<>(HttpStatus.SERVER_ERROR,"失败");
     }
   }
   
@@ -155,18 +156,18 @@ public class PersonController {
    */
   @PostMapping("/mobile/default/rem")
   public HttpResult<Boolean> delMobile(@RequestBody Map<String, String> paramMap){
-    String personIdStr = paramMap.get("personId");
+    String personIdStr = paramMap.get(CommonParam.MAP_PARAM_PERSONID);
     
-    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "清空首选手机号personId不能为空");
 
     Integer personId = Integer.valueOf(personIdStr);
     
     Boolean result = personService.delDefaultMobile(personId);
 
     if(result) {
-      return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
+      return new HttpResult<>(HttpStatus.OK,"成功",result);
     }else {
-      return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败",result);
+      return new HttpResult<>(HttpStatus.SERVER_ERROR,"失败",result);
     }
       
   }
@@ -184,11 +185,11 @@ public class PersonController {
    */
   @PostMapping("/email/default")
   public HttpResult<Boolean> setEmail(@RequestBody Map<String, String> paramMap){
-    String personIdStr = paramMap.get("personId");
-    String emailIdStr = paramMap.get("emailId");
+    String personIdStr = paramMap.get(CommonParam.MAP_PARAM_PERSONID);
+    String emailIdStr = paramMap.get(CommonParam.MAP_PARAM_EMAILID);
     
-    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(emailIdStr), "emailId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "设置默认邮箱personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(emailIdStr), "设置默认邮箱emailId不能为空");
     
     Integer personId = Integer.valueOf(personIdStr);
     Integer emailId = Integer.valueOf(emailIdStr);
@@ -196,9 +197,9 @@ public class PersonController {
     Boolean result = personService.setDefaultEmail(personId,emailId,false);
     
     if(result) {
-      return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
+      return new HttpResult<>(HttpStatus.OK,"成功",result);
     }
-    return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败",result);
+    return new HttpResult<>(HttpStatus.SERVER_ERROR,"失败",result);
   }
   
   /**
@@ -213,18 +214,18 @@ public class PersonController {
    */
   @PostMapping("/email/default/rem")
   public HttpResult<Boolean> delEmail(@RequestBody Map<String, String> paramMap){
-    String personIdStr = paramMap.get("personId");
+    String personIdStr = paramMap.get(CommonParam.MAP_PARAM_PERSONID);
     
-    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "清空默认邮箱personId不能为空");
     
     Integer personId = Integer.valueOf(personIdStr);
     
     Boolean result = personService.delDefaultEmail(personId);
 
     if(result) {
-      return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
+      return new HttpResult<>(HttpStatus.OK,"成功",result);
     }else {
-      return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败");
+      return new HttpResult<>(HttpStatus.SERVER_ERROR,"失败");
     }
   }
   
@@ -241,11 +242,11 @@ public class PersonController {
    */
   @PostMapping("/address/default")
   public HttpResult<Boolean> setDefaultAddress(@RequestBody Map<String, String> paramMap){
-    String personIdStr = paramMap.get("personId");
-    String addressIdStr = paramMap.get("addressId");
+    String personIdStr = paramMap.get(CommonParam.MAP_PARAM_PERSONID);
+    String addressIdStr = paramMap.get(CommonParam.MAP_PARAM_ADDRESSID);
     
-    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(addressIdStr), "addressId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "设置自然人首选地址personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(addressIdStr), "设置自然人首选地址addressId不能为空");
 
     Integer personId = Integer.valueOf(personIdStr);
     Integer addressId = Integer.valueOf(addressIdStr);
@@ -253,9 +254,9 @@ public class PersonController {
     Boolean result = personService.setDefaultAddress(personId,addressId,false);
     
     if(result) {
-      return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
+      return new HttpResult<>(HttpStatus.OK,"成功",result);
     }
-    return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败",result);
+    return new HttpResult<>(HttpStatus.SERVER_ERROR,"失败",result);
   }
   
   /**
@@ -270,18 +271,18 @@ public class PersonController {
    */
   @PostMapping("/address/default/rem")
   public HttpResult<Boolean> remDefaultAddress(@RequestBody Map<String, String> paramMap){
-    String personIdStr = paramMap.get("personId");
+    String personIdStr = paramMap.get(CommonParam.MAP_PARAM_PERSONID);
     
-    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "清空自然人首选地址personId不能为空");
 
     Integer personId = Integer.valueOf(personIdStr);
     
     Boolean result = personService.delDefaultAddress(personId);
 
     if(result) {
-      return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
+      return new HttpResult<>(HttpStatus.OK,"成功",result);
     }
-    return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败");
+    return new HttpResult<>(HttpStatus.SERVER_ERROR,"失败");
   }
   
   /**
@@ -298,10 +299,10 @@ public class PersonController {
     try {
       result = personService.getDesensitizeInfo(personId);
     } catch (DigibigException e) {
-      logger.error(e.getMessage());
+      logger.error("查询自然人信息 - 脱敏:",e);
     }
 
-    return new HttpResult<Map<String,Object>>(HttpStatus.OK,"成功",result);
+    return new HttpResult<>(HttpStatus.OK,"成功",result);
   }
   
   /**
@@ -318,15 +319,15 @@ public class PersonController {
   @PostMapping("/list")
   public HttpResult<Map<String,Object>> getPersonInfo(@RequestBody Map<String, String> paramMap){
     
-    String personIdStr = paramMap.get("personId");
-    String auth = paramMap.get("auth");
+    String personIdStr = paramMap.get(CommonParam.MAP_PARAM_PERSONID);
+    String auth = paramMap.get(CommonParam.MAP_PARAM_AUTH);
     
-    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(auth), "auth不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "查询自然人信息personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(auth), "查询自然人信息auth不能为空");
 
     //TODO 授权处理
     if(auth == null) {
-      return new HttpResult<Map<String,Object>>(HttpStatus.AUTH_FAIL,"授权失败");
+      return new HttpResult<>(HttpStatus.AUTH_FAIL,"授权失败");
     }
     
     Integer personId = Integer.valueOf(personIdStr);
@@ -335,9 +336,9 @@ public class PersonController {
     try {
       result = personService.getPersonInfo(personId);
     } catch (DigibigException e) {
-      logger.error(e.getMessage());
+      logger.error("查询自然人信息 - 不脱敏:",e);
     }
     
-    return new HttpResult<Map<String,Object>>(HttpStatus.OK,"成功",result);
+    return new HttpResult<>(HttpStatus.OK,"成功",result);
   }
 }

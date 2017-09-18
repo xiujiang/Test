@@ -12,9 +12,9 @@
     <result column="enabled" jdbcType="TINYINT" property="enabled" />
     <result column="diploma_type" jdbcType="INTEGER" property="diplomaType" />
     <result column="type" jdbcType="INTEGER" property="type" />
-    <result column="varification_status" jdbcType="INTEGER" property="varificationStatus" />
+    <result column="verification_status" jdbcType="INTEGER" property="verificationStatus" />
     <result column="file" jdbcType="INTEGER" property="file" />
-    <result column="varification_file" jdbcType="INTEGER" property="varificationFile" />
+    <result column="verification_file" jdbcType="INTEGER" property="verificationFile" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="last_time" jdbcType="TIMESTAMP" property="lastTime" />
   </resultMap>
@@ -78,7 +78,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, person_id, issuer, diploma, certificate_number, date, profession, enabled, diploma_type, 
-    type, varification_status, file, varification_file, create_time, last_time
+    type, verification_status, file, verification_file, create_time, last_time
   </sql>
   <select id="selectByExample" parameterType="com.digibig.saaserp.person.domain.DiplomaCertificateExample" resultMap="BaseResultMap">
     select
@@ -114,14 +114,14 @@
     insert into t_diploma_certificate (id, person_id, issuer, 
       diploma, certificate_number, date, 
       profession, enabled, diploma_type, 
-      type, varification_status, file, 
-      varification_file, create_time, last_time
+      type, verification_status, file, 
+      verification_file, create_time, last_time
       )
     values (#{id,jdbcType=INTEGER}, #{personId,jdbcType=INTEGER}, #{issuer,jdbcType=VARCHAR}, 
       #{diploma,jdbcType=VARCHAR}, #{certificateNumber,jdbcType=VARCHAR}, #{date,jdbcType=DATE}, 
       #{profession,jdbcType=VARCHAR}, #{enabled,jdbcType=TINYINT}, #{diplomaType,jdbcType=INTEGER}, 
-      #{type,jdbcType=INTEGER}, #{varificationStatus,jdbcType=INTEGER}, #{file,jdbcType=INTEGER}, 
-      #{varificationFile,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{lastTime,jdbcType=TIMESTAMP}
+      #{type,jdbcType=INTEGER}, #{verificationStatus,jdbcType=INTEGER}, #{file,jdbcType=INTEGER}, 
+      #{verificationFile,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{lastTime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.digibig.saaserp.person.domain.DiplomaCertificate" useGeneratedKeys="true" keyProperty="id">
@@ -157,14 +157,14 @@
       <if test="type != null">
         type,
       </if>
-      <if test="varificationStatus != null">
-        varification_status,
+      <if test="verificationStatus != null">
+        verification_status,
       </if>
       <if test="file != null">
         file,
       </if>
-      <if test="varificationFile != null">
-        varification_file,
+      <if test="verificationFile != null">
+        verification_file,
       </if>
       <if test="createTime != null">
         create_time,
@@ -204,14 +204,14 @@
       <if test="type != null">
         #{type,jdbcType=INTEGER},
       </if>
-      <if test="varificationStatus != null">
-        #{varificationStatus,jdbcType=INTEGER},
+      <if test="verificationStatus != null">
+        #{verificationStatus,jdbcType=INTEGER},
       </if>
       <if test="file != null">
         #{file,jdbcType=INTEGER},
       </if>
-      <if test="varificationFile != null">
-        #{varificationFile,jdbcType=INTEGER},
+      <if test="verificationFile != null">
+        #{verificationFile,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -260,14 +260,14 @@
       <if test="record.type != null">
         type = #{record.type,jdbcType=INTEGER},
       </if>
-      <if test="record.varificationStatus != null">
-        varification_status = #{record.varificationStatus,jdbcType=INTEGER},
+      <if test="record.verificationStatus != null">
+        verification_status = #{record.verificationStatus,jdbcType=INTEGER},
       </if>
       <if test="record.file != null">
         file = #{record.file,jdbcType=INTEGER},
       </if>
-      <if test="record.varificationFile != null">
-        varification_file = #{record.varificationFile,jdbcType=INTEGER},
+      <if test="record.verificationFile != null">
+        verification_file = #{record.verificationFile,jdbcType=INTEGER},
       </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -292,9 +292,9 @@
       enabled = #{record.enabled,jdbcType=TINYINT},
       diploma_type = #{record.diplomaType,jdbcType=INTEGER},
       type = #{record.type,jdbcType=INTEGER},
-      varification_status = #{record.varificationStatus,jdbcType=INTEGER},
+      verification_status = #{record.verificationStatus,jdbcType=INTEGER},
       file = #{record.file,jdbcType=INTEGER},
-      varification_file = #{record.varificationFile,jdbcType=INTEGER},
+      verification_file = #{record.verificationFile,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       last_time = #{record.lastTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -331,14 +331,14 @@
       <if test="type != null">
         type = #{type,jdbcType=INTEGER},
       </if>
-      <if test="varificationStatus != null">
-        varification_status = #{varificationStatus,jdbcType=INTEGER},
+      <if test="verificationStatus != null">
+        verification_status = #{verificationStatus,jdbcType=INTEGER},
       </if>
       <if test="file != null">
         file = #{file,jdbcType=INTEGER},
       </if>
-      <if test="varificationFile != null">
-        varification_file = #{varificationFile,jdbcType=INTEGER},
+      <if test="verificationFile != null">
+        verification_file = #{verificationFile,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -360,9 +360,9 @@
       enabled = #{enabled,jdbcType=TINYINT},
       diploma_type = #{diplomaType,jdbcType=INTEGER},
       type = #{type,jdbcType=INTEGER},
-      varification_status = #{varificationStatus,jdbcType=INTEGER},
+      verification_status = #{verificationStatus,jdbcType=INTEGER},
       file = #{file,jdbcType=INTEGER},
-      varification_file = #{varificationFile,jdbcType=INTEGER},
+      verification_file = #{verificationFile,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       last_time = #{lastTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}

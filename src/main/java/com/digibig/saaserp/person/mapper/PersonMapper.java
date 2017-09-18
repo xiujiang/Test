@@ -22,7 +22,7 @@ public interface PersonMapper {
 
     Person selectByPrimaryKey(Integer id);
     
-    Map<String , Object> getByCardNumber(String IDCard);
+    Map<String , Object> getByCardNumber(String idCard);
     
     Map<String , Object> getPersonById(Integer id);
     

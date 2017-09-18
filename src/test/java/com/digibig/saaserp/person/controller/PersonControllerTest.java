@@ -36,7 +36,7 @@ public class PersonControllerTest extends PersonServiceApplicationTests{
   public void identityVerificate() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
-    map.put("IDCard", "6228271991");
+    map.put("idCard", "6228271991");
     map.put("name", "李斌");
     
     String addr = JSON.toJSONString(map);
@@ -62,7 +62,7 @@ public class PersonControllerTest extends PersonServiceApplicationTests{
   public void getByCardNumber() throws UnsupportedEncodingException, Exception {
     
     Map<String, String> map = new HashMap<>();
-    map.put("IDCard", "6228271991");
+    map.put("idCard", "6228271991");
     
     String addr = JSON.toJSONString(map);
     this.mockMvc

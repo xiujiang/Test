@@ -10,12 +10,40 @@ package com.digibig.saaserp.person.common;
 
 public class CommonParam {
   
+  private CommonParam() {
+    throw new IllegalStateException("Utility class");
+  }
+  
+  public static final String MAP_PARAM_EMAIL = "email";
+  
+  public static final String MAP_PARAM_EMAILID = "emailId";
+  
+  public static final String MAP_PARAM_IDCARD = "idCard";
+  
+  public static final String MAP_PARAM_MOBILE = "mobile";
+  
+  public static final String MAP_PARAM_ADDRESS = "address";
+  
+  public static final String MAP_PARAM_ADDRESSID = "addressId";
+  
+  public static final String MAP_PARAM_PERSONID = "personId";
+  
+  public static final String MAP_PARAM_NAME = "name";
+  
+  public static final String MAP_PARAM_NUMBER = "number";
+  
+  public static final String MAP_PARAM_ENABLED = "enabled";
+  
+  public static final String MAP_PARAM_ISDEFAULT = "isDefault";
+  
+  public static final String MAP_PARAM_AUTH = "auth";
+  
   public static final String NOW = "至今";
   
   public static final String LONG_TIME = "长期";
   
   public static final String NOW_DATE = "1900-01-01";
-  
+
   //脱敏时邮箱前保留的位数
   public static final Integer DEFAULT_INT = -1;
   

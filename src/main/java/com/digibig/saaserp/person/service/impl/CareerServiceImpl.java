@@ -20,6 +20,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.digibig.saaserp.commons.exception.DBException;
 import com.digibig.saaserp.person.domain.Career;
@@ -60,8 +61,8 @@ public class CareerServiceImpl implements CareerService {
       try {
         careerMapper.insertSelective(career);
       }catch(RuntimeException e) {
-        logger.error("数据库操作异常",e);
-        throw new DBException("数据库操作异常",e);
+        logger.error("addCareer数据库操作异常",e);
+        throw new DBException("addCareer数据库操作异常",e);
       }
       
       return career.getId();
@@ -93,8 +94,8 @@ public class CareerServiceImpl implements CareerService {
     try {
       rows = careerMapper.updateByExampleSelective(career, example);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("setCareer数据库操作异常",e);
+      throw new DBException("setCareer数据库操作异常",e);
     }
 
     return rows>0;
@@ -129,8 +130,8 @@ public class CareerServiceImpl implements CareerService {
     try {
       rows = careerMapper.updateByExampleSelective(career, example);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("setCareerEnable数据库操作异常",e);
+      throw new DBException("setCareerEnable数据库操作异常",e);
     }
 
     return rows>0;
@@ -152,8 +153,8 @@ public class CareerServiceImpl implements CareerService {
       try {
         careerItemMapper.insertSelective(careerItem);
       }catch(RuntimeException e) {
-        logger.error("数据库操作异常",e);
-        throw new DBException("数据库操作异常",e);
+        logger.error("addCareerItem数据库操作异常",e);
+        throw new DBException("addCareerItem数据库操作异常",e);
       }
       
       return careerItem.getId();
@@ -180,8 +181,8 @@ public class CareerServiceImpl implements CareerService {
     try {
       rows = careerItemMapper.updateByExampleSelective(careerItem, example);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("setCareerItem数据库操作异常",e);
+      throw new DBException("setCareerItem数据库操作异常",e);
     }
 
     return rows>0;
@@ -208,8 +209,8 @@ public class CareerServiceImpl implements CareerService {
     try {
       rows = careerItemMapper.updateByExampleSelective(careerItem, example);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("setItemEnabled数据库操作异常",e);
+      throw new DBException("setItemEnabled数据库操作异常",e);
     }
     return rows>0;
   }
@@ -227,7 +228,7 @@ public class CareerServiceImpl implements CareerService {
     example.createCriteria().andPersonIdEqualTo(personId)
            .andStartDateEqualTo(startDate).andCompanyFullNameEqualTo(companyFullName);
     List<Career> careers = careerMapper.selectByExample(example);
-    if(careers.size() == 0) {
+    if(CollectionUtils.isEmpty(careers)) {
       return null;
     }
     return careers.get(0);

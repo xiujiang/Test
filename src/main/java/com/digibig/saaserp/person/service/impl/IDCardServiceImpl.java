@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.digibig.saaserp.commons.exception.DBException;
 import com.digibig.saaserp.person.common.CommonParam;
@@ -45,7 +46,7 @@ public class IDCardServiceImpl implements IDCardService {
     example.createCriteria().andUniqueCodeEqualTo(uniqueCode);
     
     List<IDCard> idCards = idCardMapper.selectByExample(example);
-    if(idCards.size() == 0) {
+    if(CollectionUtils.isEmpty(idCards)) {
       return null;
     }
     return idCards.get(0);
@@ -71,8 +72,8 @@ public class IDCardServiceImpl implements IDCardService {
         idCard.setUniqueCode(uniqueCode);
         idCardMapper.insertSelective(idCard);
       }catch(RuntimeException e) {
-        logger.error("数据库操作异常",e);
-        throw new DBException("数据库操作异常",e);
+        logger.error("addIdCard数据库操作异常",e);
+        throw new DBException("addIdCard数据库操作异常",e);
       }
       result = idCard.getId();
       
@@ -129,8 +130,8 @@ public class IDCardServiceImpl implements IDCardService {
     try {
       rows = idCardMapper.updateByExampleSelective(idCard, example);
     }catch(RuntimeException e) {
-      logger.error("数据库操作异常",e);
-      throw new DBException("数据库操作异常",e);
+      logger.error("setCardPicture数据库操作异常",e);
+      throw new DBException("setCardPicture数据库操作异常",e);
     }
     return rows>0;
   }

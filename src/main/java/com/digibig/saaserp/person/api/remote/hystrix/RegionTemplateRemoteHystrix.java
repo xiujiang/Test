@@ -21,7 +21,7 @@ public class RegionTemplateRemoteHystrix implements RegionTemplateRemote{
 
   @Override
   public HttpResult<String> path(@PathVariable("nid") Integer nid) {
-    return new HttpResult<String>(HttpStatus.SERVER_ERROR, "调用Region-Service失败");
+    return new HttpResult<>(HttpStatus.SERVER_ERROR, "调用Region-Service失败");
   }
 
 }

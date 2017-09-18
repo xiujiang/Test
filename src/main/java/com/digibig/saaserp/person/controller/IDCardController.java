@@ -51,7 +51,32 @@ import com.digibig.saaserp.person.utils.IDCardType;
 @RestController
 @RequestMapping("/v1.0/person/idcard")
 public class IDCardController {
+  
   private Logger logger = LoggerFactory.getLogger(getClass());
+  
+  //发证日期
+  private static final String ISSUE_DATE = "issueDate";
+  
+  //过期日期
+  private static final String EXPIRE = "expire";
+  
+  //身份证类型
+  private static final String IDCARD_TYPE = "idCardType";
+  
+  //性别
+  private static final String GENDER = "pGender";
+  
+  //发证机关
+  private static final String AGENCY = "agency";
+  
+  //正面照片
+  private static final String FRONT_PIC = "frontPic";
+  
+  //背面照片
+  private static final String BACK_PIC = "backPic";
+  
+  //身份证id
+  private static final String IDCARDID = "idCardId";
   
   @Autowired
   private IDCardService idCardService;
@@ -80,15 +105,15 @@ public class IDCardController {
   @PostMapping("")
   public HttpResult<Integer> addIdCard(@RequestBody Map<String, String> paramMap){
     
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("name")), "name不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("number")), "number不能为空");
-    Assert.isTrue(IDValidator.valid(paramMap.get("number")), "number不合法");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("issueDate")), "issueDate不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("expire")), "expire不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("address")), "address不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("pGender")), "pGender不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("agency")), "agency不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_PERSONID)), "绑定身份证personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_NAME)), "name不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_NUMBER)), "number不能为空");
+    Assert.isTrue(IDValidator.valid(paramMap.get(CommonParam.MAP_PARAM_NUMBER)), "number不合法");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(ISSUE_DATE)), "issueDate不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(EXPIRE)), "expire不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_ADDRESS)), "address不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(GENDER)), "pGender不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(AGENCY)), "agency不能为空");
     
     IDCard idCard = new IDCard();
     BeanUtilsBean beanUtils = BeanUtilsBean.getInstance();
@@ -96,19 +121,16 @@ public class IDCardController {
     
     try {
       beanUtils.populate(idCard,paramMap);
-    } catch (IllegalAccessException e) {
-      logger.error(e.getMessage());
-      return new HttpResult<Integer>(HttpStatus.PARAM_ERROR,"失败");
-    } catch (InvocationTargetException e) {
-      logger.error(e.getMessage());
-      return new HttpResult<Integer>(HttpStatus.PARAM_ERROR,"失败");
-    }
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      logger.error("身份证对象转换异常",e);
+      return new HttpResult<>(HttpStatus.PARAM_ERROR,"失败");
+    } 
     
-    String idCardTypeStr = paramMap.get("idCardType");
-    String expire = paramMap.get("expire");
-    String genderStr = paramMap.get("pGender");
+    String idCardTypeStr = paramMap.get(IDCARD_TYPE);
+    String expire = paramMap.get(EXPIRE);
+    String genderStr = paramMap.get(GENDER);
     
-    Boolean isDefault = Boolean.valueOf(paramMap.get("isDefault"));
+    Boolean isDefault = Boolean.valueOf(paramMap.get(CommonParam.MAP_PARAM_ISDEFAULT));
 
     IDCardType idCaedType = IDCardType.SECOND;
     
@@ -129,15 +151,15 @@ public class IDCardController {
     idCard.setExpireDate(expireDate);
     idCard.setType(idCaedType.getValue());
     
-    logger.info(idCard.toString());
+    logger.info("",idCard);
     
     Integer id = idCardService.addIdCard(idCard,isDefault);
 
     if(id == null) {
-      return new HttpResult<Integer>(HttpStatus.SERVER_ERROR,"该身份证已存在");
+      return new HttpResult<>(HttpStatus.SERVER_ERROR,"该身份证已存在");
     }
     
-    return new HttpResult<Integer>(HttpStatus.OK,"成功",id);
+    return new HttpResult<>(HttpStatus.OK,"成功",id);
   }
   
   /**
@@ -155,14 +177,14 @@ public class IDCardController {
    */
   @PostMapping("/pic")
   public HttpResult<Boolean> setCardPicture(@RequestBody Map<String, String> paramMap){
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("idCardId")), "idCardId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_PERSONID)), "设置身份证关联图片personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(IDCARDID)), "设置身份证关联图片idCardId不能为空");
     
-    String frontPicStr = paramMap.get("frontPic");
-    String backPicStr = paramMap.get("backPic");
+    String frontPicStr = paramMap.get(FRONT_PIC);
+    String backPicStr = paramMap.get(BACK_PIC);
     
-    Integer personId = Integer.valueOf(paramMap.get("personId"));
-    Integer idCardId = Integer.valueOf(paramMap.get("idCardId"));
+    Integer personId = Integer.valueOf(paramMap.get(CommonParam.MAP_PARAM_PERSONID));
+    Integer idCardId = Integer.valueOf(paramMap.get(IDCARDID));
     Integer frontPic = null;
     Integer backPic = null;
 
@@ -177,8 +199,8 @@ public class IDCardController {
     Boolean result = idCardService.setCardPicture(personId,idCardId,frontPic,backPic);
 
     if(result) {
-      return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
+      return new HttpResult<>(HttpStatus.OK,"成功",result);
     }
-    return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败",result);
+    return new HttpResult<>(HttpStatus.SERVER_ERROR,"失败",result);
   }
 }

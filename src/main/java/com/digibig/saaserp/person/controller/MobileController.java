@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.digibig.saaserp.commons.api.HttpResult;
 import com.digibig.saaserp.commons.constant.HttpStatus;
 import com.digibig.saaserp.commons.util.RegexValidator;
+import com.digibig.saaserp.person.common.CommonParam;
 import com.digibig.saaserp.person.service.MobileService;
 import com.digibig.saaserp.person.utils.Enabled;
 
@@ -45,6 +46,7 @@ import com.digibig.saaserp.person.utils.Enabled;
 @RestController
 @RequestMapping("/v1.0/person/mobiles")
 public class MobileController {
+  
   private Logger logger = LoggerFactory.getLogger(getClass());
   
   @Autowired
@@ -65,20 +67,22 @@ public class MobileController {
   @PostMapping("")
   public HttpResult<Integer> addMobile(@RequestBody Map<String, String> paramMap){
     
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("number")), "number不能为空");
-    Assert.isTrue(RegexValidator.isMobile(paramMap.get("number").trim()), "number格式错误");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_PERSONID)), "添加手机号personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_NUMBER)), "number不能为空");
+    Assert.isTrue(RegexValidator.isMobile(paramMap.get(CommonParam.MAP_PARAM_NUMBER).trim()), "number格式错误");
     
-    Integer personId = Integer.valueOf(paramMap.get("personId"));
-    String mobileNumber = paramMap.get("number");
-    Boolean isDefault = Boolean.valueOf(paramMap.get("isDefault"));
+    Integer personId = Integer.valueOf(paramMap.get(CommonParam.MAP_PARAM_PERSONID));
+    String mobileNumber = paramMap.get(CommonParam.MAP_PARAM_NUMBER);
+    Boolean isDefault = Boolean.valueOf(CommonParam.MAP_PARAM_ISDEFAULT);
+    
+    logger.info("personId:{},mobile:{}",personId,mobileNumber);
 
     Integer result = mobileService.addMobile(personId, mobileNumber, isDefault);
 
     if(result == null) {
-      return new HttpResult<Integer>(HttpStatus.SERVER_ERROR,"失败",result);
+      return new HttpResult<>(HttpStatus.SERVER_ERROR,"失败",result);
     }
-    return new HttpResult<Integer>(HttpStatus.OK,"成功",result);
+    return new HttpResult<>(HttpStatus.OK,"成功",result);
   }
   
 
@@ -97,20 +101,22 @@ public class MobileController {
   @PostMapping("/enabled")
   public HttpResult<Boolean> setMobileEnabled(@RequestBody Map<String, String> paramMap){
     
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("personId")), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("mobile")), "mobile不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get("enabled")), "enabled不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_PERSONID)), "设置手机号状态personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_MOBILE)), "设置手机号状态mobile不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_ENABLED)), "设置手机号状态enabled不能为空");
     
-    Integer personId = Integer.valueOf(paramMap.get("personId"));
-    String mobile = paramMap.get("mobile");
-    Enabled enabled = Enum.valueOf(Enabled.class, paramMap.get("enabled").trim());
+    Integer personId = Integer.valueOf(paramMap.get(CommonParam.MAP_PARAM_PERSONID));
+    String mobile = paramMap.get(CommonParam.MAP_PARAM_MOBILE);
+    Enabled enabled = Enum.valueOf(Enabled.class, paramMap.get(CommonParam.MAP_PARAM_ENABLED).trim());
+    
+    logger.info("personId:{},mobile:{}",personId,mobile);
     
     Boolean result = mobileService.setMobileEnabled(personId, mobile, enabled);
 
     if(result) {
-      return new HttpResult<Boolean>(HttpStatus.OK,"成功",result);
+      return new HttpResult<>(HttpStatus.OK,"成功",result);
     }
-    return new HttpResult<Boolean>(HttpStatus.SERVER_ERROR,"失败",result);
+    return new HttpResult<>(HttpStatus.SERVER_ERROR,"失败",result);
   }
   
   
@@ -127,27 +133,21 @@ public class MobileController {
    */
   @PostMapping("/list/des")
   public HttpResult<List<String>> getDesensitizeInfo(@RequestBody Map<String, String> paramMap){
-    String personIdStr = paramMap.get("personId");
-    String isEnabled = paramMap.get("enabled");
+    String personIdStr = paramMap.get(CommonParam.MAP_PARAM_PERSONID);
+    String isEnabled = paramMap.get(CommonParam.MAP_PARAM_ENABLED);
     
-    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "查询自然人手机号信息 - 脱敏personId不能为空");
     
     Integer personId = Integer.valueOf(personIdStr);
     Enabled enabled = Enabled.ENABLED;
 
     if(!StringUtils.isEmpty(isEnabled)) {
-      
-      try {
         enabled = Enum.valueOf(Enabled.class, isEnabled.trim());
-      }catch(IllegalArgumentException e){
-        logger.error(e.getMessage());
-        return new HttpResult<List<String>>(HttpStatus.PARAM_ERROR,"enabled必须为Enabled枚举类");
-      }
     }
     
     List<String> result = mobileService.getDesensitizeInfo(personId, enabled);
     
-    return new HttpResult<List<String>>(HttpStatus.OK,"成功",result);
+    return new HttpResult<>(HttpStatus.OK,"成功",result);
   }
   
   
@@ -165,31 +165,25 @@ public class MobileController {
    */
   @PostMapping("/list")
   public HttpResult<List<String>> getMobileInfo(@RequestBody Map<String, String> paramMap){
-    String personIdStr = paramMap.get("personId");
-    String isEnabled = paramMap.get("enabled");
-    String auth = paramMap.get("auth");
+    String personIdStr = paramMap.get(CommonParam.MAP_PARAM_PERSONID);
+    String isEnabled = paramMap.get(CommonParam.MAP_PARAM_ENABLED);
+    String auth = paramMap.get(CommonParam.MAP_PARAM_AUTH);
     
-    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "personId不能为空");
-    Assert.isTrue(!StringUtils.isEmpty(auth), "auth不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(personIdStr), "查询自然人手机号信息personId不能为空");
+    Assert.isTrue(!StringUtils.isEmpty(auth), "查询自然人手机号信息auth不能为空");
     
     Enabled enabled = Enabled.ENABLED;
     
     if(!StringUtils.isEmpty(isEnabled)) {
-      
-      try {
         enabled = Enum.valueOf(Enabled.class, isEnabled.trim());
-      }catch(IllegalArgumentException e){
-        logger.error(e.getMessage());
-        return new HttpResult<List<String>>(HttpStatus.PARAM_ERROR,"enabled必须为Enabled枚举类");
-      }
     }
     //TODO 授权处理
     if(auth == null) {
-      return new HttpResult<List<String>>(HttpStatus.AUTH_FAIL,"授权失败");
+      return new HttpResult<>(HttpStatus.AUTH_FAIL,"授权失败");
     }
 
     Integer personId = Integer.valueOf(personIdStr);
     List<String> result = mobileService.getMobileInfo(personId, enabled);
-    return new HttpResult<List<String>>(HttpStatus.OK,"成功",result);
+    return new HttpResult<>(HttpStatus.OK,"成功",result);
   }
 }
