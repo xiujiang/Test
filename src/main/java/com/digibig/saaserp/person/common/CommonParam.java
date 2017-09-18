@@ -11,7 +11,6 @@ package com.digibig.saaserp.person.common;
 public class CommonParam {
   
   private CommonParam() {
-    throw new IllegalStateException("Utility class");
   }
   
   public static final String MAP_PARAM_EMAIL = "email";
