@@ -5,13 +5,12 @@
  */
 package com.digibig.saaserp.person.aop;
 
-import java.util.Arrays;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -43,8 +42,12 @@ public class ApiLogAspect {
    * 切入点:所有controller的所有方法
    * </p>
    */
-  @Pointcut("execution(public * com.digibig.saaserp.metadata.controller..*.*(..))")
-  public void webLog() {}
+  @Pointcut("execution(public * com.digibig.saaserp.calendar.controller..*.*(..))")
+  public void webLog() {
+    if (logger.isDebugEnabled()) {
+      logger.debug("a weblog will be print");
+    }
+  }
 
   /**
    * <p>
@@ -54,16 +57,16 @@ public class ApiLogAspect {
    * @param joinPoint：切入点
    */
   @Before("webLog()")
-  public void doBefore(JoinPoint joinPoint) throws Throwable {
+  public void doBefore(JoinPoint joinPoint) {
     ServletRequestAttributes attributes =
         (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
     HttpServletRequest request = attributes.getRequest();
-    logger.info("url : " + request.getRequestURL().toString());
-    logger.info("request method : " + request.getMethod());
-    logger.info("remote ip : " + request.getRemoteAddr());
-    logger.info("class method : " + joinPoint.getSignature().getDeclaringTypeName() + "."
-        + joinPoint.getSignature().getName());
-    logger.info("request params : " + Arrays.toString(joinPoint.getArgs()));
+    logger.info("url : {}", request.getRequestURL());
+    logger.info("request method : {}", request.getMethod());
+    logger.info("remote ip : {}", request.getRemoteAddr());
+    logger.info("class method : {}",
+        joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
+    logger.info("request params : {}", joinPoint.getArgs());
   }
 
   /**
@@ -74,8 +77,8 @@ public class ApiLogAspect {
    * @param ret
    */
   @AfterReturning(returning = "ret", pointcut = "webLog()")
-  public void doAfterReturning(Object ret) throws Throwable {
-    logger.info("response : " + ret);
+  public void doAfterReturning(Object ret) {
+    logger.info("response : {}", ret);
   }
 
   /**
@@ -93,5 +96,10 @@ public class ApiLogAspect {
     long endTime = System.currentTimeMillis();
     logger.info("{} execute time :{}ms", pjp.getSignature(), endTime - startTime);
     return result;
+  }
+
+  @AfterThrowing(pointcut = "webLog()", throwing = "ex")
+  public void doAfterThrowing(Throwable ex) {
+    logger.error(ex.getMessage(), ex);
   }
 }
