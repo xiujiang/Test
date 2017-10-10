@@ -225,7 +225,7 @@ public class PersonServiceImpl implements PersonService {
     }
     
     if(result && !CollectionUtils.isEmpty(idCards)) {
-      mapResult.put("id", idCards.get(0).getId());
+      mapResult.put("personId", idCards.get(0).getId());
       mapResult.put("credential", credential);
       return mapResult;
     }
@@ -250,7 +250,7 @@ public class PersonServiceImpl implements PersonService {
         throw new DBException("identityVerificate数据库操作异常",e);
       }
       
-      mapResult.put("id", person.getId());
+      mapResult.put("personId", person.getId());
       mapResult.put("credential", credential);
       return mapResult;
     }
