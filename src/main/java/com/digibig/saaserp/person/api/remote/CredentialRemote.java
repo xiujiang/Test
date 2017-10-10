@@ -8,6 +8,7 @@
  */
 package com.digibig.saaserp.person.api.remote;
 
+import java.util.Map;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,11 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.digibig.saaserp.commons.api.HttpResult;
-import com.digibig.saaserp.person.api.remote.hystrix.RegionTemplateRemoteHystrix;
+import com.digibig.saaserp.person.api.remote.hystrix.CredentialRemoteHystrix;
 
-@FeignClient(value = "region-service", fallback = RegionTemplateRemoteHystrix.class)
-public interface RegionTemplateRemote {
-  @RequestMapping(value = "/v1.0/region-service/path/{nid}", method = RequestMethod.GET)
-  public HttpResult<String> path(@PathVariable("nid") Integer nid);
+@FeignClient(name = "credential-service", fallback = CredentialRemoteHystrix.class)
+public interface CredentialRemote {
+
+  @RequestMapping(value = "/v1.0/credential")
+  public HttpResult<String> submit(Map<String, String> params);
   
+  @RequestMapping(value = "/v1.0/credential/{credential}", method = RequestMethod.PUT)
+  public HttpResult<Void> verify(@PathVariable("credential") String credential);
 }

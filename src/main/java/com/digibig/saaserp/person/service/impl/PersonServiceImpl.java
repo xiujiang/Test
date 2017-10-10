@@ -19,11 +19,21 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.digibig.saaserp.commons.api.HttpResult;
+import com.digibig.saaserp.commons.constant.Charset;
+import com.digibig.saaserp.commons.constant.HttpMethod;
+import com.digibig.saaserp.commons.constant.HttpStatus;
 import com.digibig.saaserp.commons.exception.DBException;
 import com.digibig.saaserp.commons.exception.DigibigException;
+import com.digibig.saaserp.commons.util.HttpClient;
 import com.digibig.saaserp.commons.util.MaskedUtil;
 import com.digibig.saaserp.commons.util.RegexValidator;
+import com.digibig.saaserp.metadata.AuthMethodEnum;
+import com.digibig.saaserp.metadata.AuthOperEnum;
+import com.digibig.saaserp.person.api.remote.CredentialRemote;
 import com.digibig.saaserp.person.common.CommonParam;
 import com.digibig.saaserp.person.domain.Address;
 import com.digibig.saaserp.person.domain.AddressExample;
@@ -42,15 +52,29 @@ import com.digibig.saaserp.person.service.PersonService;
 import com.digibig.saaserp.person.utils.Enabled;
 import com.digibig.saaserp.person.utils.IDCardType;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Service
 public class PersonServiceImpl implements PersonService {
   
   private Logger logger = LoggerFactory.getLogger(getClass());
+  //默认超时时间
+  private static final Integer DEFAULT_TIMEOUT = 60 * 1000;
+  //默认编码
+  private static final String DEAFULT_CHARSET = Charset.UTF_8;
+  //身份验证匹配时返回的code
+  private static final String SUCCESS_CODE = "0";
+  //第三方身份验证匹配时的url
+  private static final String DEAFULT_URL = "http://idcard.market.alicloudapi.com/lianzhuo/idcard?";
+  //第三方身份验证匹配时的appCode
+  private static final String APP_CODE = "16b805ba3926465cab51ab1ce39dc4fc";
   
   @Autowired
   private PersonMapper personMapper;
+  
+  @Autowired
+  private CredentialRemote credentialRemote;
   
   @Autowired
   private MobileService mobileService;
@@ -122,24 +146,95 @@ public class PersonServiceImpl implements PersonService {
     return rows>0;
   }
 
+  
+  private Boolean checkCardnoAndName(String cardno, String name) {
+    
+    Map<String, String> headers = new HashMap<>();
+    //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
+    headers.put("Authorization", "APPCODE " + APP_CODE);
+    
+    StringBuilder sb = new StringBuilder(DEAFULT_URL)
+        .append("cardno=")
+        .append(cardno)
+        .append("&name=")
+        .append(name);
+
+    HttpResult<String> result = null;
+    
+    try {
+      result = HttpClient.execute(sb.toString(), HttpMethod.GET, headers, DEAFULT_CHARSET, null, DEFAULT_TIMEOUT);
+    } catch (DigibigException e) {
+      logger.error("身份核实时第三方验证异常",e);
+    }
+    
+    String code = null;
+    if(null != result) {
+      code = JSON.parseObject(
+               JSON.parseObject(result.getData())
+               .get("resp").toString())
+               .get("code").toString();
+    }
+        
+    
+    return SUCCESS_CODE.equals(code);
+  }
+  
+  private String getCredential() {
+    
+    Map<String, String> credential = new HashMap<>();
+    Integer countLimit = 1;
+    Long expireTime = 120L;
+    
+    //设置授权操作信息
+    credential.put("operation", AuthOperEnum.USERINFO.toString());
+    //设置授权方式信息
+    credential.put("method", AuthMethodEnum.SMS.toString()); 
+    //设置授权次数
+    credential.put("countLimit", countLimit.toString());
+    //设置过期时间
+    credential.put("expireTime", expireTime.toString());
+    HttpResult<String> httpresult = credentialRemote.submit(credential);
+    
+    if (httpresult.getCode() != HttpStatus.OK) {
+      logger.error("身份核实时授权失败");
+      return "";
+    }
+    
+    return httpresult.getData();
+  }
+  
+
   /*
    * 身份认证
    */
   @Transactional
   @Override
-  public Integer identityVerificate(String idCard, String name) {
+  public Map<String , Object> identityVerificate(String idCard, String name) {
     //根据身份证号和姓名查询自然人
     PersonExample example = new PersonExample();
     example.createCriteria().andIdNumberEqualTo(idCard).andNameEqualTo(name);
     
     List<Person> idCards = personMapper.selectByExample(example);
-    //有则返回id，否则调用第三方接口
-    if(!CollectionUtils.isEmpty(idCards)) {
-      return idCards.get(0).getId();
+    Map<String, Object> mapResult = new HashMap<>();
+    Boolean result = false;
+    
+    String credential = getCredential();
+     //提交授权失败时，身份核实失败
+    if(!StringUtils.isEmpty(credential)) {
+      result = true;
     }
     
-    //TODO 调用第三方接口查询
-    Boolean result = true;
+    if(result && !CollectionUtils.isEmpty(idCards)) {
+      mapResult.put("id", idCards.get(0).getId());
+      mapResult.put("credential", credential);
+      return mapResult;
+    }
+    
+    //有则返回id，否则调用第三方接口
+    if(result && CollectionUtils.isEmpty(idCards)) {
+      //调用第三方接口查询
+      result = checkCardnoAndName(idCard,name);
+    }
     
     //合法，在数据库中添加自然对象
     if(result) {
@@ -155,7 +250,9 @@ public class PersonServiceImpl implements PersonService {
         throw new DBException("identityVerificate数据库操作异常",e);
       }
       
-      return person.getId();
+      mapResult.put("id", person.getId());
+      mapResult.put("credential", credential);
+      return mapResult;
     }
     //不合法，返回null
     return null;

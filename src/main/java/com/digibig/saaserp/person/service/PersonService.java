@@ -92,7 +92,7 @@ public interface PersonService {
    * @param name 姓名
    * @return 自然人id
    */
-  Integer identityVerificate(String idCard, String name);
+  Map<String , Object> identityVerificate(String idCard, String name);
   
   /**
    * 获取自然人信息

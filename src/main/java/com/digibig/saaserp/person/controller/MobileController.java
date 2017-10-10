@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.digibig.saaserp.commons.api.HttpResult;
 import com.digibig.saaserp.commons.constant.HttpStatus;
 import com.digibig.saaserp.commons.util.RegexValidator;
+import com.digibig.saaserp.person.api.remote.CredentialRemote;
 import com.digibig.saaserp.person.common.CommonParam;
 import com.digibig.saaserp.person.service.MobileService;
 import com.digibig.saaserp.person.utils.Enabled;
@@ -48,6 +49,9 @@ import com.digibig.saaserp.person.utils.Enabled;
 public class MobileController {
   
   private Logger logger = LoggerFactory.getLogger(getClass());
+  
+  @Autowired
+  private CredentialRemote credentialRemote;
   
   @Autowired
   private MobileService mobileService;
@@ -177,8 +181,11 @@ public class MobileController {
     if(!StringUtils.isEmpty(isEnabled)) {
         enabled = Enum.valueOf(Enabled.class, isEnabled.trim());
     }
-    //TODO 授权处理
-    if(auth == null) {
+    
+    //验证授权信息
+    HttpResult<Void> httpresult = credentialRemote.verify(auth);
+    
+    if (httpresult.getCode() != HttpStatus.OK) {
       return new HttpResult<>(HttpStatus.AUTH_FAIL,"授权失败");
     }
 

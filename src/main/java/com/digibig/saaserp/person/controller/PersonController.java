@@ -8,6 +8,7 @@
  */
 package com.digibig.saaserp.person.controller;
 
+
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -26,6 +27,7 @@ import com.digibig.saaserp.commons.api.HttpResult;
 import com.digibig.saaserp.commons.constant.HttpStatus;
 import com.digibig.saaserp.commons.exception.DigibigException;
 import com.digibig.saaserp.commons.util.IDValidator;
+import com.digibig.saaserp.person.api.remote.CredentialRemote;
 import com.digibig.saaserp.person.common.CommonParam;
 import com.digibig.saaserp.person.service.PersonService;
 
@@ -56,6 +58,9 @@ public class PersonController {
   private Logger logger = LoggerFactory.getLogger(getClass());
   
   @Autowired
+  private CredentialRemote credentialRemote;
+  
+  @Autowired
   private PersonService personService;
   
   /**
@@ -70,7 +75,7 @@ public class PersonController {
    * @return 自然人id
    */
   @PostMapping("/veri")
-  public HttpResult<Integer> identityVerificate(@RequestBody Map<String, String> paramMap){
+  public HttpResult<Map<String , Object>> identityVerificate(@RequestBody Map<String, String> paramMap){
     String idCard = paramMap.get(CommonParam.MAP_PARAM_IDCARD);
     String name = paramMap.get(CommonParam.MAP_PARAM_NAME);
     
@@ -78,12 +83,12 @@ public class PersonController {
     Assert.isTrue(IDValidator.valid(idCard), "身份核实idCard不合法");
     Assert.isTrue(!StringUtils.isEmpty(name), "身份核实name不能为空");
     
-    Integer id = personService.identityVerificate(idCard,name);
+    Map<String , Object> map = personService.identityVerificate(idCard,name);
 
-    if(id == null) {
+    if(map == null) {
       return new HttpResult<>(HttpStatus.PARAM_ERROR,"身份核实失败");
     }
-    return new HttpResult<>(HttpStatus.OK,"成功",id);
+    return new HttpResult<>(HttpStatus.OK,"成功",map);
   }
 
   /**
@@ -324,9 +329,11 @@ public class PersonController {
     
     Assert.isTrue(!StringUtils.isEmpty(personIdStr), "查询自然人信息personId不能为空");
     Assert.isTrue(!StringUtils.isEmpty(auth), "查询自然人信息auth不能为空");
-
-    //TODO 授权处理
-    if(auth == null) {
+    
+    //验证授权信息
+    HttpResult<Void> httpresult = credentialRemote.verify(auth);
+    
+    if (httpresult.getCode() != HttpStatus.OK) {
       return new HttpResult<>(HttpStatus.AUTH_FAIL,"授权失败");
     }
     
@@ -337,6 +344,7 @@ public class PersonController {
       result = personService.getPersonInfo(personId);
     } catch (DigibigException e) {
       logger.error("查询自然人信息 - 不脱敏:",e);
+      return new HttpResult<>(HttpStatus.SERVER_ERROR,"失败");
     }
     
     return new HttpResult<>(HttpStatus.OK,"成功",result);
