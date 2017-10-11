@@ -91,8 +91,9 @@ public interface PersonService {
    * @param IDCard 身份证号
    * @param name 姓名
    * @return 自然人id
+   * @throws DigibigException 
    */
-  Map<String , Object> identityVerificate(String idCard, String name);
+  Map<String , Object> identityVerificate(String idCard, String name) throws DigibigException;
   
   /**
    * 获取自然人信息

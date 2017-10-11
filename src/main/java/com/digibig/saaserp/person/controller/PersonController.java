@@ -83,7 +83,13 @@ public class PersonController {
     Assert.isTrue(IDValidator.valid(idCard), "身份核实idCard不合法");
     Assert.isTrue(!StringUtils.isEmpty(name), "身份核实name不能为空");
     
-    Map<String , Object> map = personService.identityVerificate(idCard,name);
+    Map<String, Object> map = null;
+    try {
+      map = personService.identityVerificate(idCard,name);
+    } catch (DigibigException e) {
+      logger.error("身份核实时第三方验证异常",e);
+      return new HttpResult<>(HttpStatus.SERVER_ERROR,e.getMessage());
+    }
 
     if(map == null) {
       return new HttpResult<>(HttpStatus.PARAM_ERROR,"身份核实失败");

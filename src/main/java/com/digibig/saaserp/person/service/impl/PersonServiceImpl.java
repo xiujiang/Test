@@ -146,8 +146,8 @@ public class PersonServiceImpl implements PersonService {
     return rows>0;
   }
   
-  private Boolean checkCardnoAndName(String cardno, String name) {
-    
+  private Boolean checkCardnoAndName(String cardno, String name) throws DigibigException {
+    logger.info("身份核实--第三方认证");
     Map<String, String> headers = new HashMap<>();
     //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
     headers.put("Authorization", "APPCODE " + APP_CODE);
@@ -164,6 +164,7 @@ public class PersonServiceImpl implements PersonService {
       result = HttpClient.execute(sb.toString(), HttpMethod.GET, headers, DEAFULT_CHARSET, null, DEFAULT_TIMEOUT);
     } catch (DigibigException e) {
       logger.error("身份核实时第三方验证异常",e);
+      throw new DigibigException("身份核实时第三方验证异常",e);
     }
     
     String code = null;
@@ -173,8 +174,6 @@ public class PersonServiceImpl implements PersonService {
                .get("resp").toString())
                .get("code").toString();
     }
-        
-    
     return SUCCESS_CODE.equals(code);
   }
   
@@ -182,7 +181,7 @@ public class PersonServiceImpl implements PersonService {
    * 获取授权
    */
   private String getCredential() {
-    
+    logger.info("身份核实--授权");
     Map<String, String> credential = new HashMap<>();
     Integer countLimit = 1;
     Long expireTime = 120L;
@@ -211,30 +210,32 @@ public class PersonServiceImpl implements PersonService {
    */
   @Transactional
   @Override
-  public Map<String , Object> identityVerificate(String idCard, String name) {
+  public Map<String , Object> identityVerificate(String idCard, String name) throws DigibigException {
+    
+    //授权
+    String credential = getCredential();
+     
+    if(StringUtils.isEmpty(credential)) {
+    //提交授权失败时，身份核实失败，返回null
+      return null;
+    }
+    
     //根据身份证号和姓名查询自然人
     PersonExample example = new PersonExample();
     example.createCriteria().andIdNumberEqualTo(idCard).andNameEqualTo(name);
     
     List<Person> idCards = personMapper.selectByExample(example);
+    
     Map<String, Object> mapResult = new HashMap<>();
     Boolean result = false;
     
-    String credential = getCredential();
-     //提交授权失败时，身份核实失败
-    if(!StringUtils.isEmpty(credential)) {
-      result = true;
-    }
-    
-    if(result && !CollectionUtils.isEmpty(idCards)) {
+    //数据库中有该自然人，返回自然人id和授权信息
+    if(!CollectionUtils.isEmpty(idCards)) {
       mapResult.put("personId", idCards.get(0).getId());
       mapResult.put("credential", credential);
       return mapResult;
-    }
-    
-    //有则返回id，否则调用第三方接口
-    if(result && CollectionUtils.isEmpty(idCards)) {
-      //调用第三方接口查询
+    }else {
+      //数据库中没有，则调用第三方接口查询
       result = checkCardnoAndName(idCard,name);
     }
     
