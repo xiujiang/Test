@@ -68,8 +68,6 @@ public class PersonServiceImpl implements PersonService {
   private static final String SUCCESS_CODE = "0";
   //第三方身份验证匹配时的url
   private static final String DEAFULT_URL = "http://idcard.market.alicloudapi.com/lianzhuo/idcard?";
-  //第三方身份验证匹配时的appCode
-  private static final String APP_CODE = "16b805ba3926465cab51ab1ce39dc4fc";
   
   //第三方身份验证匹配时的appCode
   @Value("${person.appCode}")
