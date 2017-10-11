@@ -13,6 +13,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -69,6 +70,10 @@ public class PersonServiceImpl implements PersonService {
   private static final String DEAFULT_URL = "http://idcard.market.alicloudapi.com/lianzhuo/idcard?";
   //第三方身份验证匹配时的appCode
   private static final String APP_CODE = "16b805ba3926465cab51ab1ce39dc4fc";
+  
+  //第三方身份验证匹配时的appCode
+  @Value("${person.appCode}")
+  private String appCode;
   
   @Autowired
   private PersonMapper personMapper;
@@ -150,7 +155,7 @@ public class PersonServiceImpl implements PersonService {
     logger.info("身份核实--第三方认证");
     Map<String, String> headers = new HashMap<>();
     //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
-    headers.put("Authorization", "APPCODE " + APP_CODE);
+    headers.put("Authorization", "APPCODE " + appCode);
     
     StringBuilder sb = new StringBuilder(DEAFULT_URL)
         .append("cardno=")
