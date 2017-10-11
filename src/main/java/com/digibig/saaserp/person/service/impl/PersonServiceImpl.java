@@ -26,13 +26,13 @@ import com.digibig.saaserp.commons.api.HttpResult;
 import com.digibig.saaserp.commons.constant.Charset;
 import com.digibig.saaserp.commons.constant.HttpMethod;
 import com.digibig.saaserp.commons.constant.HttpStatus;
+import com.digibig.saaserp.commons.enums.AuthMethodEnum;
+import com.digibig.saaserp.commons.enums.AuthOperEnum;
 import com.digibig.saaserp.commons.exception.DBException;
 import com.digibig.saaserp.commons.exception.DigibigException;
 import com.digibig.saaserp.commons.util.HttpClient;
 import com.digibig.saaserp.commons.util.MaskedUtil;
 import com.digibig.saaserp.commons.util.RegexValidator;
-import com.digibig.saaserp.metadata.AuthMethodEnum;
-import com.digibig.saaserp.metadata.AuthOperEnum;
 import com.digibig.saaserp.person.api.remote.CredentialRemote;
 import com.digibig.saaserp.person.common.CommonParam;
 import com.digibig.saaserp.person.domain.Address;
@@ -145,7 +145,6 @@ public class PersonServiceImpl implements PersonService {
     
     return rows>0;
   }
-
   
   private Boolean checkCardnoAndName(String cardno, String name) {
     
