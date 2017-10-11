@@ -93,7 +93,7 @@ public interface PersonService {
    * @return 自然人id
    * @throws DigibigException 
    */
-  Map<String , Object> identityVerificate(String idCard, String name) throws DigibigException;
+  Map<String , String> identityVerificate(String idCard, String name) throws DigibigException;
   
   /**
    * 获取自然人信息

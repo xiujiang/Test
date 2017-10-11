@@ -75,7 +75,7 @@ public class PersonController {
    * @return 自然人id
    */
   @PostMapping("/veri")
-  public HttpResult<Map<String , Object>> identityVerificate(@RequestBody Map<String, String> paramMap){
+  public HttpResult<Map<String , String>> identityVerificate(@RequestBody Map<String, String> paramMap){
     String idCard = paramMap.get(CommonParam.MAP_PARAM_IDCARD);
     String name = paramMap.get(CommonParam.MAP_PARAM_NAME);
     
@@ -83,7 +83,7 @@ public class PersonController {
     Assert.isTrue(IDValidator.valid(idCard), "身份核实idCard不合法");
     Assert.isTrue(!StringUtils.isEmpty(name), "身份核实name不能为空");
     
-    Map<String, Object> map = null;
+    Map<String, String> map = null;
     try {
       map = personService.identityVerificate(idCard,name);
     } catch (DigibigException e) {

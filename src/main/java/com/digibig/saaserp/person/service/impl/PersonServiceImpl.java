@@ -210,7 +210,7 @@ public class PersonServiceImpl implements PersonService {
    */
   @Transactional
   @Override
-  public Map<String , Object> identityVerificate(String idCard, String name) throws DigibigException {
+  public Map<String , String> identityVerificate(String idCard, String name) throws DigibigException {
     
     //授权
     String credential = getCredential();
@@ -226,12 +226,12 @@ public class PersonServiceImpl implements PersonService {
     
     List<Person> idCards = personMapper.selectByExample(example);
     
-    Map<String, Object> mapResult = new HashMap<>();
+    Map<String, String> mapResult = new HashMap<>();
     Boolean result = false;
     
     //数据库中有该自然人，返回自然人id和授权信息
     if(!CollectionUtils.isEmpty(idCards)) {
-      mapResult.put("personId", idCards.get(0).getId());
+      mapResult.put("personId", idCards.get(0).getId().toString());
       mapResult.put("credential", credential);
       return mapResult;
     }else {
@@ -253,7 +253,7 @@ public class PersonServiceImpl implements PersonService {
         throw new DBException("identityVerificate数据库操作异常",e);
       }
       
-      mapResult.put("personId", person.getId());
+      mapResult.put("personId", person.getId().toString());
       mapResult.put("credential", credential);
       return mapResult;
     }
