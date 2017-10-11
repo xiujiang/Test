@@ -179,6 +179,9 @@ public class PersonServiceImpl implements PersonService {
     return SUCCESS_CODE.equals(code);
   }
   
+  /*
+   * 获取授权
+   */
   private String getCredential() {
     
     Map<String, String> credential = new HashMap<>();
@@ -197,7 +200,7 @@ public class PersonServiceImpl implements PersonService {
     
     if (httpresult.getCode() != HttpStatus.OK) {
       logger.error("身份核实时授权失败");
-      return "";
+      return null;
     }
     
     return httpresult.getData();
