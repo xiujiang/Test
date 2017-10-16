@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>person-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>person-service</name>
@@ -20,12 +20,12 @@
 		<dependency>
 			<groupId>${groupId}</groupId>
 			<artifactId>person-service-domain</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>${groupId}</groupId>
 			<artifactId>commons-util</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
