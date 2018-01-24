@@ -4,37 +4,23 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>person-service</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>person-service</name>
 	<description>自然人服务</description>
 
 	<parent>
-		<groupId>com.digibig</groupId>
-		<artifactId>service-parent</artifactId>
-		<version>1.7-release</version>
+		<groupId>com.digibig.pom</groupId>
+		<artifactId>service</artifactId>
+		<version>1.7-SNAPSHOT</version>
 	</parent>
 	
 	<dependencies>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>com.digibig</groupId>
 			<artifactId>person-service-domain</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>${groupId}</groupId>
-			<artifactId>commons-util</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.2.31</version>
+			<version>1.0.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

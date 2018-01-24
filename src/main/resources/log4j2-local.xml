@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30" strict="true">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%-5.5t] %highlight{%-5level}{STYLE=Logback} %cyan{%30.30c{1.}} - %msg%n%highlight{%throwable}{bright}"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <!--控制重点显示的内容，默认本地项目以trace级别输出，其他输出warn-->
+        <Logger name="com.digibig" level="trace" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <AsyncRoot level="info" additivity="false">
+            <AppenderRef ref="Console" />
+        </AsyncRoot>
+    </Loggers>
+</Configuration>
