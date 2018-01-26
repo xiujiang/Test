@@ -6,10 +6,10 @@
  * 本内容为保密信息，仅限本公司内部使用。
  * 非经本公司书面许可，任何人不得外泄或用于其他目的。
  */
-package com.digibig.service.person.api.remote.hystrix;
+package com.digibig.service.person.remote.hystrix;
 
 
-import com.digibig.service.person.api.remote.RegionTemplateRemote;
+import com.digibig.service.person.remote.RegionTemplateRemote;
 import com.digibig.spring.api.HttpResult;
 import com.digibig.spring.api.HttpStatus;
 import org.springframework.stereotype.Component;

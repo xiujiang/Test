@@ -7,7 +7,7 @@
  */
 package com.digibig.service.person.service;
 
-import com.digibig.service.person.api.remote.RegionTemplateRemote;
+import com.digibig.service.person.remote.RegionTemplateRemote;
 import com.digibig.service.person.domain.Address;
 import com.digibig.spring.exception.DigibigException;
 import com.digibig.spring.service2.AbstractServiceForItem;

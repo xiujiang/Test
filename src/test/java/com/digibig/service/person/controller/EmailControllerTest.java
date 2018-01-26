@@ -10,15 +10,18 @@ package com.digibig.service.person.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.digibig.service.person.domain.AuthResult;
+import com.digibig.service.person.remote.AuthorizationRemote;
+import com.digibig.service.person.remote.RegionTemplateRemote;
 import com.digibig.service.person.utils.Enabled;
+import com.digibig.spring.api.HttpResult;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.digibig.service.person.PersonServiceApplicationTests;
 
@@ -91,5 +94,23 @@ public class EmailControllerTest extends PersonServiceApplicationTests{
     map.put("personId", "1");
     map.put("auth", "2016-07-04");
 
+  }
+
+  @Autowired
+  private AuthorizationRemote authorizationRemote;
+
+  @Autowired
+  private RegionTemplateRemote templateRemote;
+
+  @Test
+  public void testAuth(){
+    AuthResult result = authorizationRemote.auth("622827199112050611","李斌","APPCODE 16b805ba3926465cab51ab1ce39dc4fc");
+    System.out.println(result);
+  }
+
+  @Test
+  public void testRegion(){
+    HttpResult<String> result = templateRemote.path(1111);
+    System.out.println(result);
   }
 }

@@ -7,29 +7,16 @@
  */
 package com.digibig.service.person.service;
 
-import com.digibig.commons.api.HttpResult;
-import com.digibig.commons.constant.Charset;
-import com.digibig.commons.constant.HttpMethod;
-import com.digibig.commons.enums.AuthMethodEnum;
-import com.digibig.commons.enums.AuthOperEnum;
-import com.digibig.commons.exception.DigibigException;
-import com.digibig.commons.util.HttpClient;
 import com.digibig.commons.util.MaskedUtil;
 import com.digibig.service.person.common.CommonParam;
 import com.digibig.service.person.domain.Person;
-import com.digibig.spring.credential.Credential;
+import com.digibig.service.person.enums.IDCardType;
 import com.digibig.spring.credential.CredentialHelper;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import com.digibig.spring.service2.AbstractServiceForBase;
@@ -39,6 +26,24 @@ import com.digibig.spring.service2.AbstractServiceForBase;
 public class PersonService extends AbstractServiceForBase<Person> {
 
   Logger logger = LoggerFactory.getLogger(this.getClass());
+
+  //授权有效时间
+  private static final int EXPIRE_TIME = 120;
+
+  @Autowired
+  private CredentialHelper credentialHelper;
+
+  @Override
+  protected void preAdd(Person person){
+    if(Objects.isNull(person.getIdType())){
+      person.setIdType(IDCardType.SECOND);
+    }
+  }
+
+  @Override
+  protected void postGet(Person person){
+    person.setCredential(this.getCredential());
+  }
 
   public PersonService() {
     super(Person.class);
@@ -74,6 +79,13 @@ public class PersonService extends AbstractServiceForBase<Person> {
     Person person = this.get(personId);
 
     return this.getDesensitizeInfo(person);
+  }
+
+  /*
+ * 获取授权
+ */
+  private String getCredential() {
+    return credentialHelper.issue(credentialHelper.newCredential(), EXPIRE_TIME);
   }
 
 
