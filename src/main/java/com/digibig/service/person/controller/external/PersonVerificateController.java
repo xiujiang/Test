@@ -1,8 +1,7 @@
-package com.digibig.service.person.controller.internal;
+package com.digibig.service.person.controller.external;
 
 import com.digibig.service.person.domain.Person;
 import com.digibig.service.person.service.PersonVerificateService;
-import com.digibig.spring.api.HttpResult;
 import com.digibig.spring.api.HttpStatus;
 import com.digibig.spring.auth.Domain;
 import com.digibig.spring.auth.NoLogin;
@@ -16,22 +15,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping(value = "internal/v1.0/person/verificate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-@Domain(Person.class)
-@Qualifier("internal")
-@NoLogin
+@RestController("PersonVerificateController-e")
+@RequestMapping(value = "external/v1.0/person/verificate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class PersonVerificateController {
 
   Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  @Autowired
-  private PersonVerificateService verificateService;
+
+  private com.digibig.service.person.controller.internal.PersonVerificateController verificateController;
 
   @PostMapping(value = "")
   public com.digibig.spring.api.HttpResult<Person> verificate(@RequestBody Person person){
-
-    return new HttpResult<>(HttpStatus.OK,"成功",verificateService.identityVerificate(person));
-
+    return verificateController.verificate(person);
   }
 }

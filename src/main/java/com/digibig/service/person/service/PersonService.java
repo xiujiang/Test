@@ -45,6 +45,11 @@ public class PersonService extends AbstractServiceForBase<Person> {
     person.setCredential(this.getCredential());
   }
 
+  @Override
+  protected void postAdd(Person person){
+    person.setCredential(this.getCredential());
+  }
+
   public PersonService() {
     super(Person.class);
   }

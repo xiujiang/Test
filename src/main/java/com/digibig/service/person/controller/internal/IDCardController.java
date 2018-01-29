@@ -8,6 +8,8 @@
 package com.digibig.service.person.controller.internal;
 
 
+import com.digibig.commons.util.IDValidator;
+import com.digibig.commons.util.RegexValidator;
 import com.digibig.service.person.domain.IDCard;
 import com.digibig.service.person.service.IDCardService;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import com.digibig.spring.basecontroller.AbstractControllerForItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,5 +41,19 @@ public class IDCardController extends AbstractControllerForItem<IDCard> {
   public IDCardController(IDCardService service) {
     super(service);
     this.service = service;
+  }
+
+  @Override
+  protected void preAdd(IDCard idCard){
+    if(!IDValidator.valid(idCard.getNumber())){
+      throw new IllegalArgumentException("身份证号有误。");
+    }
+  }
+
+  @Override
+  protected void preUpdate(IDCard idCard){
+    if(!StringUtils.isEmpty(idCard.getNumber()) && !IDValidator.valid(idCard.getNumber())){
+      throw new IllegalArgumentException("身份证号有误。");
+    }
   }
 }

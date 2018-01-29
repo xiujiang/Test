@@ -65,20 +65,15 @@ public class PersonVerificateService {
    */
   public Person identityVerificate(Person example) {
 
-    String credential = this.getCredential();
-
     //根据身份证号和姓名查询自然人
-    List<Person> persons = personService.queryAll(example);
-//    Person person = personService.queryFirst(example);
+    Person person = personService.queryFirst(example);
 
-    if (!CollectionUtils.isEmpty(persons)) {
-      return persons.get(0);
+    if (Objects.nonNull(person)) {
+      return person;
     }
 
     this.checkCardnoAndName(example.getIdNumber(), example.getName());
 
-//    personService.add(example);
-//    example.setCredential(credential);
     return personService.add(example);
   }
 }

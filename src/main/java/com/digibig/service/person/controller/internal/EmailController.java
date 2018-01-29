@@ -7,8 +7,11 @@
  */
 package com.digibig.service.person.controller.internal;
 
+import com.digibig.commons.util.MaskedUtil;
+import com.digibig.commons.util.RegexValidator;
 import com.digibig.service.person.domain.Email;
 import com.digibig.service.person.service.EmailService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +40,20 @@ public class EmailController extends AbstractControllerForItem<Email> {
   public EmailController(EmailService service) {
     super(service);
     this.service = service;
+  }
+
+  @Override
+  protected void preAdd(Email email){
+    if(!RegexValidator.isEmail(email.getEmail())){
+      throw new IllegalArgumentException("邮箱格式有误。");
+    }
+  }
+
+  @Override
+  protected void preUpdate(Email email){
+    if(StringUtils.isNotEmpty(email.getEmail()) && !RegexValidator.isEmail(email.getEmail())){
+      throw new IllegalArgumentException("邮箱格式有误。");
+    }
   }
 
 

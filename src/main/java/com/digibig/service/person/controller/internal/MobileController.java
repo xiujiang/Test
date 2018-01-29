@@ -8,8 +8,10 @@
 package com.digibig.service.person.controller.internal;
 
 
+import com.digibig.commons.util.RegexValidator;
 import com.digibig.service.person.domain.Mobile;
 import com.digibig.service.person.service.MobileService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +40,20 @@ public class MobileController extends AbstractControllerForItem<Mobile> {
   public MobileController(MobileService service) {
     super(service);
     this.service = service;
+  }
+
+  @Override
+  protected void preAdd(Mobile mobile){
+    if(!RegexValidator.isMobile(mobile.getNumber())){
+      throw new IllegalArgumentException("手机号码有误");
+    }
+  }
+
+  @Override
+  protected void preUpdate(Mobile mobile){
+    if(StringUtils.isNotEmpty(mobile.getNumber()) && !RegexValidator.isMobile(mobile.getNumber())){
+      throw new IllegalArgumentException("手机号码有误");
+    }
   }
 
 //  /**
