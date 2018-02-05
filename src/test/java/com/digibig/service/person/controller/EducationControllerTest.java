@@ -8,22 +8,15 @@
  */
 package com.digibig.service.person.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.digibig.service.person.PersonServiceApplicationTests;
-import com.digibig.service.person.utils.DegreeGetType;
-import com.digibig.service.person.utils.Enabled;
-import com.digibig.service.person.utils.PhaseType;
+import com.digibig.service.person.enums.DegreeGetType;
+import com.digibig.service.person.enums.PhaseType;
+import com.digibig.service.person.enums.VerificationStatus;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.Test;
-import org.springframework.http.MediaType;
 
-import com.digibig.service.person.utils.VerificationStatus;
 
 public class EducationControllerTest extends PersonServiceApplicationTests {
   
@@ -92,7 +85,7 @@ public class EducationControllerTest extends PersonServiceApplicationTests {
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
     map.put("educationId", "1");
-    map.put("enabled", Enabled.ENABLED.toString());
+//    map.put("enabled", Enabled.ENABLED.toString());
 
   }
   

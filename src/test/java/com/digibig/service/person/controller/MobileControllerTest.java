@@ -8,19 +8,11 @@
  */
 package com.digibig.service.person.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.digibig.service.person.utils.Enabled;
+import com.digibig.service.person.PersonServiceApplicationTests;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.Test;
-import org.springframework.http.MediaType;
-
-import com.digibig.service.person.PersonServiceApplicationTests;
 
 public class MobileControllerTest extends PersonServiceApplicationTests{
   
@@ -55,7 +47,7 @@ public class MobileControllerTest extends PersonServiceApplicationTests{
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
     map.put("mobile", "3");
-    map.put("enabled", Enabled.ENABLED.toString());
+//    map.put("enabled", Enabled.ENABLED.toString());
 
   }
   

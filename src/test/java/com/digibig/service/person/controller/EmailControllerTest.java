@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import com.digibig.service.person.domain.AuthResult;
 import com.digibig.service.person.remote.AuthorizationRemote;
 import com.digibig.service.person.remote.RegionTemplateRemote;
-import com.digibig.service.person.utils.Enabled;
 import com.digibig.spring.api.HttpResult;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -59,7 +58,7 @@ public class EmailControllerTest extends PersonServiceApplicationTests{
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
     map.put("emailId", "1");
-    map.put("enabled", Enabled.ENABLED.toString());
+//    map.put("enabled", Enabled.ENABLED.toString());
 
   }
   

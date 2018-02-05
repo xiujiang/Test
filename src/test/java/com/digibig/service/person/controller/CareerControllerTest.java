@@ -9,19 +9,14 @@
 package com.digibig.service.person.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.digibig.service.person.PersonServiceApplicationTests;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.Test;
-import org.springframework.http.MediaType;
-
-import com.digibig.service.person.PersonServiceApplicationTests;
-import com.digibig.service.person.utils.Enabled;
 
 public class CareerControllerTest extends PersonServiceApplicationTests{
   
@@ -78,7 +73,7 @@ public class CareerControllerTest extends PersonServiceApplicationTests{
     Map<String, String> map = new HashMap<>();
     map.put("personId", "1");
     map.put("careerId", "2");
-    map.put("enabled", Enabled.NOT_ENABLED.toString());
+//    map.put("enabled", Enabled.NOT_ENABLED.toString());
 
   }
   
@@ -138,7 +133,7 @@ public class CareerControllerTest extends PersonServiceApplicationTests{
     map.put("personId", "1");
     map.put("careerId", "1");
     map.put("careerItemId", "3");
-    map.put("enabled", Enabled.NOT_ENABLED.toString());
+//    map.put("enabled", Enabled.NOT_ENABLED.toString());
 
   }
   

@@ -7,7 +7,6 @@
  */
 package com.digibig.service.person.service;
 
-import com.digibig.service.person.domain.DiplomaCertificate;
 import com.digibig.service.person.domain.SchoolRecord;
 import com.digibig.spring.service2.AbstractServiceForItem;
 import org.slf4j.Logger;

@@ -10,26 +10,18 @@ package com.digibig.service.person.controller.external;
 
 import com.digibig.service.person.domain.Address;
 import com.digibig.service.person.service.AddressService;
-import com.digibig.service.person.utils.AddressType;
-import com.digibig.service.person.utils.Enabled;
 import com.digibig.spring.api.HttpResult;
 import com.digibig.spring.api.HttpStatus;
-import com.digibig.spring.exception.DigibigException;
-import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.digibig.service.person.common.CommonParam;
 
 
 /**
@@ -51,6 +43,7 @@ public class AddressController {
   
   private Logger logger = LoggerFactory.getLogger(getClass());
 
+  @Autowired
   private com.digibig.service.person.controller.internal.AddressController controller;
   
   @Autowired
@@ -81,39 +74,14 @@ public class AddressController {
     return controller.updateSelectiveJson(address);
 
   }
-  
-  /**
-   * <p>
-   * 查询自然人地址信息
-   * </p>
-   * @param paramMap 参数列表
-   * <ul>
-   *     <li>personId 自然人id</li>
-   *     <li>enabled 有效性（可选）</li>
-   * </ul>
-   * @return 地址列表
-   */
+
   @PostMapping("/list")
-  public HttpResult<List<Address>> getAddress(@RequestBody Map<String, String> paramMap){
+  public HttpResult<Collection<Address>> getAddress(
+      @RequestParam(required=false,name="id") Integer id,
+      @RequestParam(required=false,name="idList") List<Integer> idList,
+      @RequestParam(required=false,name="customerId") Integer customerId,
+      @RequestParam(required=false,name="customerIdList") List<Integer> customerIdList){
     
-    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_PERSONID)), "查询自然人地址信息personId不能为空");
-    
-    Integer personId = Integer.valueOf(paramMap.get(CommonParam.MAP_PARAM_PERSONID));
-    
-    Enabled enabled = Enabled.ENABLED;
-    
-    if(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_ENABLED))) {
-      enabled = Enum.valueOf(Enabled.class, paramMap.get(CommonParam.MAP_PARAM_ENABLED).trim());
-    }
-    
-    List<Address> addresses = null;
-    try {
-      addresses = addressService.listWithParent(personId);
-    } catch (DigibigException e) {
-      logger.error("",e);
-      return new HttpResult<>(HttpStatus.SERVER_ERROR,"地址信息查询失败");
-    }
-    
-    return new HttpResult<>(HttpStatus.OK,"成功",addresses);
+    return controller.list(id,idList,null,null,customerId,customerIdList);
   }
 }

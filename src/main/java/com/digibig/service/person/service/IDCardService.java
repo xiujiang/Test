@@ -7,11 +7,8 @@
  */
 package com.digibig.service.person.service;
 
-import com.digibig.commons.exception.DBException;
-import com.digibig.service.person.common.CommonParam;
 import com.digibig.service.person.domain.IDCard;
 import com.digibig.spring.service2.AbstractServiceForItem;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

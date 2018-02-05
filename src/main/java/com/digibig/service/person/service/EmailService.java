@@ -12,7 +12,6 @@ import com.digibig.service.person.common.CommonParam;
 import com.digibig.service.person.domain.Email;
 import com.digibig.spring.service2.AbstractServiceForItem;
 import java.util.List;
-import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
