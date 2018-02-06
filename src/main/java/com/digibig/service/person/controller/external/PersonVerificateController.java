@@ -1,14 +1,9 @@
 package com.digibig.service.person.controller.external;
 
 import com.digibig.service.person.domain.Person;
-import com.digibig.service.person.service.PersonVerificateService;
-import com.digibig.spring.api.HttpStatus;
-import com.digibig.spring.auth.Domain;
-import com.digibig.spring.auth.NoLogin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +16,7 @@ public class PersonVerificateController {
 
   Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
+  @Autowired
   private com.digibig.service.person.controller.internal.PersonVerificateController verificateController;
 
   @PostMapping(value = "")

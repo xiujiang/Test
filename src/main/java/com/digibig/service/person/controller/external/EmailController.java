@@ -35,6 +35,7 @@ public class EmailController {
   @Autowired
   private EmailService emailService;
 
+  @Autowired
   private com.digibig.service.person.controller.internal.EmailController emailController;
 
   @Autowired

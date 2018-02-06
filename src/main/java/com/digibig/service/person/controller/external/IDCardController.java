@@ -44,6 +44,7 @@ public class IDCardController {
   @Autowired
   private IDCardService idCardService;
 
+  @Autowired
   private com.digibig.service.person.controller.internal.IDCardController idCardController;
 
   @PostMapping("add")

@@ -33,6 +33,7 @@ public class EducationSummeryController {
   @Autowired
   private EducationSummaryService educationSummaryService;
 
+  @Autowired
   private com.digibig.service.person.controller.internal.EducationSummaryController educationSummaryController;
 
   @PostMapping("add")

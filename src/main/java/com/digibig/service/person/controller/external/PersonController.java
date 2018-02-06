@@ -10,29 +10,23 @@ package com.digibig.service.person.controller.external;
 
 
 import com.digibig.service.person.domain.Person;
+import com.digibig.service.person.service.PersonService;
 import com.digibig.spring.api.HttpResult;
 import com.digibig.spring.api.HttpStatus;
 import com.digibig.spring.credential.Credential;
 import com.digibig.spring.credential.CredentialHelper;
 import java.util.List;
-import java.util.Map;
-
 import java.util.Objects;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.digibig.service.person.service.PersonService;
 
 @RestController("PersonController-e")
 @RequestMapping("/v1.0/person")
@@ -45,6 +39,7 @@ public class PersonController {
   @Autowired
   private CredentialHelper credentialHelper;
 
+  @Autowired
   private com.digibig.service.person.controller.internal.PersonController personController;
 
   @PostMapping("/add")

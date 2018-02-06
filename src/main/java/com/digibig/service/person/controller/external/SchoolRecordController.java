@@ -40,6 +40,7 @@ public class SchoolRecordController {
   @Autowired
   private SchoolRecordService schoolRecordService;
 
+  @Autowired
   private com.digibig.service.person.controller.internal.SchoolRecordController schoolRecordController;
 
   @PostMapping("/add")

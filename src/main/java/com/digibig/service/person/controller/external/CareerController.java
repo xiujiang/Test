@@ -31,6 +31,7 @@ public class CareerController {
   
   private Logger logger = LoggerFactory.getLogger(getClass());
 
+  @Autowired
   private com.digibig.service.person.controller.internal.CareerController careerController;
 
   @Autowired

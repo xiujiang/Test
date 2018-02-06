@@ -44,6 +44,7 @@ public class MobileController {
   @Autowired
   private MobileService mobileService;
 
+  @Autowired
   private com.digibig.service.person.controller.internal.MobileController mobileController;
 
   @Autowired

@@ -3,12 +3,11 @@ package com.digibig.service.person;
 import com.digibig.config.Config;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@EnableDiscoveryClient
+//@EnableDiscoveryClient
 @EnableFeignClients
 @EnableJpaRepositories(basePackages = {"com.digibig.service.person.repository"})
 @EnableTransactionManagement

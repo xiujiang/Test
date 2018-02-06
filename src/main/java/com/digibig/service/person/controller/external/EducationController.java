@@ -36,6 +36,7 @@ public class EducationController {
   @Autowired
   private EducationService educationService;
 
+  @Autowired
   private com.digibig.service.person.controller.internal.EducationController educationController;
 
   
