@@ -10,13 +10,11 @@ package com.digibig.service.person.controller.internal;
 
 import com.digibig.service.person.domain.Person;
 import com.digibig.service.person.service.PersonService;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.digibig.spring.auth.Domain;
 import com.digibig.spring.auth.NoLogin;
 import com.digibig.spring.basecontroller.AbstractControllerForBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -39,6 +37,7 @@ public class PersonController extends AbstractControllerForBase<Person> {
   public PersonController(PersonService service) {
     super(service);
     this.service = service;
+    this.enableAdd = false;
   }
 
 

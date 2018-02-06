@@ -24,19 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
-/**
- * <p>
- * 地址相关API，本API提供以下接口：<br>
- * 1、添加地址<br>
- * 2、设置地址有效性 <br>
- * 3、查询自然人地址列表<br>
- * </p>
- * 
- * @author libin<libin@we.com>
- * @datetime 2017年9月9日下午16:43
- * @version 1.0
- * @since 1.8
- */
 @RestController("AddressController-e")
 @RequestMapping("/v1.0/person/address")
 public class AddressController {
@@ -79,9 +66,9 @@ public class AddressController {
   public HttpResult<Collection<Address>> getAddress(
       @RequestParam(required=false,name="id") Integer id,
       @RequestParam(required=false,name="idList") List<Integer> idList,
-      @RequestParam(required=false,name="customerId") Integer customerId,
-      @RequestParam(required=false,name="customerIdList") List<Integer> customerIdList){
+      @RequestParam(required=false,name="personId") Integer personId,
+      @RequestParam(required=false,name="personIdList") List<Integer> personIdList){
     
-    return controller.list(id,idList,null,null,customerId,customerIdList);
+    return controller.list(id,idList,null,null,personId,personIdList);
   }
 }
