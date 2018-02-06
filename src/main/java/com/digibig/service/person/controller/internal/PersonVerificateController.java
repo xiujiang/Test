@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "internal/v1.0/person/verificate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/internal/v1.0/person/verificate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @Domain(Person.class)
 @Qualifier("internal")
 @NoLogin
@@ -28,8 +28,8 @@ public class PersonVerificateController {
   @Autowired
   private PersonVerificateService verificateService;
 
-  @PostMapping(value = "")
-  public com.digibig.spring.api.HttpResult<Person> verificate(@RequestBody Person person){
+  @PostMapping(value = "",consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+  public com.digibig.spring.api.HttpResult<Person> verificate(Person person){
 
     return new HttpResult<>(HttpStatus.OK,"成功",verificateService.identityVerificate(person));
 
