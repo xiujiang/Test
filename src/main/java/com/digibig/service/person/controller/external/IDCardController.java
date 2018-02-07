@@ -10,10 +10,12 @@ package com.digibig.service.person.controller.external;
 
 import com.digibig.service.person.domain.IDCard;
 import com.digibig.spring.api.HttpResult;
+import com.digibig.spring.auth.Domain;
 import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,25 +24,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
-/**
- * <p>
- * 身份证相关API，本API提供以下接口：<br>
- * 1、绑定身份证<br>
- * 2、设置身份证关联图片 <br>
- * </p>
- * 
- * @author libin<libin@we.com>
- * @datetime 2017年9月9日下午16:43
- * @version 1.0
- * @since 1.8
- */
 @RestController("IDCardController-e")
 @RequestMapping("/v1.0/person/idcard")
+@Domain(IDCard.class)
+@Qualifier("external")
 public class IDCardController {
   
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   @Autowired
+  @Qualifier("internal")
   private com.digibig.service.person.controller.internal.IDCardController idCardController;
 
   @PostMapping("add")

@@ -10,11 +10,13 @@ package com.digibig.service.person.controller.external;
 
 import com.digibig.service.person.domain.Address;
 import com.digibig.spring.api.HttpResult;
+import com.digibig.spring.auth.Domain;
 import java.util.Collection;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,11 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("AddressController-e")
 @RequestMapping("/v1.0/person/address")
+@Domain(Address.class)
+@Qualifier("external")
 public class AddressController {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   @Autowired
+  @Qualifier("internal")
   private com.digibig.service.person.controller.internal.AddressController controller;
 
   @PostMapping("add")

@@ -12,6 +12,7 @@ import com.digibig.service.person.domain.Email;
 import com.digibig.service.person.service.EmailService;
 import com.digibig.spring.api.HttpResult;
 import com.digibig.spring.api.HttpStatus;
+import com.digibig.spring.auth.Domain;
 import com.digibig.spring.credential.Credential;
 import com.digibig.spring.credential.CredentialHelper;
 import java.util.Collection;
@@ -20,6 +21,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("EmailController-e")
 @RequestMapping("/v1.0/person/email")
+@Domain(Email.class)
+@Qualifier("external")
 public class EmailController {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
@@ -38,6 +42,7 @@ public class EmailController {
   private EmailService emailService;
 
   @Autowired
+  @Qualifier("internal")
   private com.digibig.service.person.controller.internal.EmailController emailController;
 
   @Autowired

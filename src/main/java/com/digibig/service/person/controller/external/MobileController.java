@@ -12,6 +12,7 @@ import com.digibig.service.person.domain.Mobile;
 import com.digibig.service.person.service.MobileService;
 import com.digibig.spring.api.HttpResult;
 import com.digibig.spring.api.HttpStatus;
+import com.digibig.spring.auth.Domain;
 import com.digibig.spring.credential.Credential;
 import com.digibig.spring.credential.CredentialHelper;
 import java.util.Collection;
@@ -20,6 +21,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,18 +29,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
-/**
- * <p> 手机相关API，本API提供以下接口：<br> 1、添加手机号<br> 2、设置手机号有效性 <br> 3、查询自然人手机号信息 - 脱敏<br> 4、查询自然人手机号信息 -
- * 不脱敏<br> </p>
- *
- * @author libin<libin@we.com>
- * @version 1.0
- * @datetime 2017年9月9日下午16:43
- * @since 1.8
- */
 @RestController("MobileController-e")
 @RequestMapping("/v1.0/person/mobiles")
+@Domain(Mobile.class)
+@Qualifier("external")
 public class MobileController {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
@@ -47,6 +41,7 @@ public class MobileController {
   private MobileService mobileService;
 
   @Autowired
+  @Qualifier("internal")
   private com.digibig.service.person.controller.internal.MobileController mobileController;
 
   @Autowired

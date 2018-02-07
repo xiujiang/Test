@@ -13,6 +13,7 @@ import com.digibig.service.person.domain.Person;
 import com.digibig.service.person.service.PersonService;
 import com.digibig.spring.api.HttpResult;
 import com.digibig.spring.api.HttpStatus;
+import com.digibig.spring.auth.Domain;
 import com.digibig.spring.credential.Credential;
 import com.digibig.spring.credential.CredentialHelper;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("PersonController-e")
 @RequestMapping("/v1.0/person")
+@Domain(Person.class)
+@Qualifier("external")
 public class PersonController {
   private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -40,6 +44,7 @@ public class PersonController {
   private CredentialHelper credentialHelper;
 
   @Autowired
+  @Qualifier("internal")
   private com.digibig.service.person.controller.internal.PersonController personController;
 
   @PostMapping("/add")
