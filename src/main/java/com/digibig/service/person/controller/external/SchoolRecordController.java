@@ -11,8 +11,7 @@ package com.digibig.service.person.controller.external;
 import com.digibig.service.person.domain.SchoolRecord;
 import com.digibig.service.person.service.SchoolRecordService;
 import com.digibig.spring.api.HttpResult;
-import com.digibig.spring.api.HttpStatus;
-import java.util.List;
+import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,29 +53,6 @@ public class SchoolRecordController {
 
   }
 
-//
-//  @PostMapping("/school/enabled")
-//  public HttpResult<Boolean> setRecordEnabled(@RequestBody Map<String, String> paramMap) {
-//
-//    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_PERSONID)),
-//        "设置学历证书信息的有效性personId不能为空");
-//    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(RECORDID)), "recordId不能为空");
-//    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_ENABLED)), "enabled不能为空");
-//
-//    Integer personId = Integer.valueOf(paramMap.get(CommonParam.MAP_PARAM_PERSONID));
-//    Integer recordId = Integer.valueOf(paramMap.get(RECORDID));
-//    Enabled enabled = Enum
-//        .valueOf(Enabled.class, paramMap.get(CommonParam.MAP_PARAM_ENABLED).trim());
-//
-//    Boolean result = certificateService.setRecordEnabled(personId, recordId, enabled);
-//
-//    if (result) {
-//      return new HttpResult<>(HttpStatus.OK, "成功", result);
-//    }
-//    return new HttpResult<>(HttpStatus.SERVER_ERROR, "失败", result);
-//  }
-
-
   /**
    * <p> 查询自然人学历信息 </p>
    *
@@ -84,9 +60,9 @@ public class SchoolRecordController {
    * @return 学历信息
    */
   @GetMapping("/list")
-  public HttpResult<List<SchoolRecord>> getSchoolRecord(@RequestParam("personId") Integer personId) {
+  public HttpResult<Collection<SchoolRecord>> getSchoolRecord(@RequestParam("personId") Integer personId) {
 
-    return new HttpResult<>(HttpStatus.OK, "成功", schoolRecordService.listWithParent(personId));
+    return schoolRecordController.list(null, null, null, null, personId, null);
   }
 
 }

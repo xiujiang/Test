@@ -38,5 +38,6 @@ public class EducationController extends AbstractControllerForItem<Education> {
   public EducationController(EducationService service) {
     super(service);
     this.service = service;
+    this.enableList_Parent = true;
   }
 }

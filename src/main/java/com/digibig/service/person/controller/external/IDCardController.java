@@ -9,17 +9,16 @@
 package com.digibig.service.person.controller.external;
 
 import com.digibig.service.person.domain.IDCard;
-import com.digibig.service.person.service.IDCardService;
 import com.digibig.spring.api.HttpResult;
-import com.digibig.spring.api.HttpStatus;
-import java.util.List;
-
+import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -40,9 +39,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class IDCardController {
   
   private Logger logger = LoggerFactory.getLogger(getClass());
-  
-  @Autowired
-  private IDCardService idCardService;
 
   @Autowired
   private com.digibig.service.person.controller.internal.IDCardController idCardController;
@@ -58,8 +54,8 @@ public class IDCardController {
     return idCardController.updateSelectiveJson(idCard);
   }
 
-  @PostMapping("/list")
-  public HttpResult<List<IDCard>> getIDCard(@RequestBody Integer personId){
-    return new HttpResult<>(HttpStatus.OK,"成功",idCardService.listWithParent(personId));
+  @GetMapping("/list")
+  public HttpResult<Collection<IDCard>> getIDCard(@RequestParam("personId") Integer personId){
+    return idCardController.list(null, null, null, null, personId, null);
   }
 }

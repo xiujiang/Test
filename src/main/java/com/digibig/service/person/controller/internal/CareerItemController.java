@@ -38,5 +38,6 @@ public class CareerItemController extends AbstractControllerForItem<CareerItem> 
   public CareerItemController(CareerItemService service) {
     super(service);
     this.service = service;
+    this.enableList_Parent = true;
   }
 }

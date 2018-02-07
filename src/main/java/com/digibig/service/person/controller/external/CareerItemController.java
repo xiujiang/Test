@@ -9,10 +9,8 @@
 package com.digibig.service.person.controller.external;
 
 import com.digibig.service.person.domain.CareerItem;
-import com.digibig.service.person.service.CareerItemService;
 import com.digibig.spring.api.HttpResult;
-import com.digibig.spring.api.HttpStatus;
-import java.util.List;
+import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +33,6 @@ public class CareerItemController {
   @Autowired
   private com.digibig.service.person.controller.internal.CareerItemController itemController;
 
-  @Autowired
-  private CareerItemService itemService;
-
   @PostMapping("/add")
   public HttpResult<CareerItem> addCareerItem(@RequestBody CareerItem careerItem){
 
@@ -50,28 +45,6 @@ public class CareerItemController {
     return itemController.updateSelectiveJson(careerItem);
   }
 
-//
-//  @PostMapping("/item/enabled")
-//  public HttpResult<Boolean> setItemEnabled(@RequestBody Map<String, String> paramMap){
-//
-//    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_PERSONID)), "修改工作详情状态personId不能为空");
-//    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CAREER_ID)), "修改工作详情状态careerId不能为空");
-//    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CAREER_ITEM_ID)), "careerItemId不能为空");
-//    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_ENABLED)), "enabled不能为空");
-//
-//    Integer personId = Integer.valueOf(paramMap.get(CommonParam.MAP_PARAM_PERSONID));
-//    Integer careerId = Integer.valueOf(paramMap.get(CAREER_ID));
-//    Integer careerItemId = Integer.valueOf(paramMap.get(CAREER_ITEM_ID));
-//    Enabled enabled = Enum.valueOf(Enabled.class, paramMap.get(CommonParam.MAP_PARAM_ENABLED).trim());
-//
-//    Boolean result = careerService.setItemEnabled(personId,careerId,careerItemId,enabled);
-//
-//    if(result) {
-//      return new HttpResult<>(HttpStatus.OK,"成功",result);
-//    }
-//    return new HttpResult<>(HttpStatus.SERVER_ERROR,"失败",result);
-//  }
-
   /**
    * <p>
    * 查询自然人职业信息
@@ -80,8 +53,7 @@ public class CareerItemController {
    * @return 自然人职业经历信息
    */
   @GetMapping("/list")
-  public HttpResult<List<CareerItem>> getCareers(@RequestParam("personId")Integer personId){
-
-    return new HttpResult<>(HttpStatus.OK,"成功",itemService.listWithParent(personId));
+  public HttpResult<Collection<CareerItem>> getCareers(@RequestParam("personId")Integer personId){
+    return itemController.list(null, null, null, null, personId, null);
   }
 }

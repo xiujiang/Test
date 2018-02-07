@@ -7,17 +7,15 @@
  */
 package com.digibig.service.person.controller.internal;
 
-import com.digibig.commons.util.MaskedUtil;
 import com.digibig.commons.util.RegexValidator;
 import com.digibig.service.person.domain.Email;
 import com.digibig.service.person.service.EmailService;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.digibig.spring.auth.Domain;
 import com.digibig.spring.auth.NoLogin;
 import com.digibig.spring.basecontroller.AbstractControllerForItem;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -40,6 +38,7 @@ public class EmailController extends AbstractControllerForItem<Email> {
   public EmailController(EmailService service) {
     super(service);
     this.service = service;
+    this.enableList_Parent = true;
   }
 
   @Override

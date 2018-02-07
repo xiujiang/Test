@@ -81,7 +81,7 @@ public class PersonController {
   }
   
 
-  @PostMapping("/get")
+  @GetMapping("/get")
   public HttpResult<Person> getPersonInfo(@RequestParam("personId") Integer personId,
       @RequestParam("credentialKey") String credentialKey){
 
@@ -91,6 +91,6 @@ public class PersonController {
     }
     credentialHelper.finish(credential);
 
-    return new HttpResult<>(HttpStatus.OK,"成功",personService.get(personId));
+    return personController.get(personId,null,null);
   }
 }

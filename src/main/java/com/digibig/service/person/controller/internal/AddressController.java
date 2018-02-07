@@ -9,12 +9,11 @@ package com.digibig.service.person.controller.internal;
 
 import com.digibig.service.person.domain.Address;
 import com.digibig.service.person.service.AddressService;
+import com.digibig.spring.auth.Domain;
+import com.digibig.spring.auth.NoLogin;
 import com.digibig.spring.basecontroller.AbstractControllerForItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.digibig.spring.auth.Domain;
-import com.digibig.spring.auth.NoLogin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -37,5 +36,6 @@ public class AddressController extends AbstractControllerForItem<Address> {
   public AddressController(AddressService service) {
     super(service);
     this.service = service;
+    this.enableSwitch_Parent_Id = true;
   }
 }

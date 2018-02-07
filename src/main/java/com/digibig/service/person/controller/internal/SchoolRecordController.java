@@ -38,5 +38,6 @@ public class SchoolRecordController extends AbstractControllerForItem<SchoolReco
   public SchoolRecordController(SchoolRecordService service) {
     super(service);
     this.service = service;
+    this.enableList_Parent = true;
   }
 }

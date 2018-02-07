@@ -40,6 +40,7 @@ public class MobileController extends AbstractControllerForItem<Mobile> {
   public MobileController(MobileService service) {
     super(service);
     this.service = service;
+    this.enableList_Parent = true;
   }
 
   @Override

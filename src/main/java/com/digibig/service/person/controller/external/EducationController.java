@@ -11,10 +11,7 @@ package com.digibig.service.person.controller.external;
 import com.digibig.service.person.domain.Education;
 import com.digibig.service.person.service.EducationService;
 import com.digibig.spring.api.HttpResult;
-import com.digibig.spring.api.HttpStatus;
-import java.util.List;
-
-
+import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,31 +48,10 @@ public class EducationController {
   public HttpResult<Education> setEducation(@RequestBody Education Education){
     return educationController.updateSelectiveJson(Education);
   }
-  
-//
-//  @PostMapping("/enabled")
-//  public HttpResult<Boolean> setEducationEnabled(@RequestBody Map<String, String> paramMap){
-//
-//    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_PERSONID)), "设置教育经历的有效性personId不能为空");
-//    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(EDUCATIONID)), "educationId不能为空");
-//    Assert.isTrue(!StringUtils.isEmpty(paramMap.get(CommonParam.MAP_PARAM_ENABLED)), "enabled不能为空");
-//
-//    Integer personId = Integer.valueOf(paramMap.get(CommonParam.MAP_PARAM_PERSONID));
-//    Integer educationId = Integer.valueOf(paramMap.get(EDUCATIONID));
-//    Enabled enabled = Enum.valueOf(Enabled.class, paramMap.get(CommonParam.MAP_PARAM_ENABLED).trim());
-//
-//    Boolean result = educationService.setEducationEnabled(personId,educationId,enabled);
-//
-//    if(result) {
-//      return new HttpResult<>(HttpStatus.OK,"成功",result);
-//    }
-//
-//    return new HttpResult<>(HttpStatus.SERVER_ERROR,"失败",result);
-//  }
 
   @GetMapping("/list")
-  public HttpResult<List<Education>> getSchoolRecord(@RequestParam("personId") Integer personId){
+  public HttpResult<Collection<Education>> getSchoolRecord(@RequestParam("personId") Integer personId){
 
-    return new HttpResult<>(HttpStatus.OK,"成功",educationService.listWithParent(personId));
+    return educationController.list(null, null, null, null, personId, null);
   }
 }

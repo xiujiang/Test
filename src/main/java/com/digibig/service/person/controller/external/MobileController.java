@@ -14,6 +14,7 @@ import com.digibig.spring.api.HttpResult;
 import com.digibig.spring.api.HttpStatus;
 import com.digibig.spring.credential.Credential;
 import com.digibig.spring.credential.CredentialHelper;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -56,30 +58,21 @@ public class MobileController {
     return mobileController.addJson(mobile);
   }
 
-
-  /**
-   * 设置手机号状态
-   */
-//  @PostMapping("/enabled")
-//  public HttpResult<Boolean> setMobileEnabled(@RequestBody Map<String, String> paramMap){
-//
-//    Integer personId = Integer.valueOf(paramMap.get(CommonParam.MAP_PARAM_PERSONID));
-//    String mobile = paramMap.get(CommonParam.MAP_PARAM_MOBILE);
-//    Enabled enabled = Enum.valueOf(Enabled.class, paramMap.get(CommonParam.MAP_PARAM_ENABLED).trim());
-//
-//    logger.info("personId:{},mobile:{}",personId,mobile);
-//
-//    Boolean result = mobileService.setMobileEnabled(personId, mobile, enabled);
-//
-//    if(result) {
-//      return new HttpResult<>(HttpStatus.OK,"成功",result);
-//    }
-//    return new HttpResult<>(HttpStatus.SERVER_ERROR,"失败",result);
-//  }
   @PostMapping("/update")
   public HttpResult<Mobile> setMobileEnabled(@RequestBody Mobile mobile) {
 
     return mobileController.updateSelectiveJson(mobile);
+  }
+
+
+  @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
+      RequestMethod.DELETE}, value = "/switch")
+  public HttpResult<Mobile> switchStatus(
+      @RequestParam(required = false, name = "id") Integer id,
+      @RequestParam(required = false, name = "personId") Integer personId,
+      @RequestParam("status") String status
+  ) {
+    return mobileController.switchStatus(id, null, personId, status);
   }
 
 
@@ -91,7 +84,7 @@ public class MobileController {
 
 
   @PostMapping("/list")
-  public HttpResult<List<Mobile>> getMobileInfo(@RequestParam("personId") Integer personId,
+  public HttpResult<Collection<Mobile>> getMobileInfo(@RequestParam("personId") Integer personId,
       @RequestParam("credentialKey") String credentialKey) {
 
     //验证授权信息
@@ -101,7 +94,6 @@ public class MobileController {
     }
     credentialHelper.finish(credential);
 
-
-    return new HttpResult<>(HttpStatus.OK, "成功", mobileService.listWithParent(personId));
+    return mobileController.list(null, null, null, null, personId, null);
   }
 }

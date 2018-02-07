@@ -38,5 +38,6 @@ public class EducationSummaryController extends AbstractControllerForItem<Educat
   public EducationSummaryController(EducationSummaryService service) {
     super(service);
     this.service = service;
+    this.enableList_Parent = true;
   }
 }

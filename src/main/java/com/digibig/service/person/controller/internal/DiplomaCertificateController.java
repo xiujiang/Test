@@ -38,5 +38,6 @@ public class DiplomaCertificateController extends AbstractControllerForItem<Dipl
   public DiplomaCertificateController(DiplomaCertificateService service) {
     super(service);
     this.service = service;
+    this.enableList_Parent = true;
   }
 }
