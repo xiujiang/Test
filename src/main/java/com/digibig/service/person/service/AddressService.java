@@ -7,6 +7,7 @@
  */
 package com.digibig.service.person.service;
 
+import com.digibig.service.person.enums.Status;
 import com.digibig.service.person.remote.RegionTemplateRemote;
 import com.digibig.service.person.domain.Address;
 import com.digibig.spring.exception.DigibigException;
@@ -43,6 +44,12 @@ public class AddressService extends AbstractServiceForItem<Address> {
   protected void postGet(Address address){
     this.toAddress(address.getLastNode(), address.getDetailAddress());
 
+  }
+
+  @Override
+  protected void switchStatusInternal(Address address,String statusCode){
+    Status status = Status.fromString(statusCode);
+    address.setStatus(status);
   }
 
   /**

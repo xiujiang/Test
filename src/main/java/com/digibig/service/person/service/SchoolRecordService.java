@@ -8,6 +8,7 @@
 package com.digibig.service.person.service;
 
 import com.digibig.service.person.domain.SchoolRecord;
+import com.digibig.service.person.enums.VerificationStatus;
 import com.digibig.spring.service2.AbstractServiceForItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,12 @@ public class SchoolRecordService extends AbstractServiceForItem<SchoolRecord> {
   @Override
   protected void preAdd(SchoolRecord schoolRecord){
     this.checkSchoolRecord(schoolRecord);
+  }
+
+  @Override
+  protected void switchStatusInternal(SchoolRecord address,String statusCode){
+    VerificationStatus status = VerificationStatus.fromString(statusCode);
+    address.setVerificationStatus(status);
   }
 
   private void checkSchoolRecord(SchoolRecord schoolRecord) {

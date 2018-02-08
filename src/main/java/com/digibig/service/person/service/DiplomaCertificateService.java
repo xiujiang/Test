@@ -8,6 +8,7 @@
 package com.digibig.service.person.service;
 
 import com.digibig.service.person.domain.DiplomaCertificate;
+import com.digibig.service.person.enums.VerificationStatus;
 import com.digibig.spring.service2.AbstractServiceForItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,12 @@ public class DiplomaCertificateService extends AbstractServiceForItem<DiplomaCer
   @Override
   protected void preAdd(DiplomaCertificate diplomaCertificate){
     this.checkDiplomaCertificate(diplomaCertificate);
+  }
+
+  @Override
+  protected void switchStatusInternal(DiplomaCertificate address,String statusCode){
+    VerificationStatus status = VerificationStatus.fromString(statusCode);
+    address.setVerificationStatus(status);
   }
 
   private void checkDiplomaCertificate(DiplomaCertificate diplomaCertificate) {

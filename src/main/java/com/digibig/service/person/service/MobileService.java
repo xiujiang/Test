@@ -10,6 +10,7 @@ package com.digibig.service.person.service;
 import com.digibig.commons.util.MaskedUtil;
 import com.digibig.service.person.common.CommonParam;
 import com.digibig.service.person.domain.Mobile;
+import com.digibig.service.person.enums.Status;
 import com.digibig.spring.service2.AbstractServiceForItem;
 import java.util.List;
 import org.slf4j.Logger;
@@ -32,6 +33,12 @@ public class MobileService extends AbstractServiceForItem<Mobile> {
   @Override
   protected void preAdd(Mobile mobile){
     this.checkMobile(mobile);
+  }
+
+  @Override
+  protected void switchStatusInternal(Mobile address,String statusCode){
+    Status status = Status.fromString(statusCode);
+    address.setStatus(status);
   }
 
   /**
