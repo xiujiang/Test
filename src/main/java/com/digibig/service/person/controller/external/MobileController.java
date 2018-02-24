@@ -13,11 +13,9 @@ import com.digibig.service.person.service.MobileService;
 import com.digibig.spring.api.HttpResult;
 import com.digibig.spring.api.HttpStatus;
 import com.digibig.spring.auth.Domain;
-import com.digibig.spring.credential.Credential;
 import com.digibig.spring.credential.CredentialHelper;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController("MobileController-e")
-@RequestMapping("/v1.0/person/mobiles")
+@RequestMapping("external/v1.0/person/mobiles")
 @Domain(Mobile.class)
 @Qualifier("external")
 public class MobileController {
@@ -63,8 +61,8 @@ public class MobileController {
   @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
       RequestMethod.DELETE}, value = "/switch")
   public HttpResult<Mobile> switchStatus(
-      @RequestParam(required = false, name = "id") Integer id,
-      @RequestParam(required = false, name = "personId") Integer personId,
+      @RequestParam("id") Integer id,
+      @RequestParam("personId") Integer personId,
       @RequestParam("status") String status
   ) {
     return mobileController.switchStatus(id, null, personId, status);
@@ -83,11 +81,7 @@ public class MobileController {
       @RequestParam("credentialKey") String credentialKey) {
 
     //验证授权信息
-    Credential credential = credentialHelper.get(credentialKey);
-    if (Objects.isNull(credential) || !credential.isSameOrigin()) {
-      return new HttpResult<>(HttpStatus.AUTH_FAIL, "授权失败");
-    }
-    credentialHelper.finish(credential);
+    credentialHelper.getOnce(credentialKey);
 
     return mobileController.list(null, null, null, null, personId, null);
   }

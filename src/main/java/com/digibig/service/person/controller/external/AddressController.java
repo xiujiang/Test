@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController("AddressController-e")
-@RequestMapping("/v1.0/person/address")
+@RequestMapping("external/v1.0/person/address")
 @Domain(Address.class)
 @Qualifier("external")
 public class AddressController {
@@ -51,8 +51,8 @@ public class AddressController {
   @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
       RequestMethod.DELETE}, value = "/switch")
   public HttpResult<Address> switchStatus(
-      @RequestParam(required = false, name = "id") Integer id,
-      @RequestParam(required = false, name = "personId") Integer personId,
+      @RequestParam("id") Integer id,
+      @RequestParam("personId") Integer personId,
       @RequestParam("status") String status
   ) {
     return controller.switchStatus(id,null,personId,status);

@@ -7,6 +7,7 @@
  */
 package com.digibig.service.person.service;
 
+import com.digibig.service.person.domain.Person;
 import com.digibig.service.person.enums.Status;
 import com.digibig.service.person.remote.RegionTemplateRemote;
 import com.digibig.service.person.domain.Address;
@@ -35,21 +36,31 @@ public class AddressService extends AbstractServiceForItem<Address> {
   @Autowired
   private RegionTemplateRemote regionTemplateRemote;
 
+  @Autowired
+  private PersonService personService;
+
   @Override
   protected void preAdd(Address address){
     this.checkAddress(address);
   }
 
   @Override
-  protected void postGet(Address address){
-    this.toAddress(address.getLastNode(), address.getDetailAddress());
+  protected void postAdd(Address address){
+    this.addDefault(address);
+  }
 
+  @Override
+  protected void postGet(Address address){
+    address.setAddress(this.toAddress(address.getLastNode(), address.getDetailAddress()));
   }
 
   @Override
   protected void switchStatusInternal(Address address,String statusCode){
     Status status = Status.fromString(statusCode);
     address.setStatus(status);
+    if(status.in(Status.NOT_ENABLED)){
+      this.deleteDefault(address);
+    }
   }
 
   /**
@@ -57,7 +68,6 @@ public class AddressService extends AbstractServiceForItem<Address> {
    * @param node 最后节点id
    * @param detail 详细地址
    * @return 地址信息
-   * @throws DigibigException
    */
   private String toAddress(Integer node,String detail){
     String preAddress = regionTemplateRemote.path(node).getData();
@@ -75,5 +85,23 @@ public class AddressService extends AbstractServiceForItem<Address> {
     List<Address> addresses = this.queryAll(example);
     Assert.isTrue(CollectionUtils.isEmpty(addresses),"该地址已存在");
 
+  }
+
+
+  private void addDefault(Address address){
+    if(address.getIsDefault()){
+      Person person = new Person();
+      person.setId(address.getPersonId());
+      person.setDefaultAddress(address.getId());
+      personService.updateSelective(person);
+    }
+  }
+
+  private void deleteDefault(Address address){
+    Person person = personService.get(address.getPersonId());
+    if(address.getId() == person.getDefaultMobile()){
+      person.setDefaultAddress(0);
+      personService.updateSelective(person);
+    }
   }
 }

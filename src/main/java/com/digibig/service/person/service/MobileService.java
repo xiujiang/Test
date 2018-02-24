@@ -10,11 +10,13 @@ package com.digibig.service.person.service;
 import com.digibig.commons.util.MaskedUtil;
 import com.digibig.service.person.common.CommonParam;
 import com.digibig.service.person.domain.Mobile;
+import com.digibig.service.person.domain.Person;
 import com.digibig.service.person.enums.Status;
 import com.digibig.spring.service2.AbstractServiceForItem;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -30,15 +32,34 @@ public class MobileService extends AbstractServiceForItem<Mobile> {
     super(Mobile.class, "personId");
   }
 
+  @Autowired
+  private PersonService personService;
+
   @Override
   protected void preAdd(Mobile mobile){
     this.checkMobile(mobile);
   }
 
   @Override
-  protected void switchStatusInternal(Mobile address,String statusCode){
+  protected void postAdd(Mobile mobile){
+    this.addDefault(mobile);
+  }
+
+  @Override
+  protected void switchStatusInternal(Mobile mobile,String statusCode){
     Status status = Status.fromString(statusCode);
-    address.setStatus(status);
+    mobile.setStatus(status);
+    if(status.in(Status.NOT_ENABLED)){
+      this.deleteDefault(mobile);
+    }
+  }
+
+  private void deleteDefault(Mobile mobile){
+      Person person = personService.get(mobile.getPersonId());
+      if(mobile.getId() == person.getDefaultMobile()){
+        person.setDefaultMobile(0);
+        personService.updateSelective(person);
+      }
   }
 
   /**
@@ -55,6 +76,15 @@ public class MobileService extends AbstractServiceForItem<Mobile> {
       mobile.setNumber( number);
     }
     return mobiles;
+  }
+
+  private void addDefault(Mobile mobile){
+    if(mobile.getIsDefault()){
+      Person person = new Person();
+      person.setId(mobile.getPersonId());
+      person.setDefaultMobile(mobile.getId());
+      personService.updateSelective(person);
+    }
   }
 
   private void checkMobile(Mobile mobile){

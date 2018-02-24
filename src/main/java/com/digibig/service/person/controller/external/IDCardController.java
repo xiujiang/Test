@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController("IDCardController-e")
-@RequestMapping("/v1.0/person/idcard")
+@RequestMapping("external/v1.0/person/idcard")
 @Domain(IDCard.class)
 @Qualifier("external")
 public class IDCardController {

@@ -8,9 +8,11 @@
 package com.digibig.service.person.service;
 
 import com.digibig.service.person.domain.IDCard;
+import com.digibig.service.person.domain.Person;
 import com.digibig.spring.service2.AbstractServiceForItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -26,9 +28,17 @@ public class IDCardService extends AbstractServiceForItem<IDCard> {
     super(IDCard.class, "personId");
   }
 
+  @Autowired
+  private PersonService personService;
+
   @Override
   protected void preAdd(IDCard idCard){
     checkIDCard(idCard);
+  }
+
+  @Override
+  protected void postAdd(IDCard idCard){
+    this.addDefault(idCard);
   }
 
   /**
@@ -41,5 +51,15 @@ public class IDCardService extends AbstractServiceForItem<IDCard> {
     example.setUniqueCode(idCard.getUniqueCode());
 
     Assert.isTrue(CollectionUtils.isEmpty(this.queryAll(example)),"该身份证已存在。");
+  }
+
+
+  private void addDefault(IDCard idCard){
+    if(idCard.getIsDefault()){
+      Person person = new Person();
+      person.setId(idCard.getPersonId());
+      person.setDefaultIdCard(idCard.getId());
+      personService.updateSelective(person);
+    }
   }
 }

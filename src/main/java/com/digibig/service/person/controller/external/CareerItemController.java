@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController("CareerItemController-e")
-@RequestMapping(value = "/v1.0/person/career/item", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "external/v1.0/person/career/item", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @Domain(CareerItem.class)
 @Qualifier("external")
 public class CareerItemController {

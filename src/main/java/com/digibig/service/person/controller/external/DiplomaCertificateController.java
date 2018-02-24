@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController("DiplomaCertificateController-e")
-@RequestMapping("/v1.0/person/diploma/certificate")
+@RequestMapping("external/v1.0/person/diploma/certificate")
 @Domain(DiplomaCertificate.class)
 @Qualifier("external")
 public class DiplomaCertificateController {

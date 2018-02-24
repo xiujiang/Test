@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController("CareerController-e")
-@RequestMapping("/v1.0/person/career")
+@RequestMapping("external/v1.0/person/career")
 @Domain(Career.class)
 @Qualifier("external")
 public class CareerController {

@@ -14,10 +14,8 @@ import com.digibig.service.person.service.PersonService;
 import com.digibig.spring.api.HttpResult;
 import com.digibig.spring.api.HttpStatus;
 import com.digibig.spring.auth.Domain;
-import com.digibig.spring.credential.Credential;
 import com.digibig.spring.credential.CredentialHelper;
 import java.util.List;
-import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController("PersonController-e")
-@RequestMapping("/v1.0/person")
+@RequestMapping("external/v1.0/person")
 @Domain(Person.class)
 @Qualifier("external")
 public class PersonController {
@@ -90,11 +88,7 @@ public class PersonController {
   public HttpResult<Person> getPersonInfo(@RequestParam("personId") Integer personId,
       @RequestParam("credentialKey") String credentialKey){
 
-    Credential credential = credentialHelper.get(credentialKey);
-    if (Objects.isNull(credential) || !credential.isSameOrigin()) {
-      return new HttpResult<>(HttpStatus.AUTH_FAIL, "授权失败");
-    }
-    credentialHelper.finish(credential);
+    credentialHelper.getOnce(credentialKey);
 
     return personController.get(personId,null,null);
   }

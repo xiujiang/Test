@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController("EducationSummeryController-e")
-@RequestMapping("/v1.0/person/education/summery")
+@RequestMapping("external/v1.0/person/education/summery")
 @Domain(EducationSummary.class)
 @Qualifier("external")
 public class EducationSummeryController {
