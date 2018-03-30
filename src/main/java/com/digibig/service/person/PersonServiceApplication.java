@@ -7,7 +7,6 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-//@EnableDiscoveryClient
 @EnableFeignClients
 @EnableTransactionManagement
 @SpringBootApplication(scanBasePackageClasses = {PersonServiceApplication.class, Config.class})
