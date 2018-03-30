@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 //@EnableDiscoveryClient
 @EnableFeignClients
-@EnableJpaRepositories(basePackages = {"com.digibig.service.person.repository"})
 @EnableTransactionManagement
 @SpringBootApplication(scanBasePackageClasses = {PersonServiceApplication.class, Config.class})
 public class PersonServiceApplication {
