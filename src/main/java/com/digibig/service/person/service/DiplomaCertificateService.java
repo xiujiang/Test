@@ -47,6 +47,4 @@ public class DiplomaCertificateService extends AbstractServiceForItem<DiplomaCer
     Assert.isTrue(!CollectionUtils.isEmpty(this.queryAll(example)),"该证书已存在。");
   }
 
-
-
 }
