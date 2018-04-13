@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping(value = "internal/v1.0/address", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/internal/v1.0/address", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @Domain(Address.class)
 @Qualifier("internal")
 @NoLogin

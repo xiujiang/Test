@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping(value = "internal/v1.0/mobile", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/internal/v1.0/mobile", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @Domain(Mobile.class)
 @Qualifier("internal")
 @NoLogin
