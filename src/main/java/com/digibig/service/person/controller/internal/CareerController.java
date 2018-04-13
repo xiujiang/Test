@@ -10,6 +10,7 @@ package com.digibig.service.person.controller.internal;
 
 import com.digibig.service.person.domain.Career;
 import com.digibig.service.person.service.CareerService;
+import com.digibig.spring.annotation.Code;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Domain(Career.class)
 @Qualifier("internal")
 @NoLogin
+@Code("career")
 public class CareerController extends AbstractControllerForItem<Career> {
 
   Logger logger = LoggerFactory.getLogger(this.getClass());

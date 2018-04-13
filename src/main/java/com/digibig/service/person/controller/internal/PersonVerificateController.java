@@ -2,6 +2,7 @@ package com.digibig.service.person.controller.internal;
 
 import com.digibig.service.person.domain.Person;
 import com.digibig.service.person.service.PersonVerificateService;
+import com.digibig.spring.annotation.Code;
 import com.digibig.spring.api.HttpResult;
 import com.digibig.spring.api.HttpStatus;
 import com.digibig.spring.auth.Domain;
@@ -18,10 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/internal/v1.0/person/verificate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/internal/v1.0/person", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @Domain(Person.class)
 @Qualifier("internal")
 @NoLogin
+@Code("personVeri")
 public class PersonVerificateController {
 
   Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -29,7 +31,8 @@ public class PersonVerificateController {
   @Autowired
   private PersonVerificateService verificateService;
 
-  @PostMapping(value = "",consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+  @PostMapping(value = "/verificate",consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+  @Code("verify")
   public com.digibig.spring.api.HttpResult<Person> verificate(Person person){
 
     Assert.isTrue(!StringUtils.isEmpty(person.getName()),"name 不能为空。");

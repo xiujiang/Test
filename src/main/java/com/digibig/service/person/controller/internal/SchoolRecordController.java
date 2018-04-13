@@ -10,6 +10,7 @@ package com.digibig.service.person.controller.internal;
 
 import com.digibig.service.person.domain.SchoolRecord;
 import com.digibig.service.person.service.SchoolRecordService;
+import com.digibig.spring.annotation.Code;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Domain(SchoolRecord.class)
 @Qualifier("internal")
 @NoLogin
+@Code("schoolRecord")
 public class SchoolRecordController extends AbstractControllerForItem<SchoolRecord> {
 
   Logger logger = LoggerFactory.getLogger(this.getClass());

@@ -10,6 +10,7 @@ package com.digibig.service.person.controller.internal;
 import com.digibig.commons.util.RegexValidator;
 import com.digibig.service.person.domain.Email;
 import com.digibig.service.person.service.EmailService;
+import com.digibig.spring.annotation.Code;
 import com.digibig.spring.auth.Domain;
 import com.digibig.spring.auth.NoLogin;
 import com.digibig.spring.basecontroller.AbstractControllerForItem;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Domain(Email.class)
 @Qualifier("internal")
 @NoLogin
+@Code("email")
 public class EmailController extends AbstractControllerForItem<Email> {
 
   Logger logger = LoggerFactory.getLogger(this.getClass());

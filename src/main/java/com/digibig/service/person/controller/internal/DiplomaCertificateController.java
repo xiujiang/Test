@@ -10,6 +10,7 @@ package com.digibig.service.person.controller.internal;
 
 import com.digibig.service.person.domain.DiplomaCertificate;
 import com.digibig.service.person.service.DiplomaCertificateService;
+import com.digibig.spring.annotation.Code;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Domain(DiplomaCertificate.class)
 @Qualifier("internal")
 @NoLogin
+@Code("diplomaCerti")
 public class DiplomaCertificateController extends AbstractControllerForItem<DiplomaCertificate> {
 
   Logger logger = LoggerFactory.getLogger(this.getClass());

@@ -11,6 +11,7 @@ package com.digibig.service.person.controller.internal;
 import com.digibig.commons.util.IDValidator;
 import com.digibig.service.person.domain.IDCard;
 import com.digibig.service.person.service.IDCardService;
+import com.digibig.spring.annotation.Code;
 import com.digibig.spring.auth.Domain;
 import com.digibig.spring.auth.NoLogin;
 import com.digibig.spring.basecontroller.AbstractControllerForItem;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Domain(IDCard.class)
 @Qualifier("internal")
 @NoLogin
+@Code("idCard")
 public class IDCardController extends AbstractControllerForItem<IDCard> {
 
   Logger logger = LoggerFactory.getLogger(this.getClass());

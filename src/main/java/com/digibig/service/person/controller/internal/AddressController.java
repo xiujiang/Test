@@ -9,6 +9,7 @@ package com.digibig.service.person.controller.internal;
 
 import com.digibig.service.person.domain.Address;
 import com.digibig.service.person.service.AddressService;
+import com.digibig.spring.annotation.Code;
 import com.digibig.spring.auth.Domain;
 import com.digibig.spring.auth.NoLogin;
 import com.digibig.spring.basecontroller.AbstractControllerForItem;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Domain(Address.class)
 @Qualifier("internal")
 @NoLogin
+@Code("address")
 public class AddressController extends AbstractControllerForItem<Address> {
 
   Logger logger = LoggerFactory.getLogger(this.getClass());

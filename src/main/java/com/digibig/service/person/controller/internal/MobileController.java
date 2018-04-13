@@ -11,6 +11,7 @@ package com.digibig.service.person.controller.internal;
 import com.digibig.commons.util.RegexValidator;
 import com.digibig.service.person.domain.Mobile;
 import com.digibig.service.person.service.MobileService;
+import com.digibig.spring.annotation.Code;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Domain(Mobile.class)
 @Qualifier("internal")
 @NoLogin
+@Code("mobile")
 public class MobileController extends AbstractControllerForItem<Mobile> {
 
   Logger logger = LoggerFactory.getLogger(this.getClass());
