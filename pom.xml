@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>person-service</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 
 	<name>person-service</name>
@@ -13,14 +13,14 @@
 	<parent>
 		<groupId>com.digibig.pom</groupId>
 		<artifactId>service</artifactId>
-		<version>1.7-SNAPSHOT</version>
+		<version>1.7</version>
 	</parent>
 	
 	<dependencies>
 		<dependency>
 			<groupId>com.digibig</groupId>
 			<artifactId>person-service-domain</artifactId>
-			<version>1.0.2-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 	</dependencies>
 
