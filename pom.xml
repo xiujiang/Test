@@ -11,10 +11,17 @@
 	<description>自然人服务</description>
 
 	<parent>
-		<groupId>com.digibig</groupId>
-		<artifactId>service-parent</artifactId>
-		<version>1.5-release</version>
+		<groupId>com.digibig.pom</groupId>
+		<artifactId>service</artifactId>
+		<version>1.7.2</version>
 	</parent>
-
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.digibig</groupId>
+			<artifactId>person-service-domain</artifactId>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
 
 </project>
