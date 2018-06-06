@@ -21,16 +21,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
 @RequestMapping(value = "/internal/v1.0/idcard", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-@Domain(IDCard.class)
-@Qualifier("internal")
 @NoLogin
 @Code("idCard")
+@Validated
 public class IDCardController extends AbstractControllerForItem<IDCard> {
 
   Logger logger = LoggerFactory.getLogger(this.getClass());

@@ -19,16 +19,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
 @RequestMapping(value = "/internal/v1.0/person", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-@Domain(Person.class)
-@Qualifier("internal")
 @NoLogin
 @Code("person")
+@Validated
 public class PersonController extends AbstractControllerForBase<Person> {
 
   Logger logger = LoggerFactory.getLogger(this.getClass());

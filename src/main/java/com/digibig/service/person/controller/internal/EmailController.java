@@ -20,16 +20,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
 @RequestMapping(value = "/internal/v1.0/email", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-@Domain(Email.class)
-@Qualifier("internal")
 @NoLogin
 @Code("email")
+@Validated
 public class EmailController extends AbstractControllerForItem<Email> {
 
   Logger logger = LoggerFactory.getLogger(this.getClass());

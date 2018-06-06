@@ -14,16 +14,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/internal/v1.0/person", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-@Domain(Person.class)
-@Qualifier("internal")
 @NoLogin
 @Code("personVeri")
+@Validated
 public class PersonVerificateController {
 
   Logger logger = LoggerFactory.getLogger(this.getClass());

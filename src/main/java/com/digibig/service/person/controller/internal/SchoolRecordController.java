@@ -20,16 +20,16 @@ import com.digibig.spring.basecontroller.AbstractControllerForItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
 @RequestMapping(value = "/internal/v1.0/school/record", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-@Domain(SchoolRecord.class)
-@Qualifier("internal")
 @NoLogin
 @Code("schoolRecord")
+@Validated
 public class SchoolRecordController extends AbstractControllerForItem<SchoolRecord> {
 
   Logger logger = LoggerFactory.getLogger(this.getClass());

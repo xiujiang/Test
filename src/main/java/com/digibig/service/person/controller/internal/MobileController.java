@@ -22,16 +22,16 @@ import com.digibig.spring.basecontroller.AbstractControllerForItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
 @RequestMapping(value = "/internal/v1.0/mobile", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-@Domain(Mobile.class)
-@Qualifier("internal")
 @NoLogin
 @Code("mobile")
+@Validated
 public class MobileController extends AbstractControllerForItem<Mobile> {
 
   Logger logger = LoggerFactory.getLogger(this.getClass());
