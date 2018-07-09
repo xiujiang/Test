@@ -13,7 +13,7 @@
 	<parent>
 		<groupId>com.digibig.pom</groupId>
 		<artifactId>service</artifactId>
-		<version>1.8</version>
+		<version>1.8-SNAPSHOT</version>
 	</parent>
 	
 	<dependencies>
@@ -28,7 +28,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<spring.extension.version>3.7</spring.extension.version>
+		<spring.extension.version>3.8-SNAPSHOT</spring.extension.version>
 		<domain.tenant.version>1.3</domain.tenant.version>
 		<domain.meta.version>1.3</domain.meta.version>
 		<domain.user.version>1.3</domain.user.version>
