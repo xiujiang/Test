@@ -1,6 +1,7 @@
 package com.digibig.service.person;
 
 import com.digibig.config.Config;
+import com.digibig.config.LogUtil;
 import org.apache.logging.log4j.core.lookup.MainMapLookup;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class PersonServiceApplication {
 
 	public static void main(String[] args) {
-		MainMapLookup.setMainArguments("person-service");
+		LogUtil.config();
 		SpringApplication.run(PersonServiceApplication.class, args);
 	}
 }
